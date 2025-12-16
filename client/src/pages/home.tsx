@@ -11,6 +11,7 @@ import { ThemeToggle } from "@/components/ThemeToggle";
 import { DeviceFilter, defaultFilters, useDeviceFilter, type DeviceFilters } from "@/components/DeviceFilter";
 import { PacketJourney } from "@/components/PacketJourney";
 import { ScenarioComparison } from "@/components/ScenarioComparison";
+import { ScenarioExportImport } from "@/components/ScenarioExportImport";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -42,6 +43,7 @@ export default function Home() {
   const [filters, setFilters] = useState<DeviceFilters>(defaultFilters);
   const [showPacketJourney, setShowPacketJourney] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
+  const [importedScenario, setImportedScenario] = useState<Scenario | null>(null);
 
   const { 
     data: scenarioSummaries, 
@@ -66,33 +68,36 @@ export default function Home() {
     }
   }, [scenarioSummaries, selectedScenarioId]);
 
+  const activeScenario = importedScenario || scenario;
+
   const filteredDevices = useDeviceFilter(
-    scenario?.devices || [],
-    scenario?.networks || [],
+    activeScenario?.devices || [],
+    activeScenario?.networks || [],
     filters
   );
 
   const filteredDeviceIds = useMemo(() => new Set(filteredDevices.map(d => d.id)), [filteredDevices]);
 
   const filteredScenario = useMemo((): Scenario | undefined => {
-    if (!scenario) return undefined;
+    if (!activeScenario) return undefined;
     return {
-      ...scenario,
-      devices: scenario.devices,
+      ...activeScenario,
+      devices: activeScenario.devices,
     };
-  }, [scenario]);
+  }, [activeScenario]);
 
-  const selectedDevice = scenario?.devices.find(d => d.id === selectedDeviceId) || null;
+  const selectedDevice = activeScenario?.devices.find(d => d.id === selectedDeviceId) || null;
   const selectedNetwork = selectedDevice 
-    ? scenario?.networks.find(n => n.id === selectedDevice.networkId) || null
+    ? activeScenario?.networks.find(n => n.id === selectedDevice.networkId) || null
     : null;
-  const routerDevice = scenario?.devices.find(d => d.type === "router") || null;
+  const routerDevice = activeScenario?.devices.find(d => d.type === "router") || null;
 
   const handleReset = useCallback(() => {
     setSelectedDeviceId(null);
     setFilters(defaultFilters);
     setShowPacketJourney(false);
     setShowComparison(false);
+    setImportedScenario(null);
   }, []);
 
   const handleScenarioChange = useCallback((id: string) => {
@@ -100,10 +105,19 @@ export default function Home() {
     setSelectedDeviceId(null);
     setFilters(defaultFilters);
     setShowPacketJourney(false);
+    setImportedScenario(null);
   }, []);
 
   const handleTogglePacketJourney = useCallback(() => {
     setShowPacketJourney(prev => !prev);
+  }, []);
+
+  const handleImportScenario = useCallback((imported: Scenario) => {
+    setImportedScenario(imported);
+    setSelectedDeviceId(null);
+    setFilters(defaultFilters);
+    setShowPacketJourney(false);
+    setShowComparison(false);
   }, []);
 
   useEffect(() => {
@@ -255,6 +269,11 @@ export default function Home() {
                 </Button>
               </div>
               
+              <ScenarioExportImport
+                scenario={activeScenario || null}
+                onImport={handleImportScenario}
+              />
+              
               <Button
                 variant="outline"
                 size="sm"
@@ -267,10 +286,10 @@ export default function Home() {
             </div>
           </div>
 
-          {scenario && (
+          {activeScenario && (
             <DeviceFilter
-              devices={scenario.devices}
-              networks={scenario.networks}
+              devices={activeScenario.devices}
+              networks={activeScenario.networks}
               filters={filters}
               onFiltersChange={setFilters}
             />
@@ -310,7 +329,7 @@ export default function Home() {
               ) : (
                 <TableView
                   devices={filteredDevices}
-                  networks={scenario?.networks || []}
+                  networks={activeScenario?.networks || []}
                   activeLayer={activeLayer}
                   selectedDeviceId={selectedDeviceId}
                   onDeviceSelect={setSelectedDeviceId}
@@ -348,7 +367,7 @@ export default function Home() {
                       sourceDevice={selectedDevice}
                       routerDevice={routerDevice}
                       activeLayer={activeLayer}
-                      publicIp={scenario?.environment.publicIp || "0.0.0.0"}
+                      publicIp={activeScenario?.environment.publicIp || "0.0.0.0"}
                       onClose={() => setShowPacketJourney(false)}
                     />
                   ) : (
@@ -366,18 +385,18 @@ export default function Home() {
                 </Card>
               )}
               
-              {scenario && scenario.learningPrompts.length > 0 && (
-                <LearningPrompts prompts={scenario.learningPrompts} />
+              {activeScenario && activeScenario.learningPrompts.length > 0 && (
+                <LearningPrompts prompts={activeScenario.learningPrompts} />
               )}
             </div>
           </ScrollArea>
         </aside>
       </div>
 
-      {scenario && scenario.description && (
+      {activeScenario && activeScenario.description && (
         <footer className="border-t bg-muted/30 px-4 py-2">
           <p className="text-center text-xs text-muted-foreground">
-            {scenario.description}
+            {activeScenario.description}
           </p>
         </footer>
       )}
