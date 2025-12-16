@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import type { NetworkEvent, Device } from "@shared/schema";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,18 @@ interface EventNotificationsProps {
   onDismiss?: () => void;
 }
 
+const scenarioIdToKey: Record<string, string> = {
+  "family_iot_sprawl_v1": "familyIoT",
+  "small_business_v1": "smallBusiness",
+  "hotel_public_v1": "hotelPublic",
+};
+
+const eventIdToKey: Record<string, string> = {
+  "unknown_device_reveal": "unknownDeviceReveal",
+  "unknown_device_alert": "unknownDeviceAlert",
+  "evil_twin_warning": "evilTwinWarning",
+};
+
 export function EventNotifications({
   events,
   devices,
@@ -20,6 +33,7 @@ export function EventNotifications({
   selectedDeviceId,
   onDismiss,
 }: EventNotificationsProps) {
+  const { t } = useTranslation();
   const [activeEvent, setActiveEvent] = useState<NetworkEvent | null>(null);
   const [dismissedEvents, setDismissedEvents] = useState<Set<string>>(new Set());
   const [shownOnEnterEvents, setShownOnEnterEvents] = useState<Set<string>>(new Set());
@@ -71,10 +85,25 @@ export function EventNotifications({
     return devices.find((d) => d.id === event.deviceId);
   };
 
+  const getTranslatedMessage = (event: NetworkEvent): string => {
+    const scenarioKey = scenarioIdToKey[scenarioId];
+    const eventKey = eventIdToKey[event.id];
+    
+    if (scenarioKey && eventKey) {
+      const translationKey = `scenarioContent.${scenarioKey}.events.${eventKey}`;
+      const translated = t(translationKey, { defaultValue: "" });
+      if (translated && translated !== translationKey) {
+        return translated;
+      }
+    }
+    return event.message;
+  };
+
   if (!activeEvent) return null;
 
   const device = getEventDevice(activeEvent);
   const isWarning = device?.riskFlags.includes("unknown_device") || device?.type === "unknown";
+  const message = getTranslatedMessage(activeEvent);
 
   return (
     <AnimatePresence>
@@ -110,7 +139,7 @@ export function EventNotifications({
                 </p>
               )}
               <p className="text-sm leading-relaxed" data-testid="event-message">
-                {activeEvent.message}
+                {message}
               </p>
             </div>
             <Button

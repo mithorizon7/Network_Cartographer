@@ -12,6 +12,8 @@ const resources = {
   ru: { translation: ru },
 };
 
+const isDev = import.meta.env.DEV;
+
 i18n
   .use(LanguageDetector)
   .use(initReactI18next)
@@ -29,6 +31,11 @@ i18n
     react: {
       useSuspense: false,
     },
+    saveMissing: isDev,
+    missingKeyHandler: isDev ? (lngs, ns, key) => {
+      console.warn(`[MISSING i18n] ${lngs.join(', ')} - ${ns}:${key}`);
+    } : undefined,
+    parseMissingKeyHandler: isDev ? (key) => `[MISSING: ${key}]` : undefined,
   });
 
 export default i18n;

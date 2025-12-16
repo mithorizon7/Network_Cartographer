@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import type { LearningPrompt } from "@shared/schema";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -12,6 +13,7 @@ interface LearningPromptsProps {
 }
 
 export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
+  const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -24,7 +26,7 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
         <CardHeader className="pb-4 text-center">
           <div className="text-muted-foreground">
             <Lightbulb className="mx-auto mb-3 h-10 w-10 opacity-50" />
-            <p className="text-sm">No learning prompts for this scenario</p>
+            <p className="text-sm">{t('learning.noPrompts')}</p>
           </div>
         </CardHeader>
       </Card>
@@ -66,21 +68,22 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
   };
 
   if (isComplete && currentIndex === prompts.length - 1 && showExplanation) {
+    const scorePercent = Math.round((correctAnswers / prompts.length) * 100);
     return (
       <Card data-testid="panel-learning-complete">
         <CardContent className="pt-6 text-center">
           <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-green-500" />
-          <h3 className="mb-2 text-lg font-semibold">All Prompts Completed!</h3>
+          <h3 className="mb-2 text-lg font-semibold">{t('learning.allComplete')}</h3>
           <p className="mb-4 text-sm text-muted-foreground">
-            You got {correctAnswers} out of {prompts.length} correct
+            {t('learning.scoreResult', { correct: correctAnswers, total: prompts.length })}
           </p>
           <Badge variant={correctAnswers === prompts.length ? "default" : "secondary"} className="mb-6">
-            {Math.round((correctAnswers / prompts.length) * 100)}% Score
+            {t('learning.scorePercent', { percent: scorePercent })}
           </Badge>
           <div>
             <Button variant="outline" onClick={handleReset} data-testid="button-restart-prompts">
               <RotateCcw className="mr-2 h-4 w-4" />
-              Try Again
+              {t('learning.tryAgain')}
             </Button>
           </div>
         </CardContent>
@@ -94,10 +97,10 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2">
             <Lightbulb className="h-5 w-5 text-chart-5" />
-            <span className="text-sm font-medium">Learning Check</span>
+            <span className="text-sm font-medium">{t('learning.title')}</span>
           </div>
           <span className="text-xs text-muted-foreground">
-            {completedPrompts.size} of {prompts.length}
+            {t('learning.progress', { completed: completedPrompts.size, total: prompts.length })}
           </span>
         </div>
         <Progress value={progress} className="mt-2 h-1.5" />
@@ -106,7 +109,7 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
         <div>
           {currentPrompt.relatedLayer && (
             <Badge variant="secondary" className="mb-2 text-xs capitalize">
-              {currentPrompt.relatedLayer} Layer
+              {t('learning.layer', { layer: t(`layers.${currentPrompt.relatedLayer}`) })}
             </Badge>
           )}
           <p className="text-sm font-medium leading-relaxed" data-testid="text-prompt-question">
@@ -159,7 +162,7 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
         
         {showExplanation && currentIndex < prompts.length - 1 && (
           <Button onClick={handleNext} className="w-full" data-testid="button-next-prompt">
-            Next Question
+            {t('learning.nextQuestion')}
             <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         )}

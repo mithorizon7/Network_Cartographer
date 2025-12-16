@@ -182,6 +182,135 @@
     "showAll": "Show All",
     "showMain": "Main Only",
     "showGuest": "Guest Only",
-    "showIoT": "IoT Only"
+    "showIoT": "IoT Only",
+    "exportImport": "Export / Import"
+  },
+  "filter": {
+    "searchPlaceholder": "Search devices, IPs, protocols...",
+    "filterDevices": "Filter Devices",
+    "clearAll": "Clear all",
+    "deviceType": "Device Type",
+    "networkZone": "Network Zone",
+    "showRisksOnly": "Show risky devices only",
+    "resultsCount": "{{filtered}} of {{total}} devices"
+  },
+  "learning": {
+    "title": "Learning Check",
+    "progress": "{{completed}} of {{total}}",
+    "noPrompts": "No learning prompts for this scenario",
+    "allComplete": "All Prompts Completed!",
+    "scoreResult": "You got {{correct}} out of {{total}} correct",
+    "scorePercent": "{{percent}}% Score",
+    "tryAgain": "Try Again",
+    "nextQuestion": "Next Question",
+    "layer": "{{layer}} Layer"
+  },
+  "comparison": {
+    "title": "Compare Scenarios",
+    "selectScenario": "Select a scenario to compare",
+    "loading": "Loading scenario...",
+    "failedToLoad": "Failed to load scenario",
+    "devices": "Devices",
+    "networks": "Networks",
+    "securityRisks": "Security Risks",
+    "networkZones": "Network Zones",
+    "deviceTypes": "Device Types",
+    "devicesWithRisks": "Devices with Risks",
+    "vs": "vs"
+  },
+  "scenarioContent": {
+    "familyIoT": {
+      "title": "Family Home with IoT Sprawl",
+      "description": "A typical suburban home with multiple family members and various smart devices. Notice how IoT devices are isolated on their own network for security.",
+      "events": {
+        "unknownDeviceReveal": "An unfamiliar device appears on your IoT network. You don't remember adding this..."
+      }
+    },
+    "smallBusiness": {
+      "title": "Small Business Office",
+      "description": "A small business with employees, a server, and customer-facing Wi-Fi. Notice the separation between staff and customer networks.",
+      "events": {
+        "unknownDeviceAlert": "IT Alert: An unregistered device has connected to the corporate network!"
+      }
+    },
+    "hotelPublic": {
+      "title": "Hotel / Public Wi-Fi",
+      "description": "A hotel lobby with public Wi-Fi. Notice: All guests share the same network, and you can't trust who else is connected.",
+      "events": {
+        "evilTwinWarning": "Warning: This might be an 'evil twin' attack! Attackers create fake networks with similar names to intercept your data."
+      }
+    }
+  },
+  "learningPrompts": {
+    "privateIp": {
+      "question": "Which of these is a private IP address?",
+      "answers": ["192.168.10.14", "8.8.8.8", "203.0.113.12"],
+      "explanation": "192.168.x.x addresses are private - they only work inside your home network. 8.8.8.8 is Google's public DNS, and 203.0.113.12 is your public IP (how the internet sees you)."
+    },
+    "macPurpose": {
+      "question": "What is a MAC address (Local ID) used for?",
+      "answers": ["Routing packets across the internet", "Identifying devices on the local network", "Encrypting your data"],
+      "explanation": "MAC addresses are hardware identifiers used for local delivery - like apartment numbers within a building. They don't leave your local network."
+    },
+    "guestNetwork": {
+      "question": "Why would you put guests on a separate network?",
+      "answers": ["To give them faster internet speed", "To prevent them from accessing your personal devices", "Because there's a limit to devices on one network"],
+      "explanation": "Guest networks create isolation. Visitors can use the internet, but they can't see or access your personal computers, cameras, or smart devices."
+    },
+    "unknownDevice": {
+      "question": "You notice an unknown device on your network. What should you do?",
+      "answers": ["Ignore it - it's probably fine", "Investigate and possibly block it", "Unplug your router immediately"],
+      "explanation": "Unknown devices could be forgotten gadgets, neighbors leeching Wi-Fi, or even malicious actors. Check your router's admin page to identify and remove suspicious devices."
+    },
+    "iotIsolation": {
+      "question": "Why are IoT devices (cameras, thermostats) often put on a separate network?",
+      "answers": ["They need special internet settings", "They're often insecure and could be used to attack other devices", "They use too much bandwidth"],
+      "explanation": "Many IoT devices have weak security, use default passwords, or don't get updates. Isolating them prevents a compromised camera from spying on your laptop."
+    },
+    "tenNetwork": {
+      "question": "What type of IP address range is 10.0.x.x?",
+      "answers": ["Public IP range", "Private IP range for internal networks", "Reserved for government use"],
+      "explanation": "10.0.0.0/8 is one of three private IP ranges (along with 172.16.x.x and 192.168.x.x). These addresses work only inside your network and can't be reached directly from the internet."
+    },
+    "wpa3": {
+      "question": "Why does the staff network use WPA3 while guest uses WPA2?",
+      "answers": ["WPA3 is slower, only staff can handle it", "WPA3 provides stronger encryption for sensitive data", "There's no meaningful difference"],
+      "explanation": "WPA3 offers better protection against password guessing attacks and uses newer encryption. Corporate data deserves the strongest protection available."
+    },
+    "printerRisk": {
+      "question": "Why is the printer flagged as a security risk?",
+      "answers": ["Printers can't be secure", "It still has the default password, making it easy to hack", "It's connected to the wrong network"],
+      "explanation": "Printers with default passwords are often targeted by attackers. They can be used to intercept documents, spread to other devices, or even become part of botnets."
+    },
+    "corpIsolation": {
+      "question": "Why can't customers on guest Wi-Fi access the file server?",
+      "answers": ["The file server is turned off", "Guest network is isolated from corporate network", "Customers don't have the password"],
+      "explanation": "Network segmentation means different networks can't communicate. Guests get internet access but are completely walled off from internal resources."
+    },
+    "openWifi": {
+      "question": "What does 'Open' network security mean?",
+      "answers": ["Anyone can join without a password", "The network has no firewall", "The Wi-Fi signal is publicly visible"],
+      "explanation": "Open networks have no encryption. This means anyone nearby can potentially see your traffic - it's like sending postcards instead of sealed letters."
+    },
+    "evilTwin": {
+      "question": "What is an 'evil twin' attack?",
+      "answers": ["When someone clones your device", "A fake Wi-Fi network that mimics a legitimate one", "When two routers interfere with each other"],
+      "explanation": "Attackers set up fake access points with names like 'Hotel_Free_WiFi' to lure victims. When you connect, they can see everything you do."
+    },
+    "httpsImportance": {
+      "question": "On public Wi-Fi, why is HTTPS especially important?",
+      "answers": ["HTTPS makes websites load faster", "HTTPS encrypts your data so others on the network can't read it", "HTTPS prevents viruses"],
+      "explanation": "HTTPS creates an encrypted tunnel between you and the website. Even if someone captures your traffic, they see gibberish instead of your passwords."
+    },
+    "vpn": {
+      "question": "What does a VPN do on public Wi-Fi?",
+      "answers": ["Makes your internet faster", "Creates an encrypted tunnel for all your traffic", "Blocks other users from connecting"],
+      "explanation": "A VPN encrypts everything leaving your device, not just web traffic. It's like putting all your postcards in a locked box before sending them."
+    },
+    "safeBehavior": {
+      "question": "What should you avoid doing on public Wi-Fi?",
+      "answers": ["Browsing news websites", "Logging into your bank without a VPN", "Checking the weather"],
+      "explanation": "Sensitive activities like banking should wait for a secure network or require a VPN. Even HTTPS can't protect against all attacks on compromised networks."
+    }
   }
 }

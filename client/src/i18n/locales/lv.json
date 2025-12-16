@@ -182,6 +182,135 @@
     "showAll": "Rādīt visu",
     "showMain": "Tikai galvenais",
     "showGuest": "Tikai viesi",
-    "showIoT": "Tikai IoT"
+    "showIoT": "Tikai IoT",
+    "exportImport": "Eksportēt / Importēt"
+  },
+  "filter": {
+    "searchPlaceholder": "Meklēt ierīces, IP, protokolus...",
+    "filterDevices": "Filtrēt ierīces",
+    "clearAll": "Notīrīt visu",
+    "deviceType": "Ierīces tips",
+    "networkZone": "Tīkla zona",
+    "showRisksOnly": "Rādīt tikai riskantās ierīces",
+    "resultsCount": "{{filtered}} no {{total}} ierīcēm"
+  },
+  "learning": {
+    "title": "Zināšanu pārbaude",
+    "progress": "{{completed}} no {{total}}",
+    "noPrompts": "Šim scenārijam nav mācību jautājumu",
+    "allComplete": "Visi jautājumi pabeigti!",
+    "scoreResult": "Jūs pareizi atbildējāt {{correct}} no {{total}}",
+    "scorePercent": "{{percent}}% rezultāts",
+    "tryAgain": "Mēģināt vēlreiz",
+    "nextQuestion": "Nākamais jautājums",
+    "layer": "{{layer}} slānis"
+  },
+  "comparison": {
+    "title": "Salīdzināt scenārijus",
+    "selectScenario": "Izvēlieties scenāriju salīdzināšanai",
+    "loading": "Ielādē scenāriju...",
+    "failedToLoad": "Neizdevās ielādēt scenāriju",
+    "devices": "Ierīces",
+    "networks": "Tīkli",
+    "securityRisks": "Drošības riski",
+    "networkZones": "Tīkla zonas",
+    "deviceTypes": "Ierīču tipi",
+    "devicesWithRisks": "Ierīces ar riskiem",
+    "vs": "pret"
+  },
+  "scenarioContent": {
+    "familyIoT": {
+      "title": "Ģimenes māja ar IoT ierīcēm",
+      "description": "Tipiska piepilsētas māja ar vairākiem ģimenes locekļiem un dažādām viedierīcēm. Ievērojiet, kā IoT ierīces ir izolētas savā tīklā drošības nolūkos.",
+      "events": {
+        "unknownDeviceReveal": "Jūsu IoT tīklā parādās nepazīstama ierīce. Jūs neatceraties, ka to būtu pievienojuši..."
+      }
+    },
+    "smallBusiness": {
+      "title": "Mazā uzņēmuma birojs",
+      "description": "Mazs uzņēmums ar darbiniekiem, serveri un klientiem pieejamu Wi-Fi. Ievērojiet atdalījumu starp darbinieku un klientu tīkliem.",
+      "events": {
+        "unknownDeviceAlert": "IT brīdinājums: Korporatīvajam tīklam ir pieslēgusies nereģistrēta ierīce!"
+      }
+    },
+    "hotelPublic": {
+      "title": "Viesnīca / Publiskais Wi-Fi",
+      "description": "Viesnīcas vestibils ar publisko Wi-Fi. Ievērojiet: Visi viesi izmanto vienu tīklu, un jūs nevarat uzticēties citiem pieslēgumiem.",
+      "events": {
+        "evilTwinWarning": "Brīdinājums: Šis varētu būt 'ļaunais dvīnis' uzbrukums! Uzbrucēji izveido viltus tīklus ar līdzīgiem nosaukumiem, lai pārtvertu jūsu datus."
+      }
+    }
+  },
+  "learningPrompts": {
+    "privateIp": {
+      "question": "Kura no šīm ir privāta IP adrese?",
+      "answers": ["192.168.10.14", "8.8.8.8", "203.0.113.12"],
+      "explanation": "192.168.x.x adreses ir privātas - tās darbojas tikai jūsu mājas tīklā. 8.8.8.8 ir Google publiskais DNS, un 203.0.113.12 ir jūsu publiskā IP (kā internets jūs redz)."
+    },
+    "macPurpose": {
+      "question": "Kam tiek izmantota MAC adrese (lokālais ID)?",
+      "answers": ["Pakešu maršrutēšanai internetā", "Ierīču identificēšanai lokālajā tīklā", "Jūsu datu šifrēšanai"],
+      "explanation": "MAC adreses ir aparatūras identifikatori, ko izmanto lokālai piegādei - kā dzīvokļu numuri ēkā. Tās nepameto jūsu lokālo tīklu."
+    },
+    "guestNetwork": {
+      "question": "Kāpēc jūs ievietotu viesus atsevišķā tīklā?",
+      "answers": ["Lai viņiem būtu ātrāks internets", "Lai neļautu viņiem piekļūt jūsu personīgajām ierīcēm", "Jo vienā tīklā ir ierīču limits"],
+      "explanation": "Viesu tīkli rada izolāciju. Apmeklētāji var izmantot internetu, bet viņi nevar redzēt vai piekļūt jūsu personīgajiem datoriem, kamerām vai viedierīcēm."
+    },
+    "unknownDevice": {
+      "question": "Jūs pamanāt nezināmu ierīci savā tīklā. Ko jums vajadzētu darīt?",
+      "answers": ["Ignorēt - droši vien viss kārtībā", "Izmeklēt un, iespējams, bloķēt", "Nekavējoties atvienot maršrutētāju"],
+      "explanation": "Nezināmas ierīces var būt aizmirstas ierīces, kaimiņi, kas izmanto jūsu Wi-Fi, vai pat ļaunprātīgi dalībnieki. Pārbaudiet maršrutētāja administrēšanas lapu, lai identificētu un noņemtu aizdomīgas ierīces."
+    },
+    "iotIsolation": {
+      "question": "Kāpēc IoT ierīces (kameras, termostati) bieži tiek ievietotas atsevišķā tīklā?",
+      "answers": ["Tām nepieciešami īpaši interneta iestatījumi", "Tās bieži ir nedrošas un var tikt izmantotas uzbrukumiem citām ierīcēm", "Tās izmanto pārāk daudz joslas platuma"],
+      "explanation": "Daudzām IoT ierīcēm ir vāja drošība, noklusējuma paroles vai tās nesaņem atjauninājumus. To izolēšana novērš kompromitētas kameras spiegošanu pēc jūsu portatīvā datora."
+    },
+    "tenNetwork": {
+      "question": "Kāda veida IP adrešu diapazons ir 10.0.x.x?",
+      "answers": ["Publisko IP diapazons", "Privāto IP diapazons iekšējiem tīkliem", "Rezervēts valdības lietošanai"],
+      "explanation": "10.0.0.0/8 ir viens no trim privāto IP diapazoniem (kopā ar 172.16.x.x un 192.168.x.x). Šīs adreses darbojas tikai jūsu tīklā un tām nevar tieši piekļūt no interneta."
+    },
+    "wpa3": {
+      "question": "Kāpēc darbinieku tīkls izmanto WPA3, bet viesu tīkls WPA2?",
+      "answers": ["WPA3 ir lēnāks, tikai darbinieki to var izmantot", "WPA3 nodrošina spēcīgāku šifrēšanu sensitīviem datiem", "Starp tiem nav nozīmīgas atšķirības"],
+      "explanation": "WPA3 piedāvā labāku aizsardzību pret paroļu uzminēšanas uzbrukumiem un izmanto jaunāku šifrēšanu. Korporatīvie dati ir pelnījuši visspēcīgāko pieejamo aizsardzību."
+    },
+    "printerRisk": {
+      "question": "Kāpēc printeris ir atzīmēts kā drošības risks?",
+      "answers": ["Printerus nevar padarīt drošus", "Tam joprojām ir noklusējuma parole, kas padara to viegli uzlaužamu", "Tas ir savienots ar nepareizo tīklu"],
+      "explanation": "Printeri ar noklusējuma parolēm bieži ir uzbrucēju mērķis. Tos var izmantot dokumentu pārtveršanai, izplatīšanai uz citām ierīcēm vai pat kļūšanai par botnet daļu."
+    },
+    "corpIsolation": {
+      "question": "Kāpēc klienti viesu Wi-Fi nevar piekļūt failu serverim?",
+      "answers": ["Failu serveris ir izslēgts", "Viesu tīkls ir izolēts no korporatīvā tīkla", "Klientiem nav paroles"],
+      "explanation": "Tīkla segmentācija nozīmē, ka dažādi tīkli nevar sazināties. Viesi saņem interneta piekļuvi, bet ir pilnībā nodalīti no iekšējiem resursiem."
+    },
+    "openWifi": {
+      "question": "Ko nozīmē 'Open' tīkla drošība?",
+      "answers": ["Ikviens var pievienoties bez paroles", "Tīklam nav ugunsmūra", "Wi-Fi signāls ir publiski redzams"],
+      "explanation": "Atvērtiem tīkliem nav šifrēšanas. Tas nozīmē, ka ikviens tuvumā var potenciāli redzēt jūsu datplūsmu - tas ir kā sūtīt pastkartes nevis aizzīmogotas vēstules."
+    },
+    "evilTwin": {
+      "question": "Kas ir 'ļaunā dvīņa' uzbrukums?",
+      "answers": ["Kad kāds klonē jūsu ierīci", "Viltus Wi-Fi tīkls, kas atdarina likumīgu", "Kad divi maršrutētāji traucē viens otram"],
+      "explanation": "Uzbrucēji izveido viltus piekļuves punktus ar nosaukumiem kā 'Hotel_Free_WiFi', lai pievilinātu upurus. Kad jūs pieslēdzaties, viņi var redzēt visu, ko jūs darāt."
+    },
+    "httpsImportance": {
+      "question": "Publiskajā Wi-Fi, kāpēc HTTPS ir īpaši svarīgs?",
+      "answers": ["HTTPS padara vietnes ātrākas", "HTTPS šifrē jūsu datus, lai citi tīklā tos nevarētu lasīt", "HTTPS novērš vīrusus"],
+      "explanation": "HTTPS izveido šifrētu tuneli starp jums un vietni. Pat ja kāds pārtver jūsu datplūsmu, viņš redz nesakarīgus simbolus, nevis jūsu paroles."
+    },
+    "vpn": {
+      "question": "Ko VPN dara publiskajā Wi-Fi?",
+      "answers": ["Padara internetu ātrāku", "Izveido šifrētu tuneli visai jūsu datplūsmai", "Bloķē citus lietotājus no pieslēgšanās"],
+      "explanation": "VPN šifrē visu, kas pameto jūsu ierīci, ne tikai web datplūsmu. Tas ir kā ielikt visas savas pastkartes slēgtā kastē pirms nosūtīšanas."
+    },
+    "safeBehavior": {
+      "question": "No kā jums vajadzētu izvairīties publiskajā Wi-Fi?",
+      "answers": ["Ziņu vietņu pārlūkošanas", "Pieslēgšanās bankai bez VPN", "Laika apstākļu pārbaudīšanas"],
+      "explanation": "Sensitīvām darbībām kā banku operācijām jāgaida drošs tīkls vai jāizmanto VPN. Pat HTTPS nevar aizsargāt pret visiem uzbrukumiem kompromitētos tīklos."
+    }
   }
 }

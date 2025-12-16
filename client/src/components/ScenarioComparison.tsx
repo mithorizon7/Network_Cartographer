@@ -1,9 +1,9 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { useQuery } from "@tanstack/react-query";
 import type { Scenario, LayerMode } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { 
   Select, 
@@ -15,9 +15,6 @@ import {
 import { 
   X, 
   GitCompare, 
-  Router, 
-  Laptop, 
-  Smartphone, 
   ShieldAlert,
   Network,
   Wifi,
@@ -83,6 +80,7 @@ function ScenarioPanel({
   activeLayer: LayerMode;
   allScenarioIds: string[];
 }) {
+  const { t } = useTranslation();
   const { data: scenario, isLoading } = useQuery<Scenario>({
     queryKey: ["/api/scenarios", scenarioId],
     enabled: !!scenarioId,
@@ -93,7 +91,7 @@ function ScenarioPanel({
       <div className="flex h-full items-center justify-center text-muted-foreground">
         <div className="text-center">
           <GitCompare className="mx-auto mb-2 h-12 w-12 opacity-30" />
-          <p className="text-sm">Select a scenario to compare</p>
+          <p className="text-sm">{t('comparison.selectScenario')}</p>
         </div>
       </div>
     );
@@ -102,7 +100,7 @@ function ScenarioPanel({
   if (isLoading) {
     return (
       <div className="flex h-full items-center justify-center text-muted-foreground">
-        <div className="animate-pulse text-sm">Loading scenario...</div>
+        <div className="animate-pulse text-sm">{t('comparison.loading')}</div>
       </div>
     );
   }
@@ -110,7 +108,7 @@ function ScenarioPanel({
   if (!scenario) {
     return (
       <div className="flex h-full items-center justify-center text-destructive">
-        <p className="text-sm">Failed to load scenario</p>
+        <p className="text-sm">{t('comparison.failedToLoad')}</p>
       </div>
     );
   }
@@ -137,18 +135,18 @@ function ScenarioPanel({
         </div>
 
         <div className="grid grid-cols-2 gap-2">
-          <MetricCard label="Devices" value={metrics.deviceCount} />
-          <MetricCard label="Networks" value={metrics.networkCount} />
+          <MetricCard label={t('comparison.devices')} value={metrics.deviceCount} />
+          <MetricCard label={t('comparison.networks')} value={metrics.networkCount} />
           <MetricCard 
-            label="Security Risks" 
+            label={t('comparison.securityRisks')} 
             value={metrics.riskCount} 
             highlight={metrics.riskCount > 0}
           />
-          <MetricCard label="Network Zones" value={metrics.zones.length} />
+          <MetricCard label={t('comparison.networkZones')} value={metrics.zones.length} />
         </div>
 
         <div className="space-y-2">
-          <h4 className="text-sm font-medium">Network Zones</h4>
+          <h4 className="text-sm font-medium">{t('comparison.networkZones')}</h4>
           <div className="flex flex-wrap gap-2">
             {metrics.zones.map(zone => (
               <Badge 
@@ -163,14 +161,14 @@ function ScenarioPanel({
                 }
               >
                 <Wifi className="mr-1 h-3 w-3" />
-                {zone.charAt(0).toUpperCase() + zone.slice(1)}
+                {t(`zones.${zone}`, zone)}
               </Badge>
             ))}
           </div>
         </div>
 
         <div className="space-y-2">
-          <h4 className="text-sm font-medium">Device Types</h4>
+          <h4 className="text-sm font-medium">{t('comparison.deviceTypes')}</h4>
           <div className="grid grid-cols-2 gap-1 text-sm">
             {Object.entries(metrics.deviceTypes)
               .sort((a, b) => b[1] - a[1])
@@ -179,7 +177,7 @@ function ScenarioPanel({
                   key={type} 
                   className="flex items-center justify-between rounded bg-muted/50 px-2 py-1"
                 >
-                  <span className="capitalize">{type}</span>
+                  <span className="capitalize">{t(`deviceTypes.${type}`, type)}</span>
                   <Badge variant="outline" className="text-xs">{count}</Badge>
                 </div>
               ))}
@@ -190,7 +188,7 @@ function ScenarioPanel({
           <div className="space-y-2">
             <h4 className="flex items-center gap-2 text-sm font-medium text-destructive">
               <ShieldAlert className="h-4 w-4" />
-              Devices with Risks
+              {t('comparison.devicesWithRisks')}
             </h4>
             <div className="space-y-1 text-sm">
               {scenario.devices
@@ -204,7 +202,7 @@ function ScenarioPanel({
                     <div className="flex gap-1">
                       {device.riskFlags.map(flag => (
                         <Badge key={flag} variant="destructive" className="text-xs">
-                          {flag.replace(/_/g, " ")}
+                          {t(`riskFlags.${flag}`, flag.replace(/_/g, " "))}
                         </Badge>
                       ))}
                     </div>
@@ -219,6 +217,7 @@ function ScenarioPanel({
 }
 
 export function ScenarioComparison({ scenarios, activeLayer, onClose }: ScenarioComparisonProps) {
+  const { t } = useTranslation();
   const [leftScenarioId, setLeftScenarioId] = useState<string | null>(
     scenarios[0]?.id || null
   );
@@ -231,7 +230,7 @@ export function ScenarioComparison({ scenarios, activeLayer, onClose }: Scenario
       <div className="flex items-center justify-between border-b px-4 py-3">
         <div className="flex items-center gap-2">
           <GitCompare className="h-5 w-5 text-primary" />
-          <h2 className="text-lg font-semibold">Compare Scenarios</h2>
+          <h2 className="text-lg font-semibold">{t('comparison.title')}</h2>
         </div>
         <Button variant="ghost" size="icon" onClick={onClose} data-testid="button-close-comparison">
           <X className="h-5 w-5" />
@@ -241,7 +240,7 @@ export function ScenarioComparison({ scenarios, activeLayer, onClose }: Scenario
       <div className="flex items-center justify-center gap-4 border-b bg-muted/30 px-4 py-3">
         <Select value={leftScenarioId || ""} onValueChange={setLeftScenarioId}>
           <SelectTrigger className="w-[200px]" data-testid="select-left-scenario">
-            <SelectValue placeholder="Select scenario" />
+            <SelectValue placeholder={t('scenarios.selectScenario')} />
           </SelectTrigger>
           <SelectContent>
             {scenarios.map(s => (
@@ -252,12 +251,12 @@ export function ScenarioComparison({ scenarios, activeLayer, onClose }: Scenario
 
         <Badge variant="outline" className="px-3 py-1">
           <GitCompare className="mr-1 h-3 w-3" />
-          vs
+          {t('comparison.vs')}
         </Badge>
 
         <Select value={rightScenarioId || ""} onValueChange={setRightScenarioId}>
           <SelectTrigger className="w-[200px]" data-testid="select-right-scenario">
-            <SelectValue placeholder="Select scenario" />
+            <SelectValue placeholder={t('scenarios.selectScenario')} />
           </SelectTrigger>
           <SelectContent>
             {scenarios.map(s => (

@@ -62,16 +62,25 @@ Preferred communication style: Simple, everyday language.
 ## Recent Changes (December 2024)
 
 ### Internationalization (i18n) - December 16, 2024
-- Implemented react-i18next for multi-language support
-- Languages: English (default), Latvian (LV), Russian (RU) for Latvia market
+- **Production-ready i18n for Latvia market launch**
+- Languages: English (default), Latvian (LV), Russian (RU)
 - Translation files in client/src/i18n/locales/{en,lv,ru}.json
 - LanguageSwitcher component in header for easy language switching
-- Key i18n decisions:
+- **Fully localized components**:
+  - DeviceFilter: Search placeholder, filter labels, results count
+  - LearningPrompts: Quiz UI, progress, scoring, layer badges
+  - ScenarioComparison: Metrics labels, zone names, device types
+  - EventNotifications: Event messages with scenario-specific lookups
+- **Key i18n decisions**:
   - Networking terminology (IP, MAC, TCP, UDP, etc.) remains untranslated per i18n best practices
   - Browser language detection with localStorage persistence
-  - Nested translation keys (app.title, layers.network, etc.)
-  - i18next native pluralization syntax (deviceCount_one, deviceCount_other) instead of ICU format
-  - Scenario content data (event messages, descriptions) remains in English - this is stored content requiring a separate content localization approach
+  - Nested translation keys (app.title, layers.network, filter.searchPlaceholder, etc.)
+  - i18next native pluralization syntax for Russian's 4 forms (_one, _few, _many, _other)
+  - Scenario content (titles, descriptions, event messages) fully translated in all 3 languages
+- **Dev-mode features**:
+  - Missing translation highlighting: shows [MISSING: key] in UI
+  - Console warnings for missing keys via missingKeyHandler
+  - saveMissing enabled for development debugging
 
 ### Events System
 - Added EventNotifications component that triggers on scenario load (onEnter) and device clicks (onDeviceClick)

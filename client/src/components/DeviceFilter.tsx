@@ -1,4 +1,5 @@
 import { useState, useMemo } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Device, Network } from "@shared/schema";
 import { Input } from "@/components/ui/input";
@@ -26,26 +27,6 @@ interface DeviceFilterProps {
   filters: DeviceFilters;
   onFiltersChange: (filters: DeviceFilters) => void;
 }
-
-const deviceTypeLabels: Record<string, string> = {
-  router: "Router",
-  laptop: "Laptop",
-  phone: "Phone",
-  tablet: "Tablet",
-  camera: "Camera",
-  smarttv: "Smart TV",
-  speaker: "Speaker",
-  thermostat: "Thermostat",
-  printer: "Printer",
-  gaming: "Gaming",
-  unknown: "Unknown",
-};
-
-const zoneLabels: Record<string, string> = {
-  main: "Main",
-  guest: "Guest",
-  iot: "IoT",
-};
 
 export function useDeviceFilter(devices: Device[], networks: Network[], filters: DeviceFilters) {
   return useMemo(() => {
@@ -84,6 +65,7 @@ export function useDeviceFilter(devices: Device[], networks: Network[], filters:
 }
 
 export function DeviceFilter({ devices, networks, filters, onFiltersChange }: DeviceFilterProps) {
+  const { t } = useTranslation();
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const availableTypes = useMemo(() => {
@@ -142,7 +124,7 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
         <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="text"
-          placeholder="Search devices, IPs, protocols..."
+          placeholder={t('filter.searchPlaceholder')}
           value={filters.searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="pl-9 pr-8"
@@ -173,7 +155,7 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
             data-testid="button-filter-toggle"
           >
             <Filter className="h-4 w-4" />
-            Filter
+            {t('controls.filter')}
             {activeFilterCount > 0 && (
               <Badge variant="secondary" className="ml-1 px-1.5 py-0">
                 {activeFilterCount}
@@ -184,7 +166,7 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
         <PopoverContent className="w-72" align="end">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium">Filter Devices</h4>
+              <h4 className="font-medium">{t('filter.filterDevices')}</h4>
               {hasActiveFilters && (
                 <Button 
                   variant="ghost" 
@@ -193,13 +175,13 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
                   className="h-auto px-2 py-1 text-xs"
                   data-testid="button-clear-filters"
                 >
-                  Clear all
+                  {t('filter.clearAll')}
                 </Button>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground">Device Type</Label>
+              <Label className="text-xs font-medium text-muted-foreground">{t('filter.deviceType')}</Label>
               <div className="flex flex-wrap gap-1.5">
                 {availableTypes.map(type => (
                   <Badge
@@ -209,14 +191,14 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
                     onClick={() => handleTypeToggle(type)}
                     data-testid={`filter-type-${type}`}
                   >
-                    {deviceTypeLabels[type] || type}
+                    {t(`deviceTypes.${type}`, type)}
                   </Badge>
                 ))}
               </div>
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground">Network Zone</Label>
+              <Label className="text-xs font-medium text-muted-foreground">{t('filter.networkZone')}</Label>
               <div className="flex flex-wrap gap-1.5">
                 {availableZones.map(zone => (
                   <Badge
@@ -227,7 +209,7 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
                     data-testid={`filter-zone-${zone}`}
                   >
                     <Wifi className="mr-1 h-3 w-3" />
-                    {zoneLabels[zone] || zone}
+                    {t(`zones.${zone}`, zone)}
                   </Badge>
                 ))}
               </div>
@@ -245,7 +227,7 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
                 className="flex cursor-pointer items-center gap-1.5 text-sm"
               >
                 <AlertTriangle className="h-4 w-4 text-destructive" />
-                Show risky devices only
+                {t('filter.showRisksOnly')}
               </Label>
             </div>
           </div>
@@ -261,7 +243,7 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
             className="text-xs text-muted-foreground"
             data-testid="filter-results-count"
           >
-            {filteredCount} of {devices.length} devices
+            {t('filter.resultsCount', { filtered: filteredCount, total: devices.length })}
           </motion.div>
         )}
       </AnimatePresence>
