@@ -9,11 +9,12 @@ import { LearningPrompts } from "@/components/LearningPrompts";
 import { TableView } from "@/components/TableView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DeviceFilter, defaultFilters, useDeviceFilter, type DeviceFilters } from "@/components/DeviceFilter";
+import { PacketJourney } from "@/components/PacketJourney";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { RotateCcw, Map, TableIcon, Info, AlertCircle, Loader2 } from "lucide-react";
+import { RotateCcw, Map, TableIcon, Info, AlertCircle, Loader2, Zap } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -38,6 +39,7 @@ export default function Home() {
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"map" | "table">("map");
   const [filters, setFilters] = useState<DeviceFilters>(defaultFilters);
+  const [showPacketJourney, setShowPacketJourney] = useState(false);
 
   const { 
     data: scenarioSummaries, 
@@ -82,16 +84,23 @@ export default function Home() {
   const selectedNetwork = selectedDevice 
     ? scenario?.networks.find(n => n.id === selectedDevice.networkId) || null
     : null;
+  const routerDevice = scenario?.devices.find(d => d.type === "router") || null;
 
   const handleReset = useCallback(() => {
     setSelectedDeviceId(null);
     setFilters(defaultFilters);
+    setShowPacketJourney(false);
   }, []);
 
   const handleScenarioChange = useCallback((id: string) => {
     setSelectedScenarioId(id);
     setSelectedDeviceId(null);
     setFilters(defaultFilters);
+    setShowPacketJourney(false);
+  }, []);
+
+  const handleTogglePacketJourney = useCallback(() => {
+    setShowPacketJourney(prev => !prev);
   }, []);
 
   useEffect(() => {
@@ -312,6 +321,31 @@ export default function Home() {
                 activeLayer={activeLayer}
                 onClose={() => setSelectedDeviceId(null)}
               />
+
+              {selectedDevice && selectedDevice.type !== "router" && (
+                <Card className="p-4">
+                  {showPacketJourney ? (
+                    <PacketJourney
+                      sourceDevice={selectedDevice}
+                      routerDevice={routerDevice}
+                      activeLayer={activeLayer}
+                      publicIp={scenario?.environment.publicIp || "0.0.0.0"}
+                      onClose={() => setShowPacketJourney(false)}
+                    />
+                  ) : (
+                    <div className="text-center">
+                      <Zap className="mx-auto mb-2 h-8 w-8 text-muted-foreground/50" />
+                      <p className="mb-3 text-sm text-muted-foreground">
+                        Trace how data travels from this device through the network
+                      </p>
+                      <Button size="sm" onClick={handleTogglePacketJourney} data-testid="button-start-packet-journey">
+                        <Zap className="mr-1.5 h-4 w-4" />
+                        Trace Packet Journey
+                      </Button>
+                    </div>
+                  )}
+                </Card>
+              )}
               
               {scenario && scenario.learningPrompts.length > 0 && (
                 <LearningPrompts prompts={scenario.learningPrompts} />
