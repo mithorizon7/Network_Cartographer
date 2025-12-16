@@ -121,9 +121,14 @@ Preferred communication style: Simple, everyday language.
 
 ### Code Quality Improvements - December 16, 2024
 - **Memory leak fix**: ScenarioExportImport.tsx now properly cleans up setTimeout references
-- **DRY improvement**: scenarioIdToKey mapping extracted to `client/src/lib/scenarioUtils.ts`
+- **DRY improvement**: scenarioIdToKey mapping extracted to `client/src/lib/scenarioUtils.ts` - all components now import from shared utility
 - **Dead code removal**: Removed unused user authentication types from shared/schema.ts
 - **Input validation**: Added Zod validation for /api/scenarios/:id route parameter
 - **Error handling**: Added ErrorBoundary component inside QueryClientProvider for graceful error recovery
 - **Type safety**: Replaced `any` with proper Environment type in home.tsx
 - **Localization**: Reset button, footer descriptions now use translation keys
+
+### Security Hardening - December 16, 2024
+- **CSP Security**: Content-Security-Policy now uses strict policy in production (no 'unsafe-inline' or 'unsafe-eval'); development mode allows these for Vite HMR/dev tools
+- **Production Logging**: ErrorBoundary console.error now gated behind development mode check to prevent stack trace leakage
+- **Pattern**: All environment-specific behavior uses `import.meta.env.DEV` (frontend) or `process.env.NODE_ENV` (backend)
