@@ -1,0 +1,135 @@
+App 1 — The Network Cartographer (Sandbox Visualizer)
+Purpose
+
+Help novices see what a network is: a router + many devices + relationships. Teach:
+
+Private vs public networks
+
+MAC vs IP as “local identity vs routable address”
+
+NAT (private addresses inside, public presence outside)
+
+The idea of layers (without requiring memorization)
+
+Core UX concept
+
+A “solar system” / orbit view:
+
+Router is the sun
+
+Devices orbit it in rings by zone (e.g., Main / Guest / IoT)
+
+Clicking a device opens a side panel with “What this is” + “What to notice”
+
+A big, persistent “Layer Goggles” control changes the labels and overlays
+
+Critical UI requirements
+A) Layout
+
+Center canvas: network map
+
+Left or top: scenario selector (Family IoT, Small Business, Hotel/Public)
+
+Right panel: Device Details / Learning prompts
+
+Bottom: Layer Goggles + mini-legend (what you’re currently viewing)
+
+B) Layer Goggles (must-have)
+
+A 4-mode toggle:
+
+Link/Local view (MAC-world)
+Show: fictional MAC-like identifiers (or “local IDs”) + “local delivery”
+
+Network view (IP-world)
+Show: private IP ranges; gateway; highlight routing boundary
+
+Transport view (Ports/flows)
+Show: “multiple flows at once” concept—web + video call + chat
+
+Application view (HTTP/HTTPS)
+Show: app protocols (web, email, streaming) and encryption status icons
+
+Rules:
+
+In Link/Local view, hide public internet concepts (no public IP).
+
+In Network view, clearly show “private address space” and the router boundary.
+
+In Transport view, don’t dump port numbers everywhere; show a few labeled flows.
+
+In Application view, show “user-visible” actions (visit site, login, stream).
+
+C) “Surprise” mechanics (sandbox-safe)
+
+Each scenario should include:
+
+1–2 devices with confusing names (“Generic Smart Controller”)
+
+1 device flagged “Unknown” that triggers a prompt: “What would you do?”
+
+A “Forgotten device” card (old tablet, guest phone) to teach real-world messiness
+All of this is fictional.
+
+D) Learning checks (lightweight, embedded)
+
+Include 3–5 micro-prompts per scenario:
+
+“Which of these is a private IP?”
+
+“Which layer is responsible for routing?”
+
+“Why do we need both MAC and IP in the same journey?”
+
+Avoid long quizzes; keep it interactive.
+
+Scenario data model (shared across apps)
+
+Use a scenario JSON schema you can reuse everywhere. Keep it simple and auditable.
+
+{
+  "id": "family_iot_sprawl_v1",
+  "title": "Family Home with IoT Sprawl",
+  "environment": { "type": "home", "isp": "FictionalNet", "publicIp": "203.0.113.12" },
+  "networks": [
+    { "id": "main", "ssid": "MapleHouse_Main", "security": "WPA2", "subnet": "192.168.10.0/24" },
+    { "id": "guest", "ssid": "MapleHouse_Guest", "security": "WPA2", "subnet": "192.168.20.0/24" },
+    { "id": "iot", "ssid": "MapleHouse_IoT", "security": "WPA2", "subnet": "192.168.30.0/24" }
+  ],
+  "devices": [
+    { "id": "router", "type": "router", "label": "Home Router", "networkId": "main", "ip": "192.168.10.1" },
+    { "id": "laptop", "type": "laptop", "label": "Work Laptop", "networkId": "main", "ip": "192.168.10.14", "localId": "AA:BB:CC:11:22:33", "riskFlags": [] },
+    { "id": "camera", "type": "camera", "label": "Indoor Camera", "networkId": "iot", "ip": "192.168.30.21", "localId": "DD:EE:FF:44:55:66", "riskFlags": ["iot_device"] }
+  ],
+  "events": [
+    { "id": "unknown_device_reveal", "trigger": "onEnter", "deviceId": "mystery", "message": "An unfamiliar device appears…" }
+  ],
+  "learningPrompts": [
+    { "id": "prompt_private_ip", "type": "multiple_choice", "question": "Which address is private?", "answers": ["192.168.10.14", "8.8.8.8"], "correctIndex": 0 }
+  ]
+}
+
+
+Notes:
+
+Use RFC 5737 documentation IP ranges for public IP examples (e.g., 203.0.113.0/24) so you never use real routable addresses.
+
+MAC/local IDs are fictional strings; do not imply they’re real OUIs.
+
+Technical build requirements
+
+Rendering: Canvas/WebGL preferred (PixiJS) for smoothness; SVG works for MVP but may lag with animations.
+
+Layout: deterministic orbit layout (stable positions) + subtle motion; avoid chaotic “force graph” that confuses novices.
+
+Accessibility: provide a list view alternative (“table view of devices”) for screen readers, and keyboard navigation for device selection.
+
+State: keep all state in memory; allow “Reset scenario.”
+
+Security/OPSEC posture
+
+No analytics, no third-party scripts/fonts, no external calls.
+
+Strict CSP: default-src 'self'; connect-src 'none'; img-src 'self' data:; style-src 'self'; script-src 'self'.
+
+If hosted, minimize server logging; ideally deploy inside an approved environment.

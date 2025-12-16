@@ -10,11 +10,12 @@ import { TableView } from "@/components/TableView";
 import { ThemeToggle } from "@/components/ThemeToggle";
 import { DeviceFilter, defaultFilters, useDeviceFilter, type DeviceFilters } from "@/components/DeviceFilter";
 import { PacketJourney } from "@/components/PacketJourney";
+import { ScenarioComparison } from "@/components/ScenarioComparison";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { RotateCcw, Map, TableIcon, Info, AlertCircle, Loader2, Zap } from "lucide-react";
+import { RotateCcw, Map, TableIcon, Info, AlertCircle, Loader2, Zap, GitCompare } from "lucide-react";
 import {
   Dialog,
   DialogContent,
@@ -40,6 +41,7 @@ export default function Home() {
   const [viewMode, setViewMode] = useState<"map" | "table">("map");
   const [filters, setFilters] = useState<DeviceFilters>(defaultFilters);
   const [showPacketJourney, setShowPacketJourney] = useState(false);
+  const [showComparison, setShowComparison] = useState(false);
 
   const { 
     data: scenarioSummaries, 
@@ -90,6 +92,7 @@ export default function Home() {
     setSelectedDeviceId(null);
     setFilters(defaultFilters);
     setShowPacketJourney(false);
+    setShowComparison(false);
   }, []);
 
   const handleScenarioChange = useCallback((id: string) => {
@@ -223,22 +226,32 @@ export default function Home() {
             <div className="flex items-center gap-2">
               <div className="flex rounded-md bg-muted p-1">
                 <Button
-                  variant={viewMode === "map" ? "default" : "ghost"}
+                  variant={viewMode === "map" && !showComparison ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setViewMode("map")}
+                  onClick={() => { setViewMode("map"); setShowComparison(false); }}
                   data-testid="button-view-map"
                 >
                   <Map className="mr-1.5 h-4 w-4" />
                   Map
                 </Button>
                 <Button
-                  variant={viewMode === "table" ? "default" : "ghost"}
+                  variant={viewMode === "table" && !showComparison ? "default" : "ghost"}
                   size="sm"
-                  onClick={() => setViewMode("table")}
+                  onClick={() => { setViewMode("table"); setShowComparison(false); }}
                   data-testid="button-view-table"
                 >
                   <TableIcon className="mr-1.5 h-4 w-4" />
                   Table
+                </Button>
+                <Button
+                  variant={showComparison ? "default" : "ghost"}
+                  size="sm"
+                  onClick={() => setShowComparison(true)}
+                  data-testid="button-view-compare"
+                  disabled={!scenarioSummaries || scenarioSummaries.length < 2}
+                >
+                  <GitCompare className="mr-1.5 h-4 w-4" />
+                  Compare
                 </Button>
               </div>
               
@@ -264,7 +277,13 @@ export default function Home() {
           )}
 
           <Card className="flex-1 overflow-hidden">
-            {error ? (
+            {showComparison && scenarioSummaries ? (
+              <ScenarioComparison
+                scenarios={scenarioSummaries.map(s => ({ id: s.id, title: s.title }))}
+                activeLayer={activeLayer}
+                onClose={() => setShowComparison(false)}
+              />
+            ) : error ? (
               <div className="flex h-full items-center justify-center text-destructive" data-testid="error-state">
                 <div className="text-center">
                   <AlertCircle className="mx-auto mb-3 h-12 w-12 opacity-70" />
