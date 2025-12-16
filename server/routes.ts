@@ -11,12 +11,21 @@ export async function registerRoutes(
   httpServer: Server,
   app: Express
 ): Promise<Server> {
+  const isDev = process.env.NODE_ENV === "development";
+  
   app.use((req, res, next) => {
+    const scriptSrc = isDev 
+      ? "script-src 'self' 'unsafe-inline' 'unsafe-eval'; "
+      : "script-src 'self'; ";
+    const styleSrc = isDev
+      ? "style-src 'self' 'unsafe-inline'; "
+      : "style-src 'self'; ";
+    
     res.setHeader(
       "Content-Security-Policy",
       "default-src 'self'; " +
-      "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
-      "style-src 'self' 'unsafe-inline'; " +
+      scriptSrc +
+      styleSrc +
       "font-src 'self'; " +
       "img-src 'self' data:; " +
       "connect-src 'self' ws: wss:;"

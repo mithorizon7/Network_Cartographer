@@ -5,6 +5,7 @@ import type { NetworkEvent, Device } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AlertTriangle, X, Info } from "lucide-react";
+import { scenarioIdToKey } from "@/lib/scenarioUtils";
 
 interface EventNotificationsProps {
   events: NetworkEvent[];
@@ -13,12 +14,6 @@ interface EventNotificationsProps {
   selectedDeviceId: string | null;
   onDismiss?: () => void;
 }
-
-const scenarioIdToKey: Record<string, string> = {
-  "family_iot_sprawl_v1": "familyIoT",
-  "small_business_v1": "smallBusiness",
-  "hotel_public_v1": "hotelPublic",
-};
 
 const eventIdToKey: Record<string, string> = {
   "unknown_device_reveal": "unknownDeviceReveal",
