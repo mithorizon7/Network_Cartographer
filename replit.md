@@ -56,4 +56,25 @@ Preferred communication style: Simple, everyday language.
 - **tsx**: TypeScript execution for development
 
 ### Fonts
-- Google Fonts: Inter (UI), JetBrains Mono (technical identifiers), DM Sans, Fira Code, Geist Mono
+- System fonts only (no external dependencies): sans-serif, serif, monospace system stack
+- CSP-compliant: No external font calls per strict privacy requirements
+
+## Recent Changes (December 2024)
+
+### Events System
+- Added EventNotifications component that triggers on scenario load (onEnter) and device clicks (onDeviceClick)
+- Events display as dismissible toast notifications at top of screen
+
+### Unknown Device Modal
+- Added "What Would You Do?" interactive modal when clicking unknown/suspicious devices
+- Three response options (Investigate, Block, Ignore) with educational feedback
+
+### CSP Compliance
+- Removed Google Fonts, using system fonts only
+- Updated CSP headers to block all external calls
+- Strict privacy compliance: no analytics, no third-party scripts
+
+### Layer Visualization Improvements
+- Transport layer: Shows service names (HTTP, HTTPS, SSH) instead of raw port numbers
+- Application layer: Added encryption status indicators (lock/unlock icons)
+- Visual legend showing encryption status on canvas
