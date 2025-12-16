@@ -86,15 +86,17 @@ Preferred communication style: Simple, everyday language.
   - Missing translation highlighting: shows [MISSING: key] in UI
   - Console warnings for missing keys via missingKeyHandler
   - saveMissing enabled for development debugging
-- **i18n Tooling**:
+- **i18n Tooling** (Checklist Section B compliant):
   - `i18next-scanner.config.cjs`: Scanner config for extracting keys from code
   - `scripts/i18n-validate.js`: Validation script that checks:
-    - Key parity across all locales (EN, LV, RU)
-    - No empty translation values
-    - Placeholder consistency ({{var}}) between languages
+    - Key parity across all locales (EN, LV, RU) - fails CI on missing keys
+    - No empty translation values - fails CI on empty values
+    - Placeholder consistency ({{var}}) between languages - fails CI on mismatch
     - Proper handling of plural suffixes (_one, _few, _many, _other)
-  - Run validation: `node scripts/i18n-validate.js`
-  - Run extraction: `npx i18next-scanner --config i18next-scanner.config.cjs`
+  - **i18n Commands** (run from project root):
+    - `i18n:extract`: `npx i18next-scanner --config i18next-scanner.config.cjs`
+    - `i18n:validate`: `node scripts/i18n-validate.js`
+    - `i18n:check` (extract + validate): Run both commands sequentially
 - **Translation Glossary**: `docs/i18n-glossary.md` defines consistent terminology across locales
 - **Fallback Chain**: localStorage → navigator → lv → en (Latvia market default)
 
