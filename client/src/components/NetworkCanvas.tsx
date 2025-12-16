@@ -8,6 +8,7 @@ interface NetworkCanvasProps {
   activeLayer: LayerMode;
   selectedDeviceId: string | null;
   onDeviceSelect: (deviceId: string) => void;
+  highlightedDeviceIds?: Set<string>;
 }
 
 const deviceIcons: Record<string, typeof Router> = {
@@ -62,7 +63,8 @@ function DeviceNode({
   device, 
   pos, 
   activeLayer, 
-  isSelected, 
+  isSelected,
+  isHighlighted = true,
   onClick, 
   onKeyDown 
 }: { 
@@ -70,6 +72,7 @@ function DeviceNode({
   pos: { x: number; y: number; zone: string };
   activeLayer: LayerMode;
   isSelected: boolean;
+  isHighlighted?: boolean;
   onClick: () => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
 }) {
@@ -82,6 +85,7 @@ function DeviceNode({
 
   const nodeSize = isRouter ? 56 : 44;
   const iconSize = isRouter ? 28 : 20;
+  const dimmedOpacity = isHighlighted ? 1 : 0.25;
 
   return (
     <g
@@ -93,6 +97,7 @@ function DeviceNode({
       aria-label={`${device.label}${hasRisks ? ", has security concerns" : ""}`}
       aria-pressed={isSelected}
       data-testid={`node-device-${device.id}`}
+      style={{ opacity: dimmedOpacity }}
     >
       <motion.circle
         cx={pos.x}
@@ -181,9 +186,10 @@ function DeviceNode({
   );
 }
 
-export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDeviceSelect }: NetworkCanvasProps) {
+export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDeviceSelect, highlightedDeviceIds }: NetworkCanvasProps) {
   const centerX = 400;
   const centerY = 350;
+  const hasFilter = highlightedDeviceIds !== undefined;
 
   const devicePositions = useMemo(() => {
     const positions: Map<string, { x: number; y: number; zone: string }> = new Map();
@@ -361,6 +367,8 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
           const pos = devicePositions.get(device.id);
           if (!pos) return null;
 
+          const isHighlighted = !hasFilter || highlightedDeviceIds.has(device.id) || device.type === "router";
+
           return (
             <DeviceNode
               key={device.id}
@@ -368,6 +376,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
               pos={pos}
               activeLayer={activeLayer}
               isSelected={selectedDeviceId === device.id}
+              isHighlighted={isHighlighted}
               onClick={() => handleDeviceClick(device.id)}
               onKeyDown={(e) => handleKeyDown(e, device.id)}
             />

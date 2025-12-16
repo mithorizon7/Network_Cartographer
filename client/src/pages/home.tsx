@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import type { LayerMode, Device, Network, Scenario } from "@shared/schema";
 import { NetworkCanvas } from "@/components/NetworkCanvas";
@@ -8,6 +8,7 @@ import { DeviceDetailsPanel } from "@/components/DeviceDetailsPanel";
 import { LearningPrompts } from "@/components/LearningPrompts";
 import { TableView } from "@/components/TableView";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { DeviceFilter, defaultFilters, useDeviceFilter, type DeviceFilters } from "@/components/DeviceFilter";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -36,6 +37,7 @@ export default function Home() {
   const [activeLayer, setActiveLayer] = useState<LayerMode>("network");
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
   const [viewMode, setViewMode] = useState<"map" | "table">("map");
+  const [filters, setFilters] = useState<DeviceFilters>(defaultFilters);
 
   const { 
     data: scenarioSummaries, 
@@ -60,6 +62,22 @@ export default function Home() {
     }
   }, [scenarioSummaries, selectedScenarioId]);
 
+  const filteredDevices = useDeviceFilter(
+    scenario?.devices || [],
+    scenario?.networks || [],
+    filters
+  );
+
+  const filteredDeviceIds = useMemo(() => new Set(filteredDevices.map(d => d.id)), [filteredDevices]);
+
+  const filteredScenario = useMemo((): Scenario | undefined => {
+    if (!scenario) return undefined;
+    return {
+      ...scenario,
+      devices: scenario.devices,
+    };
+  }, [scenario]);
+
   const selectedDevice = scenario?.devices.find(d => d.id === selectedDeviceId) || null;
   const selectedNetwork = selectedDevice 
     ? scenario?.networks.find(n => n.id === selectedDevice.networkId) || null
@@ -67,11 +85,13 @@ export default function Home() {
 
   const handleReset = useCallback(() => {
     setSelectedDeviceId(null);
+    setFilters(defaultFilters);
   }, []);
 
   const handleScenarioChange = useCallback((id: string) => {
     setSelectedScenarioId(id);
     setSelectedDeviceId(null);
+    setFilters(defaultFilters);
   }, []);
 
   useEffect(() => {
@@ -225,6 +245,15 @@ export default function Home() {
             </div>
           </div>
 
+          {scenario && (
+            <DeviceFilter
+              devices={scenario.devices}
+              networks={scenario.networks}
+              filters={filters}
+              onFiltersChange={setFilters}
+            />
+          )}
+
           <Card className="flex-1 overflow-hidden">
             {error ? (
               <div className="flex h-full items-center justify-center text-destructive" data-testid="error-state">
@@ -241,18 +270,19 @@ export default function Home() {
                   <p className="text-sm">Loading network visualization...</p>
                 </div>
               </div>
-            ) : scenario ? (
+            ) : filteredScenario ? (
               viewMode === "map" ? (
                 <NetworkCanvas
-                  scenario={scenario}
+                  scenario={filteredScenario}
                   activeLayer={activeLayer}
                   selectedDeviceId={selectedDeviceId}
                   onDeviceSelect={setSelectedDeviceId}
+                  highlightedDeviceIds={filteredDeviceIds}
                 />
               ) : (
                 <TableView
-                  devices={scenario.devices}
-                  networks={scenario.networks}
+                  devices={filteredDevices}
+                  networks={scenario?.networks || []}
                   activeLayer={activeLayer}
                   selectedDeviceId={selectedDeviceId}
                   onDeviceSelect={setSelectedDeviceId}
