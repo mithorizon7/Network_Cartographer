@@ -81,6 +81,15 @@ Preferred communication style: Simple, everyday language.
   - Missing translation highlighting: shows [MISSING: key] in UI
   - Console warnings for missing keys via missingKeyHandler
   - saveMissing enabled for development debugging
+- **i18n Tooling**:
+  - `i18next-scanner.config.cjs`: Scanner config for extracting keys from code
+  - `scripts/i18n-validate.js`: Validation script that checks:
+    - Key parity across all locales (EN, LV, RU)
+    - No empty translation values
+    - Placeholder consistency ({{var}}) between languages
+    - Proper handling of plural suffixes (_one, _few, _many, _other)
+  - Run validation: `node scripts/i18n-validate.js`
+  - Run extraction: `npx i18next-scanner --config i18next-scanner.config.cjs`
 
 ### Events System
 - Added EventNotifications component that triggers on scenario load (onEnter) and device clicks (onDeviceClick)

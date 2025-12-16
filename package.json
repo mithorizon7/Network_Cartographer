@@ -54,6 +54,7 @@
     "framer-motion": "^11.13.1",
     "i18next": "^25.7.3",
     "i18next-browser-languagedetector": "^8.2.0",
+    "i18next-scanner": "^4.6.0",
     "input-otp": "^1.4.2",
     "intl-messageformat": "^11.0.1",
     "lucide-react": "^0.453.0",
