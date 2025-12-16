@@ -20,12 +20,7 @@ import {
   Wifi,
   Globe
 } from "lucide-react";
-
-const scenarioIdToKey: Record<string, string> = {
-  "family_iot_sprawl_v1": "familyIoT",
-  "small_business_v1": "smallBusiness",
-  "hotel_public_v1": "hotelPublic",
-};
+import { scenarioIdToKey } from "@/lib/scenarioUtils";
 
 interface ScenarioComparisonProps {
   scenarios: Array<{ id: string; title: string }>;

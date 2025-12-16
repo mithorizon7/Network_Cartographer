@@ -99,8 +99,3 @@ export type Scenario = z.infer<typeof scenarioSchema>;
 
 export const layerModeSchema = z.enum(["link", "network", "transport", "application"]);
 export type LayerMode = z.infer<typeof layerModeSchema>;
-
-export const users = {} as any;
-export const insertUserSchema = z.object({ username: z.string(), password: z.string() });
-export type InsertUser = z.infer<typeof insertUserSchema>;
-export type User = { id: string; username: string; password: string };

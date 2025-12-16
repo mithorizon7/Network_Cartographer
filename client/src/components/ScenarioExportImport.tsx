@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import { scenarioSchema, type Scenario } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -66,7 +66,15 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
   const [importSuccess, setImportSuccess] = useState(false);
   const [copied, setCopied] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const timeoutRefs = useRef<Set<ReturnType<typeof setTimeout>>>(new Set());
   const { toast } = useToast();
+
+  useEffect(() => {
+    return () => {
+      timeoutRefs.current.forEach(clearTimeout);
+      timeoutRefs.current.clear();
+    };
+  }, []);
 
   const exportJson = scenario ? JSON.stringify(scenario, null, 2) : "";
 
@@ -80,7 +88,11 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
         title: "Copied to clipboard",
         description: "Scenario JSON has been copied to your clipboard.",
       });
-      setTimeout(() => setCopied(false), 2000);
+      const timeout = setTimeout(() => {
+        setCopied(false);
+        timeoutRefs.current.delete(timeout);
+      }, 2000);
+      timeoutRefs.current.add(timeout);
     } catch {
       toast({
         title: "Copy failed",
@@ -134,13 +146,15 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
           title: "Scenario imported",
           description: `${validation.scenario.title} has been loaded.`,
         });
-        setTimeout(() => {
+        const timeout = setTimeout(() => {
           setIsOpen(false);
           setImportText("");
           setImportSuccess(false);
+          timeoutRefs.current.delete(timeout);
         }, 1500);
+        timeoutRefs.current.add(timeout);
       }
-    } catch (e) {
+    } catch {
       setImportError("Invalid JSON format. Please check your input.");
     }
   }, [importText, onImport, toast]);
@@ -176,11 +190,13 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
             title: "Scenario imported",
             description: `${validation.scenario.title} has been loaded from file.`,
           });
-          setTimeout(() => {
+          const timeout = setTimeout(() => {
             setIsOpen(false);
             setImportText("");
             setImportSuccess(false);
+            timeoutRefs.current.delete(timeout);
           }, 1500);
+          timeoutRefs.current.add(timeout);
         }
       } catch {
         setImportError("Invalid JSON file. Please check the file format.");

@@ -1,7 +1,8 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import type { LayerMode, Device, Network, Scenario } from "@shared/schema";
+import type { LayerMode, Device, Network, Scenario, Environment } from "@shared/schema";
+import { scenarioIdToKey } from "@/lib/scenarioUtils";
 import { NetworkCanvas } from "@/components/NetworkCanvas";
 import { LayerGoggles, LayerLegend } from "@/components/LayerGoggles";
 import { ScenarioSelector } from "@/components/ScenarioSelector";
@@ -165,7 +166,7 @@ export default function Home() {
     id: s.id,
     title: s.title,
     description: s.description,
-    environment: s.environment as any,
+    environment: s.environment as Environment,
     networks: [],
     devices: [],
     events: [],
@@ -296,7 +297,7 @@ export default function Home() {
                 data-testid="button-reset"
               >
                 <RotateCcw className="mr-1.5 h-4 w-4" />
-                Reset
+                {t('common.reset')}
               </Button>
             </div>
           </div>
@@ -411,7 +412,9 @@ export default function Home() {
       {activeScenario && activeScenario.description && (
         <footer className="border-t bg-muted/30 px-4 py-2">
           <p className="text-center text-xs text-muted-foreground">
-            {activeScenario.description}
+            {scenarioIdToKey[activeScenario.id] 
+              ? t(`scenarioContent.${scenarioIdToKey[activeScenario.id]}.description`, { defaultValue: activeScenario.description })
+              : activeScenario.description}
           </p>
         </footer>
       )}

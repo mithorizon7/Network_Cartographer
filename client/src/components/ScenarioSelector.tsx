@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/select";
 import { Home, Building2, Wifi } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { scenarioIdToKey } from "@/lib/scenarioUtils";
 
 interface ScenarioSelectorProps {
   scenarios: Scenario[];
@@ -19,12 +20,6 @@ const scenarioIcons: Record<string, typeof Home> = {
   home: Home,
   business: Building2,
   public: Wifi,
-};
-
-const scenarioIdToKey: Record<string, string> = {
-  "family_iot_sprawl_v1": "familyIoT",
-  "small_business_v1": "smallBusiness",
-  "hotel_public_v1": "hotelPublic",
 };
 
 export function ScenarioSelector({ scenarios, selectedId, onSelect }: ScenarioSelectorProps) {

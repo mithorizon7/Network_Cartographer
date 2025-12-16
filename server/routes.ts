@@ -1,6 +1,11 @@
 import type { Express } from "express";
 import { createServer, type Server } from "http";
+import { z } from "zod";
 import { storage } from "./storage";
+
+const scenarioIdSchema = z.string().min(1).max(100).regex(/^[a-zA-Z0-9_-]+$/, {
+  message: "Invalid scenario ID format",
+});
 
 export async function registerRoutes(
   httpServer: Server,
@@ -43,7 +48,13 @@ export async function registerRoutes(
 
   app.get("/api/scenarios/:id", async (req, res) => {
     try {
-      const scenario = await storage.getScenarioById(req.params.id);
+      const idResult = scenarioIdSchema.safeParse(req.params.id);
+      if (!idResult.success) {
+        res.status(400).json({ error: "Invalid scenario ID format" });
+        return;
+      }
+
+      const scenario = await storage.getScenarioById(idResult.data);
       if (!scenario) {
         res.status(404).json({ error: "Scenario not found" });
         return;

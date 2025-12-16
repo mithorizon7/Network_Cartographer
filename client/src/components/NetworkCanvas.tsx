@@ -3,6 +3,7 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Device, Network, LayerMode, Scenario } from "@shared/schema";
 import { Router, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, Globe, ArrowRight, Lock, Unlock } from "lucide-react";
+import { scenarioIdToKey } from "@/lib/scenarioUtils";
 
 interface NetworkCanvasProps {
   scenario: Scenario;
@@ -30,12 +31,6 @@ const zoneColors: Record<string, { ring: string; fill: string; labelKey: string 
   main: { ring: "stroke-chart-1", fill: "fill-chart-1/10", labelKey: "zones.main" },
   guest: { ring: "stroke-chart-3", fill: "fill-chart-3/10", labelKey: "zones.guest" },
   iot: { ring: "stroke-chart-5", fill: "fill-chart-5/10", labelKey: "zones.iot" },
-};
-
-const scenarioIdToKey: Record<string, string> = {
-  "family_iot_sprawl_v1": "familyIoT",
-  "small_business_v1": "smallBusiness",
-  "hotel_public_v1": "hotelPublic",
 };
 
 const zoneRadii: Record<string, number> = {
