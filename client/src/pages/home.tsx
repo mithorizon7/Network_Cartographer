@@ -361,7 +361,7 @@ export default function Home() {
             )}
           </Card>
 
-          <div className="rounded-md border bg-card/50 px-4 py-2">
+          <div className="rounded-md border bg-card px-4 py-2">
             <LayerLegend activeLayer={activeLayer} />
           </div>
         </div>
@@ -410,7 +410,7 @@ export default function Home() {
       </div>
 
       {activeScenario && activeScenario.description && (
-        <footer className="border-t bg-muted/30 px-4 py-2">
+        <footer className="border-t bg-muted px-4 py-2">
           <p className="text-center text-xs text-muted-foreground">
             {scenarioIdToKey[activeScenario.id] 
               ? t(`scenarioContent.${scenarioIdToKey[activeScenario.id]}.description`, { defaultValue: activeScenario.description })

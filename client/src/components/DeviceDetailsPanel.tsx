@@ -80,7 +80,7 @@ export function DeviceDetailsPanel({ device, network, activeLayer, onClose }: De
           <ScrollArea className="flex-1 pt-4">
             <TabsContent value="details" className="mt-0 space-y-4">
               {device.riskFlags.length > 0 && (
-                <div className="rounded-md bg-destructive/5 p-3">
+                <div className="rounded-md border border-destructive/30 bg-card p-3">
                   <div className="mb-2 flex items-center gap-2 text-sm font-medium text-destructive">
                     <AlertTriangle className="h-4 w-4" />
                     Security Concerns
@@ -183,7 +183,7 @@ export function DeviceDetailsPanel({ device, network, activeLayer, onClose }: De
             </TabsContent>
             
             <TabsContent value="learn" className="mt-0 space-y-4">
-              <div className="rounded-md border border-primary/20 bg-primary/5 p-4">
+              <div className="rounded-md border border-primary/20 bg-card p-4">
                 <h3 className="mb-2 font-medium text-primary">What to Notice</h3>
                 {device.type === "router" && (
                   <p className="text-sm leading-relaxed">

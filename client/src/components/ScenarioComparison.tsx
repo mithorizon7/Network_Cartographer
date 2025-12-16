@@ -65,7 +65,7 @@ function calculateMetrics(scenario: Scenario): ComparisonMetrics {
 
 function MetricCard({ label, value, highlight }: { label: string; value: string | number; highlight?: boolean }) {
   return (
-    <div className={`rounded-md border p-3 ${highlight ? "border-primary/50 bg-primary/5" : "bg-muted/30"}`}>
+    <div className={`rounded-md border p-3 ${highlight ? "border-primary/50 bg-card" : "bg-muted"}`}>
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="mt-1 text-lg font-semibold">{value}</div>
     </div>
@@ -184,7 +184,7 @@ function ScenarioPanel({
               .map(([type, count]) => (
                 <div 
                   key={type} 
-                  className="flex items-center justify-between rounded bg-muted/50 px-2 py-1"
+                  className="flex items-center justify-between rounded bg-muted px-2 py-1"
                 >
                   <span className="capitalize">{t(`deviceTypes.${type}`, type)}</span>
                   <Badge variant="outline" className="text-xs">{count}</Badge>
@@ -205,7 +205,7 @@ function ScenarioPanel({
                 .map(device => (
                   <div 
                     key={device.id} 
-                    className="flex items-center justify-between rounded border border-destructive/30 bg-destructive/5 px-2 py-1"
+                    className="flex items-center justify-between rounded border border-destructive/30 bg-card px-2 py-1"
                   >
                     <span>{device.label}</span>
                     <div className="flex gap-1">
@@ -246,7 +246,7 @@ export function ScenarioComparison({ scenarios, activeLayer, onClose }: Scenario
         </Button>
       </div>
 
-      <div className="flex items-center justify-center gap-4 border-b bg-muted/30 px-4 py-3">
+      <div className="flex items-center justify-center gap-4 border-b bg-muted px-4 py-3">
         <Select value={leftScenarioId || ""} onValueChange={setLeftScenarioId}>
           <SelectTrigger className="w-[200px]" data-testid="select-left-scenario">
             <SelectValue placeholder={t('scenarios.selectScenario')} />

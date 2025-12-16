@@ -65,7 +65,7 @@ export function UnknownDeviceModal({ device, isOpen, onClose }: UnknownDeviceMod
         </DialogHeader>
 
         <div className="space-y-4">
-          <Card className="border-destructive/30 bg-destructive/5">
+          <Card className="border-destructive/30 bg-card">
             <CardContent className="pt-4">
               <p className="text-sm leading-relaxed">
                 {t('unknownDevice.description')}

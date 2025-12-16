@@ -112,7 +112,7 @@ export function EventNotifications({
       >
         <Card
           className={`relative overflow-hidden border-2 p-4 shadow-lg ${
-            isWarning ? "border-destructive/50 bg-destructive/5" : "border-primary/50 bg-primary/5"
+            isWarning ? "border-destructive/50 bg-card" : "border-primary/50 bg-card"
           }`}
         >
           <div className="flex items-start gap-3">

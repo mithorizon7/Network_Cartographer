@@ -96,7 +96,7 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
 
   if (!sourceDevice || !routerDevice) {
     return (
-      <div className="rounded-md border bg-muted/30 p-4 text-center text-sm text-muted-foreground" data-testid="packet-journey-empty">
+      <div className="rounded-md border bg-muted p-4 text-center text-sm text-muted-foreground" data-testid="packet-journey-empty">
         <Zap className="mx-auto mb-2 h-8 w-8 opacity-50" />
         <p>{t('packetJourney.selectDevice')}</p>
       </div>
