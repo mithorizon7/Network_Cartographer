@@ -61,6 +61,16 @@ Preferred communication style: Simple, everyday language.
 
 ## Recent Changes (December 2024)
 
+### Internationalization (i18n) - December 16, 2024
+- Implemented react-i18next for multi-language support
+- Languages: English (default), Latvian (LV), Russian (RU) for Latvia market
+- Translation files in client/src/i18n/locales/{en,lv,ru}.json
+- LanguageSwitcher component in header for easy language switching
+- Key i18n decisions:
+  - Networking terminology (IP, MAC, TCP, UDP, etc.) remains untranslated per i18n best practices
+  - Browser language detection with localStorage persistence
+  - Nested translation keys (app.title, layers.network, etc.)
+
 ### Events System
 - Added EventNotifications component that triggers on scenario load (onEnter) and device clicks (onDeviceClick)
 - Events display as dismissible toast notifications at top of screen

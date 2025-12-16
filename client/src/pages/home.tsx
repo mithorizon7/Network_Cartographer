@@ -216,7 +216,7 @@ export default function Home() {
               </DialogHeader>
               <div className="space-y-4 text-sm">
                 <p>
-                  This sandbox helps you understand what a network really is: a router connected to many devices, each with their own identities and addresses.
+                  {t('info.about')}
                 </p>
                 <div>
                   <h4 className="mb-2 font-medium">{t('layers.title')}</h4>
@@ -228,15 +228,15 @@ export default function Home() {
                   </ul>
                 </div>
                 <div>
-                  <h4 className="mb-2 font-medium">Keyboard Shortcuts</h4>
+                  <h4 className="mb-2 font-medium">{t('info.keyboardShortcuts')}</h4>
                   <ul className="space-y-1 text-muted-foreground">
-                    <li><kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">1-4</kbd> Switch layer views</li>
-                    <li><kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">Esc</kbd> Deselect device</li>
+                    <li><kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">1-4</kbd> {t('info.switchLayers')}</li>
+                    <li><kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">Esc</kbd> {t('info.deselectDevice')}</li>
                     <li><kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">R</kbd> {t('common.reset')}</li>
                   </ul>
                 </div>
                 <p className="text-xs text-muted-foreground">
-                  All networks and devices shown are fictional but realistic. No real network data is collected or displayed.
+                  {t('info.allNetworksFictional')}
                 </p>
               </div>
             </DialogContent>
@@ -261,7 +261,7 @@ export default function Home() {
                   data-testid="button-view-map"
                 >
                   <Map className="mr-1.5 h-4 w-4" />
-                  Map
+                  {t('controls.mapView')}
                 </Button>
                 <Button
                   variant={viewMode === "table" && !showComparison ? "default" : "ghost"}
@@ -270,7 +270,7 @@ export default function Home() {
                   data-testid="button-view-table"
                 >
                   <TableIcon className="mr-1.5 h-4 w-4" />
-                  Table
+                  {t('controls.tableView')}
                 </Button>
                 <Button
                   variant={showComparison ? "default" : "ghost"}
@@ -280,7 +280,7 @@ export default function Home() {
                   disabled={!scenarioSummaries || scenarioSummaries.length < 2}
                 >
                   <GitCompare className="mr-1.5 h-4 w-4" />
-                  Compare
+                  {t('controls.compare')}
                 </Button>
               </div>
               

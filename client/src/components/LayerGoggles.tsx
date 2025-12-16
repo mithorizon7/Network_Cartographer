@@ -17,19 +17,19 @@ const layerConfigs: { mode: LayerMode; labelKey: string; shortLabelKey: string; 
   { mode: "application", labelKey: "layers.application", shortLabelKey: "layers.application", icon: Globe, descriptionKey: "layers.applicationDescription" },
 ];
 
-const layerTransitions: Record<string, string> = {
-  "link->network": "Now seeing IP addresses instead of hardware IDs",
-  "network->link": "Now seeing hardware (MAC) addresses for local delivery",
-  "link->transport": "Now seeing port numbers and service connections",
-  "link->application": "Now seeing protocols and encryption status",
-  "network->transport": "Now seeing which ports carry different traffic",
-  "network->application": "Now seeing what applications are communicating",
-  "transport->link": "Now seeing physical device identifiers",
-  "transport->network": "Now seeing IP addresses for routing",
-  "transport->application": "Now seeing the actual protocols in use",
-  "application->link": "Now seeing hardware addresses",
-  "application->network": "Now seeing logical IP addresses",
-  "application->transport": "Now seeing port-level connections",
+const layerTransitionKeys: Record<string, string> = {
+  "link->network": "layers.transition_link_network",
+  "network->link": "layers.transition_network_link",
+  "link->transport": "layers.transition_link_transport",
+  "link->application": "layers.transition_link_application",
+  "network->transport": "layers.transition_network_transport",
+  "network->application": "layers.transition_network_application",
+  "transport->link": "layers.transition_transport_link",
+  "transport->network": "layers.transition_transport_network",
+  "transport->application": "layers.transition_transport_application",
+  "application->link": "layers.transition_application_link",
+  "application->network": "layers.transition_application_network",
+  "application->transport": "layers.transition_application_transport",
 };
 
 export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
@@ -50,10 +50,11 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
     if (newLayer === activeLayer) return;
     
     const transitionKey = `${activeLayer}->${newLayer}`;
-    const message = layerTransitions[transitionKey];
+    const translationKey = layerTransitionKeys[transitionKey];
+    const message = translationKey ? t(translationKey) : null;
     
     setPreviousLayer(activeLayer);
-    setTransitionMessage(message || null);
+    setTransitionMessage(message);
     onChange(newLayer);
 
     if (timeoutRef.current) {
@@ -99,8 +100,9 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                 </motion.div>
-                <span className="hidden sm:inline">{t(labelKey)}</span>
-                <span className="sm:hidden">{t(shortLabelKey)}</span>
+                <span className="hidden sm:inline" aria-hidden="true">{t(labelKey)}</span>
+                <span className="sm:hidden" aria-hidden="true">{t(shortLabelKey)}</span>
+                <span className="sr-only">{t(labelKey)}</span>
               </Button>
               
               <AnimatePresence>

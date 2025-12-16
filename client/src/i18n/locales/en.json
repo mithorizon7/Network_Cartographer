@@ -51,7 +51,19 @@
     "linkDescription": "Physical device identifiers (MAC addresses)",
     "networkDescription": "IP addresses and routing",
     "transportDescription": "Ports and protocols",
-    "applicationDescription": "Apps and encryption status"
+    "applicationDescription": "Apps and encryption status",
+    "transition_link_network": "Now seeing IP addresses instead of hardware IDs",
+    "transition_network_link": "Now seeing hardware (MAC) addresses for local delivery",
+    "transition_link_transport": "Now seeing port numbers and service connections",
+    "transition_link_application": "Now seeing protocols and encryption status",
+    "transition_network_transport": "Now seeing which ports carry different traffic",
+    "transition_network_application": "Now seeing what applications are communicating",
+    "transition_transport_link": "Now seeing physical device identifiers",
+    "transition_transport_network": "Now seeing IP addresses for routing",
+    "transition_transport_application": "Now seeing the actual protocols in use",
+    "transition_application_link": "Now seeing hardware addresses",
+    "transition_application_network": "Now seeing logical IP addresses",
+    "transition_application_transport": "Now seeing port-level connections"
   },
   "deviceTypes": {
     "router": "Router",
@@ -84,8 +96,10 @@
     "familyHome": "Family Home with IoT Sprawl",
     "smallBusiness": "Small Business Office",
     "hotelPublic": "Hotel / Public Wi-Fi",
-    "deviceCount": "{count, plural, one {# device} other {# devices}}",
-    "networkCount": "{count, plural, one {# network} other {# networks}}"
+    "deviceCount_one": "{{count}} device",
+    "deviceCount_other": "{{count}} devices",
+    "networkCount_one": "{{count}} network",
+    "networkCount_other": "{{count}} networks"
   },
   "devicePanel": {
     "details": "Device Details",
@@ -130,7 +144,7 @@
     "incorrect": "Not quite",
     "nextQuestion": "Next Question",
     "complete": "Quiz Complete",
-    "score": "Your score: {score} out of {total}",
+    "score": "Your score: {{score}} out of {{total}}",
     "tryAgain": "Try Again"
   },
   "tableView": {
@@ -144,10 +158,30 @@
     "noDevices": "No devices found"
   },
   "accessibility": {
-    "selectDevice": "Select device: {name}",
-    "selectedDevice": "Selected: {name}",
-    "toggleLayer": "Switch to {layer} layer view",
+    "selectDevice": "Select device: {{name}}",
+    "selectedDevice": "Selected: {{name}}",
+    "toggleLayer": "Switch to {{layer}} layer view",
     "closePanel": "Close panel",
     "networkVisualization": "Network visualization showing devices connected to router"
+  },
+  "info": {
+    "about": "This sandbox helps you understand what a network really is: a router connected to many devices, each with their own identities and addresses.",
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "switchLayers": "Switch layer views",
+    "deselectDevice": "Deselect device",
+    "allNetworksFictional": "All networks and devices shown are fictional but realistic. No real network data is collected or displayed."
+  },
+  "controls": {
+    "mapView": "Map View",
+    "tableView": "Table View",
+    "packetJourney": "Packet Journey",
+    "compare": "Compare",
+    "import": "Import",
+    "export": "Export",
+    "filter": "Filter",
+    "showAll": "Show All",
+    "showMain": "Main Only",
+    "showGuest": "Guest Only",
+    "showIoT": "IoT Only"
   }
 }

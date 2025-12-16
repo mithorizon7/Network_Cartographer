@@ -51,7 +51,19 @@
     "linkDescription": "Fiziskās ierīces identifikatori (MAC adreses)",
     "networkDescription": "IP adreses un maršrutēšana",
     "transportDescription": "Porti un protokoli",
-    "applicationDescription": "Lietotnes un šifrēšanas statuss"
+    "applicationDescription": "Lietotnes un šifrēšanas statuss",
+    "transition_link_network": "Tagad redzat IP adreses, nevis aparatūras ID",
+    "transition_network_link": "Tagad redzat aparatūras (MAC) adreses lokālai piegādei",
+    "transition_link_transport": "Tagad redzat portu numurus un servisu savienojumus",
+    "transition_link_application": "Tagad redzat protokolus un šifrēšanas statusu",
+    "transition_network_transport": "Tagad redzat, kuri porti pārvadā dažādu datplūsmu",
+    "transition_network_application": "Tagad redzat, kādas lietojumprogrammas sazinās",
+    "transition_transport_link": "Tagad redzat fiziskās ierīces identifikatorus",
+    "transition_transport_network": "Tagad redzat IP adreses maršrutēšanai",
+    "transition_transport_application": "Tagad redzat faktiskos lietojumprogrammu protokolus",
+    "transition_application_link": "Tagad redzat aparatūras adreses",
+    "transition_application_network": "Tagad redzat loģiskās IP adreses",
+    "transition_application_transport": "Tagad redzat porta līmeņa savienojumus"
   },
   "deviceTypes": {
     "router": "Maršrutētājs",
@@ -84,8 +96,10 @@
     "familyHome": "Ģimenes māja ar IoT ierīcēm",
     "smallBusiness": "Mazā uzņēmuma birojs",
     "hotelPublic": "Viesnīca / Publiskais Wi-Fi",
-    "deviceCount": "{count, plural, one {# ierīce} other {# ierīces}}",
-    "networkCount": "{count, plural, one {# tīkls} other {# tīkli}}"
+    "deviceCount_one": "{{count}} ierīce",
+    "deviceCount_other": "{{count}} ierīces",
+    "networkCount_one": "{{count}} tīkls",
+    "networkCount_other": "{{count}} tīkli"
   },
   "devicePanel": {
     "details": "Ierīces informācija",
@@ -130,7 +144,7 @@
     "incorrect": "Nav gluži",
     "nextQuestion": "Nākamais jautājums",
     "complete": "Tests pabeigts",
-    "score": "Jūsu rezultāts: {score} no {total}",
+    "score": "Jūsu rezultāts: {{score}} no {{total}}",
     "tryAgain": "Mēģināt vēlreiz"
   },
   "tableView": {
@@ -144,10 +158,30 @@
     "noDevices": "Nav atrasta neviena ierīce"
   },
   "accessibility": {
-    "selectDevice": "Izvēlēties ierīci: {name}",
-    "selectedDevice": "Izvēlēts: {name}",
-    "toggleLayer": "Pārslēgties uz {layer} slāņa skatu",
+    "selectDevice": "Izvēlēties ierīci: {{name}}",
+    "selectedDevice": "Izvēlēts: {{name}}",
+    "toggleLayer": "Pārslēgties uz {{layer}} slāņa skatu",
     "closePanel": "Aizvērt paneli",
     "networkVisualization": "Tīkla vizualizācija, kas parāda ierīces, kas savienotas ar maršrutētāju"
+  },
+  "info": {
+    "about": "Šī smilšu kaste palīdz saprast, kas īsti ir tīkls: maršrutētājs, kas savienots ar daudzām ierīcēm, katrai ar savu identitāti un adresi.",
+    "keyboardShortcuts": "Tastatūras īsceļi",
+    "switchLayers": "Pārslēgt slāņu skatus",
+    "deselectDevice": "Atcelt ierīces izvēli",
+    "allNetworksFictional": "Visi parādītie tīkli un ierīces ir izdomāti, bet reālistiski. Nekādi reāli tīkla dati netiek vākti vai parādīti."
+  },
+  "controls": {
+    "mapView": "Kartes skats",
+    "tableView": "Tabulas skats",
+    "packetJourney": "Paketes ceļojums",
+    "compare": "Salīdzināt",
+    "import": "Importēt",
+    "export": "Eksportēt",
+    "filter": "Filtrēt",
+    "showAll": "Rādīt visu",
+    "showMain": "Tikai galvenais",
+    "showGuest": "Tikai viesi",
+    "showIoT": "Tikai IoT"
   }
 }

@@ -51,7 +51,19 @@
     "linkDescription": "Физические идентификаторы устройств (MAC-адреса)",
     "networkDescription": "IP-адреса и маршрутизация",
     "transportDescription": "Порты и протоколы",
-    "applicationDescription": "Приложения и статус шифрования"
+    "applicationDescription": "Приложения и статус шифрования",
+    "transition_link_network": "Теперь видны IP-адреса вместо аппаратных идентификаторов",
+    "transition_network_link": "Теперь видны аппаратные (MAC) адреса для локальной доставки",
+    "transition_link_transport": "Теперь видны номера портов и сервисные соединения",
+    "transition_link_application": "Теперь видны протоколы и статус шифрования",
+    "transition_network_transport": "Теперь видно, какие порты передают разный трафик",
+    "transition_network_application": "Теперь видно, какие приложения общаются",
+    "transition_transport_link": "Теперь видны физические идентификаторы устройств",
+    "transition_transport_network": "Теперь видны IP-адреса для маршрутизации",
+    "transition_transport_application": "Теперь видны фактические используемые протоколы",
+    "transition_application_link": "Теперь видны аппаратные адреса",
+    "transition_application_network": "Теперь видны логические IP-адреса",
+    "transition_application_transport": "Теперь видны соединения на уровне портов"
   },
   "deviceTypes": {
     "router": "Маршрутизатор",
@@ -84,8 +96,14 @@
     "familyHome": "Семейный дом с IoT-устройствами",
     "smallBusiness": "Офис малого бизнеса",
     "hotelPublic": "Гостиница / Общественный Wi-Fi",
-    "deviceCount": "{count, plural, one {# устройство} few {# устройства} many {# устройств} other {# устройств}}",
-    "networkCount": "{count, plural, one {# сеть} few {# сети} many {# сетей} other {# сетей}}"
+    "deviceCount_one": "{{count}} устройство",
+    "deviceCount_few": "{{count}} устройства",
+    "deviceCount_many": "{{count}} устройств",
+    "deviceCount_other": "{{count}} устройств",
+    "networkCount_one": "{{count}} сеть",
+    "networkCount_few": "{{count}} сети",
+    "networkCount_many": "{{count}} сетей",
+    "networkCount_other": "{{count}} сетей"
   },
   "devicePanel": {
     "details": "Информация об устройстве",
@@ -130,7 +148,7 @@
     "incorrect": "Не совсем",
     "nextQuestion": "Следующий вопрос",
     "complete": "Тест завершён",
-    "score": "Ваш результат: {score} из {total}",
+    "score": "Ваш результат: {{score}} из {{total}}",
     "tryAgain": "Попробовать снова"
   },
   "tableView": {
@@ -144,10 +162,30 @@
     "noDevices": "Устройства не найдены"
   },
   "accessibility": {
-    "selectDevice": "Выбрать устройство: {name}",
-    "selectedDevice": "Выбрано: {name}",
-    "toggleLayer": "Переключиться на слой {layer}",
+    "selectDevice": "Выбрать устройство: {{name}}",
+    "selectedDevice": "Выбрано: {{name}}",
+    "toggleLayer": "Переключиться на слой {{layer}}",
     "closePanel": "Закрыть панель",
     "networkVisualization": "Визуализация сети, показывающая устройства, подключённые к маршрутизатору"
+  },
+  "info": {
+    "about": "Эта песочница помогает понять, что такое сеть на самом деле: маршрутизатор, подключённый ко многим устройствам, у каждого из которых своя идентичность и адрес.",
+    "keyboardShortcuts": "Сочетания клавиш",
+    "switchLayers": "Переключение слоёв",
+    "deselectDevice": "Снять выбор устройства",
+    "allNetworksFictional": "Все показанные сети и устройства вымышлены, но реалистичны. Реальные сетевые данные не собираются и не отображаются."
+  },
+  "controls": {
+    "mapView": "Вид карты",
+    "tableView": "Табличный вид",
+    "packetJourney": "Путешествие пакета",
+    "compare": "Сравнить",
+    "import": "Импорт",
+    "export": "Экспорт",
+    "filter": "Фильтр",
+    "showAll": "Показать всё",
+    "showMain": "Только основная",
+    "showGuest": "Только гостевая",
+    "showIoT": "Только IoT"
   }
 }
