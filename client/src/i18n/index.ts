@@ -19,18 +19,21 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: 'en',
+    fallbackLng: ['lv', 'en'],
     supportedLngs: ['en', 'lv', 'ru'],
+    load: 'languageOnly',
     interpolation: {
       escapeValue: false,
     },
     detection: {
-      order: ['localStorage', 'navigator'],
+      order: ['localStorage', 'navigator', 'htmlTag'],
       caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng',
     },
     react: {
       useSuspense: false,
     },
+    returnEmptyString: false,
     saveMissing: isDev,
     missingKeyHandler: isDev ? (lngs, ns, key) => {
       console.warn(`[MISSING i18n] ${lngs.join(', ')} - ${ns}:${key}`);

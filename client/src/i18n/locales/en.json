@@ -241,6 +241,108 @@
       }
     }
   },
+  "unknownDevice": {
+    "title": "Unknown Device Detected",
+    "description": "You've discovered an unidentified device on your network. This could be a forgotten gadget, a guest's device, or something suspicious.",
+    "whatWouldYouDo": "What would you do?",
+    "gotIt": "Got it",
+    "investigate": {
+      "label": "Investigate further",
+      "feedback": "Good choice! Before taking action, it's wise to gather more information. Check your router's admin page to see when this device connected and look for patterns in its behavior."
+    },
+    "block": {
+      "label": "Block it immediately",
+      "feedback": "Blocking unknown devices can be appropriate, but doing so without investigation might disconnect a legitimate device you forgot about (like a smart plug or guest's phone). Consider investigating first."
+    },
+    "ignore": {
+      "label": "Ignore it",
+      "feedback": "Ignoring unknown devices is risky. It could be a neighbor stealing your Wi-Fi, an attacker, or forgotten smart device with security vulnerabilities. Always investigate unfamiliar devices."
+    }
+  },
+  "packetJourney": {
+    "title": "Packet Journey",
+    "close": "Close",
+    "pause": "Pause",
+    "replay": "Replay",
+    "startJourney": "Start Journey",
+    "resume": "Resume",
+    "reset": "Reset",
+    "selectDevice": "Select a device to trace its packet journey",
+    "ready": "Ready",
+    "steps": {
+      "idle": {
+        "link": "Ready to trace packet journey using MAC addresses",
+        "network": "Ready to trace packet journey using IP addresses",
+        "transport": "Ready to trace packet journey through ports",
+        "application": "Ready to trace packet journey at application level"
+      },
+      "deviceToRouter": {
+        "link": "Packet leaves device with source MAC to Router MAC as destination",
+        "network": "Packet carries source IP (device) to destination IP (internet server)",
+        "transport": "Data sent from random high port to destination port (e.g., 443 for HTTPS)",
+        "application": "Application sends HTTP/HTTPS request through socket"
+      },
+      "routerProcessing": {
+        "link": "Router receives frame, strips MAC header, reads IP destination",
+        "network": "Router performs NAT: replaces private IP with public IP for internet",
+        "transport": "Router tracks connection state for return traffic mapping",
+        "application": "Router may inspect application headers (firewall/filtering)"
+      },
+      "routerToInternet": {
+        "link": "New frame created with Router WAN MAC to ISP Gateway MAC",
+        "network": "Packet now has public IP as source, routes through internet",
+        "transport": "Port mapping stored so response can find original device",
+        "application": "Request reaches destination server (website, API, etc.)"
+      },
+      "internetResponse": {
+        "link": "Response arrives at router's WAN interface from ISP",
+        "network": "Response addressed to router's public IP, port identifies flow",
+        "transport": "Server responds on established connection (same port pair)",
+        "application": "Server sends response data (HTML, JSON, file, etc.)"
+      },
+      "routerBack": {
+        "link": "Router rewrites destination MAC to original device's MAC",
+        "network": "NAT reversal: replaces public IP with device's private IP",
+        "transport": "Original source port used to deliver to correct application",
+        "application": "Response delivered to waiting application on device"
+      },
+      "complete": {
+        "link": "Journey complete - device received response via MAC addressing",
+        "network": "Journey complete - private IP successfully communicated with internet",
+        "transport": "Journey complete - full request/response cycle through ports",
+        "application": "Journey complete - application received server response"
+      }
+    }
+  },
+  "encryption": {
+    "encrypted": "Encrypted traffic",
+    "unencrypted": "Unencrypted traffic",
+    "mixed": "Mixed encryption"
+  },
+  "zones": {
+    "main": "Main Network",
+    "guest": "Guest Network",
+    "iot": "IoT Network"
+  },
+  "legend": {
+    "localId": "Local ID (MAC)",
+    "physicalConnection": "Physical connection",
+    "privateIp": "Private IP",
+    "gateway": "Gateway",
+    "publicIp": "Public IP",
+    "webTraffic": "Web traffic (443)",
+    "videoStream": "Video stream",
+    "email": "Email (587)",
+    "httpsEncrypted": "HTTPS (Encrypted)",
+    "httpNotEncrypted": "HTTP (Not encrypted)",
+    "streaming": "Streaming"
+  },
+  "common": {
+    "internet": "Internet",
+    "reset": "Reset",
+    "noData": "—",
+    "hasSecurityConcerns": "has security concerns"
+  },
   "learningPrompts": {
     "privateIp": {
       "question": "Which of these is a private IP address?",

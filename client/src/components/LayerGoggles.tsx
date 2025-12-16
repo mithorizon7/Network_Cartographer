@@ -163,25 +163,27 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
 }
 
 export function LayerLegend({ activeLayer }: { activeLayer: LayerMode }) {
-  const legendItems: Record<LayerMode, { color: string; label: string }[]> = {
+  const { t } = useTranslation();
+  
+  const legendItems: Record<LayerMode, { color: string; labelKey: string }[]> = {
     link: [
-      { color: "bg-chart-1", label: "Local ID (MAC)" },
-      { color: "bg-chart-2", label: "Physical connection" },
+      { color: "bg-chart-1", labelKey: "legend.localId" },
+      { color: "bg-chart-2", labelKey: "legend.physicalConnection" },
     ],
     network: [
-      { color: "bg-chart-1", label: "Private IP" },
-      { color: "bg-chart-3", label: "Gateway" },
-      { color: "bg-chart-5", label: "Public IP" },
+      { color: "bg-chart-1", labelKey: "legend.privateIp" },
+      { color: "bg-chart-3", labelKey: "legend.gateway" },
+      { color: "bg-chart-5", labelKey: "legend.publicIp" },
     ],
     transport: [
-      { color: "bg-chart-1", label: "Web traffic (443)" },
-      { color: "bg-chart-2", label: "Video stream" },
-      { color: "bg-chart-4", label: "Email (587)" },
+      { color: "bg-chart-1", labelKey: "legend.webTraffic" },
+      { color: "bg-chart-2", labelKey: "legend.videoStream" },
+      { color: "bg-chart-4", labelKey: "legend.email" },
     ],
     application: [
-      { color: "bg-green-500 dark:bg-green-400", label: "HTTPS (Encrypted)" },
-      { color: "bg-red-500 dark:bg-red-400", label: "HTTP (Not encrypted)" },
-      { color: "bg-chart-2", label: "Streaming" },
+      { color: "bg-green-500 dark:bg-green-400", labelKey: "legend.httpsEncrypted" },
+      { color: "bg-red-500 dark:bg-red-400", labelKey: "legend.httpNotEncrypted" },
+      { color: "bg-chart-2", labelKey: "legend.streaming" },
     ],
   };
 
@@ -196,9 +198,9 @@ export function LayerLegend({ activeLayer }: { activeLayer: LayerMode }) {
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25 }}
     >
-      {items.map(({ color, label }, index) => (
+      {items.map(({ color, labelKey }, index) => (
         <motion.div 
-          key={label} 
+          key={labelKey} 
           className="flex items-center gap-1.5"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
@@ -210,7 +212,7 @@ export function LayerLegend({ activeLayer }: { activeLayer: LayerMode }) {
             animate={{ scale: 1 }}
             transition={{ duration: 0.2, delay: index * 0.05 + 0.1, type: "spring" }}
           />
-          <span>{label}</span>
+          <span>{t(labelKey)}</span>
         </motion.div>
       ))}
     </motion.div>

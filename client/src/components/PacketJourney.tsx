@@ -1,4 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Device, LayerMode } from "@shared/schema";
 import { Button } from "@/components/ui/button";
@@ -15,52 +16,18 @@ interface PacketJourneyProps {
 
 type JourneyStep = "idle" | "device-to-router" | "router-processing" | "router-to-internet" | "internet-response" | "router-back" | "complete";
 
-const stepDescriptions: Record<JourneyStep, Record<LayerMode, string>> = {
-  idle: {
-    link: "Ready to trace packet journey using MAC addresses",
-    network: "Ready to trace packet journey using IP addresses",
-    transport: "Ready to trace packet journey through ports",
-    application: "Ready to trace packet journey at application level",
-  },
-  "device-to-router": {
-    link: "Packet leaves device with source MAC → Router MAC as destination",
-    network: "Packet carries source IP (device) → destination IP (internet server)",
-    transport: "Data sent from random high port → destination port (e.g., 443 for HTTPS)",
-    application: "Application sends HTTP/HTTPS request through socket",
-  },
-  "router-processing": {
-    link: "Router receives frame, strips MAC header, reads IP destination",
-    network: "Router performs NAT: replaces private IP with public IP for internet",
-    transport: "Router tracks connection state for return traffic mapping",
-    application: "Router may inspect application headers (firewall/filtering)",
-  },
-  "router-to-internet": {
-    link: "New frame created with Router WAN MAC → ISP Gateway MAC",
-    network: "Packet now has public IP as source, routes through internet",
-    transport: "Port mapping stored so response can find original device",
-    application: "Request reaches destination server (website, API, etc.)",
-  },
-  "internet-response": {
-    link: "Response arrives at router's WAN interface from ISP",
-    network: "Response addressed to router's public IP, port identifies flow",
-    transport: "Server responds on established connection (same port pair)",
-    application: "Server sends response data (HTML, JSON, file, etc.)",
-  },
-  "router-back": {
-    link: "Router rewrites destination MAC to original device's MAC",
-    network: "NAT reversal: replaces public IP with device's private IP",
-    transport: "Original source port used to deliver to correct application",
-    application: "Response delivered to waiting application on device",
-  },
-  complete: {
-    link: "Journey complete - device received response via MAC addressing",
-    network: "Journey complete - private IP successfully communicated with internet",
-    transport: "Journey complete - full request/response cycle through ports",
-    application: "Journey complete - application received server response",
-  },
+const stepToKey: Record<JourneyStep, string> = {
+  idle: "idle",
+  "device-to-router": "deviceToRouter",
+  "router-processing": "routerProcessing",
+  "router-to-internet": "routerToInternet",
+  "internet-response": "internetResponse",
+  "router-back": "routerBack",
+  complete: "complete",
 };
 
 export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicIp, onClose }: PacketJourneyProps) {
+  const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState<JourneyStep>("idle");
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
@@ -131,7 +98,7 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
     return (
       <div className="rounded-md border bg-muted/30 p-4 text-center text-sm text-muted-foreground" data-testid="packet-journey-empty">
         <Zap className="mx-auto mb-2 h-8 w-8 opacity-50" />
-        <p>Select a device to trace its packet journey</p>
+        <p>{t('packetJourney.selectDevice')}</p>
       </div>
     );
   }
@@ -164,14 +131,14 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
         <div className="flex items-center gap-2">
           <Badge variant="outline" className={layerColors[activeLayer]}>
             <Zap className="mr-1 h-3 w-3" />
-            Packet Journey
+            {t('packetJourney.title')}
           </Badge>
           <span className="text-sm text-muted-foreground">
-            {sourceDevice.label} → Internet
+            {sourceDevice.label} → {t('common.internet')}
           </span>
         </div>
         <Button variant="ghost" size="sm" onClick={onClose} data-testid="button-close-journey">
-          Close
+          {t('packetJourney.close')}
         </Button>
       </div>
 
@@ -193,17 +160,17 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
         {isPlaying ? (
           <Button size="sm" variant="outline" onClick={handlePause} data-testid="button-pause-journey">
             <Pause className="mr-1.5 h-4 w-4" />
-            Pause
+            {t('packetJourney.pause')}
           </Button>
         ) : (
           <Button size="sm" onClick={handlePlay} data-testid="button-play-journey">
             <Play className="mr-1.5 h-4 w-4" />
-            {currentStep === "complete" ? "Replay" : currentStep === "idle" ? "Start Journey" : "Resume"}
+            {currentStep === "complete" ? t('packetJourney.replay') : currentStep === "idle" ? t('packetJourney.startJourney') : t('packetJourney.resume')}
           </Button>
         )}
         <Button size="sm" variant="outline" onClick={handleReset} data-testid="button-reset-journey">
           <RotateCcw className="mr-1.5 h-4 w-4" />
-          Reset
+          {t('packetJourney.reset')}
         </Button>
       </div>
 
@@ -224,14 +191,14 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
             <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-center gap-2">
                 <span className="text-sm font-medium capitalize">
-                  {currentStep === "idle" ? "Ready" : currentStep.replace(/-/g, " ")}
+                  {currentStep === "idle" ? t('packetJourney.ready') : currentStep.replace(/-/g, " ")}
                 </span>
                 {isPlaying && currentStep !== "complete" && currentStep !== "idle" && (
                   <span className="h-2 w-2 animate-pulse rounded-full bg-current" />
                 )}
               </div>
               <p className="text-sm opacity-90">
-                {stepDescriptions[currentStep][activeLayer]}
+                {t(`packetJourney.steps.${stepToKey[currentStep]}.${activeLayer}`)}
               </p>
             </div>
           </div>

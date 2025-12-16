@@ -90,6 +90,8 @@ Preferred communication style: Simple, everyday language.
     - Proper handling of plural suffixes (_one, _few, _many, _other)
   - Run validation: `node scripts/i18n-validate.js`
   - Run extraction: `npx i18next-scanner --config i18next-scanner.config.cjs`
+- **Translation Glossary**: `docs/i18n-glossary.md` defines consistent terminology across locales
+- **Fallback Chain**: localStorage → navigator → lv → en (Latvia market default)
 
 ### Events System
 - Added EventNotifications component that triggers on scenario load (onEnter) and device clicks (onDeviceClick)

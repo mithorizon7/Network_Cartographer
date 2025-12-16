@@ -1,4 +1,5 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Device, Network, LayerMode, Scenario } from "@shared/schema";
 import { Router, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, Globe, ArrowRight, Lock, Unlock } from "lucide-react";
@@ -25,10 +26,10 @@ const deviceIcons: Record<string, typeof Router> = {
   unknown: HelpCircle,
 };
 
-const zoneColors: Record<string, { ring: string; fill: string; label: string }> = {
-  main: { ring: "stroke-chart-1", fill: "fill-chart-1/10", label: "Main Network" },
-  guest: { ring: "stroke-chart-3", fill: "fill-chart-3/10", label: "Guest Network" },
-  iot: { ring: "stroke-chart-5", fill: "fill-chart-5/10", label: "IoT Network" },
+const zoneColors: Record<string, { ring: string; fill: string; labelKey: string }> = {
+  main: { ring: "stroke-chart-1", fill: "fill-chart-1/10", labelKey: "zones.main" },
+  guest: { ring: "stroke-chart-3", fill: "fill-chart-3/10", labelKey: "zones.guest" },
+  iot: { ring: "stroke-chart-5", fill: "fill-chart-5/10", labelKey: "zones.iot" },
 };
 
 const zoneRadii: Record<string, number> = {
@@ -110,12 +111,15 @@ function DeviceNode({
   onClick: () => void;
   onKeyDown: (e: React.KeyboardEvent) => void;
 }) {
+  const { t } = useTranslation();
   const Icon = deviceIcons[device.type] || HelpCircle;
   const hasRisks = device.riskFlags.length > 0;
   const isUnknown = device.type === "unknown" || device.riskFlags.includes("unknown_device");
   const isRouter = device.type === "router";
-  const label = getDeviceLabel(device, activeLayer);
+  const rawLabel = getDeviceLabel(device, activeLayer);
+  const label = rawLabel === "—" ? t('common.noData') : rawLabel;
   const labelColor = layerLabelColors[activeLayer];
+  const securityLabel = hasRisks ? `, ${t('common.hasSecurityConcerns')}` : "";
   const encryptionStatus = getEncryptionStatus(device);
 
   const nodeSize = isRouter ? 56 : 44;
@@ -129,7 +133,7 @@ function DeviceNode({
       onKeyDown={onKeyDown}
       tabIndex={0}
       role="button"
-      aria-label={`${device.label}${hasRisks ? ", has security concerns" : ""}`}
+      aria-label={`${device.label}${securityLabel}`}
       aria-pressed={isSelected}
       data-testid={`node-device-${device.id}`}
       style={{ opacity: dimmedOpacity }}
@@ -243,10 +247,10 @@ function DeviceNode({
                 }`}
                 title={
                   encryptionStatus === "encrypted" 
-                    ? "Encrypted traffic" 
+                    ? t('encryption.encrypted')
                     : encryptionStatus === "unencrypted"
-                      ? "Unencrypted traffic"
-                      : "Mixed encryption"
+                      ? t('encryption.unencrypted')
+                      : t('encryption.mixed')
                 }
               >
                 {encryptionStatus === "encrypted" ? (
@@ -264,6 +268,7 @@ function DeviceNode({
 }
 
 export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDeviceSelect, highlightedDeviceIds }: NetworkCanvasProps) {
+  const { t } = useTranslation();
   const centerX = 400;
   const centerY = 350;
   const hasFilter = highlightedDeviceIds !== undefined;
@@ -417,7 +422,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
                 y={centerY - radius + 20}
                 className="fill-muted-foreground text-[10px] font-medium uppercase tracking-wider"
               >
-                {zoneColor.label}
+                {t(zoneColor.labelKey)}
               </text>
             </g>
           );

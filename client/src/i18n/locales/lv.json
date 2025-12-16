@@ -241,6 +241,108 @@
       }
     }
   },
+  "unknownDevice": {
+    "title": "Atklāta nezināma ierīce",
+    "description": "Jūs atklājāt neidentificētu ierīci savā tīklā. Tas varētu būt aizmirsts sīkrīks, viesa ierīce vai kaut kas aizdomīgs.",
+    "whatWouldYouDo": "Ko jūs darītu?",
+    "gotIt": "Sapratu",
+    "investigate": {
+      "label": "Izmeklēt tālāk",
+      "feedback": "Laba izvēle! Pirms rīkoties, ir prātīgi iegūt vairāk informācijas. Pārbaudiet maršrutētāja administrēšanas lapu, lai redzētu, kad šī ierīce pieslēdzās, un meklējiet modeļus tās uzvedībā."
+    },
+    "block": {
+      "label": "Nekavējoties bloķēt",
+      "feedback": "Nezināmu ierīču bloķēšana var būt piemērota, bet to darot bez izmeklēšanas, jūs varētu atvienot likumīgu ierīci, ko aizmirsāt (piemēram, viedo kontaktligzdu vai viesa tālruni). Apsveriet vispirms izmeklēšanu."
+    },
+    "ignore": {
+      "label": "Ignorēt",
+      "feedback": "Nezināmu ierīču ignorēšana ir riskanta. Tas varētu būt kaimiņš, kas zog jūsu Wi-Fi, uzbrucējs vai aizmirsta viedierīce ar drošības ievainojamībām. Vienmēr izmeklējiet nepazīstamas ierīces."
+    }
+  },
+  "packetJourney": {
+    "title": "Paketes ceļojums",
+    "close": "Aizvērt",
+    "pause": "Pauze",
+    "replay": "Atkārtot",
+    "startJourney": "Sākt ceļojumu",
+    "resume": "Turpināt",
+    "reset": "Atiestatīt",
+    "selectDevice": "Izvēlieties ierīci, lai izsekotu tās paketes ceļojumu",
+    "ready": "Gatavs",
+    "steps": {
+      "idle": {
+        "link": "Gatavs izsekot paketes ceļojumu, izmantojot MAC adreses",
+        "network": "Gatavs izsekot paketes ceļojumu, izmantojot IP adreses",
+        "transport": "Gatavs izsekot paketes ceļojumu caur portiem",
+        "application": "Gatavs izsekot paketes ceļojumu lietojumprogrammu līmenī"
+      },
+      "deviceToRouter": {
+        "link": "Pakete atstāj ierīci ar avota MAC uz maršrutētāja MAC kā galamērķi",
+        "network": "Pakete nes avota IP (ierīce) uz galamērķa IP (interneta serveris)",
+        "transport": "Dati nosūtīti no nejaušas augsta porta uz galamērķa portu (piem., 443 priekš HTTPS)",
+        "application": "Lietojumprogramma sūta HTTP/HTTPS pieprasījumu caur ligzdu"
+      },
+      "routerProcessing": {
+        "link": "Maršrutētājs saņem kadru, noņem MAC galveni, nolasa IP galamērķi",
+        "network": "Maršrutētājs veic NAT: aizstāj privāto IP ar publisko IP internetam",
+        "transport": "Maršrutētājs izseko savienojuma stāvokli atgriešanās trafika kartēšanai",
+        "application": "Maršrutētājs var pārbaudīt lietojumprogrammu galvenes (ugunsmūris/filtrēšana)"
+      },
+      "routerToInternet": {
+        "link": "Izveidots jauns kadrs ar maršrutētāja WAN MAC uz ISP vārtejas MAC",
+        "network": "Paketei tagad ir publiskā IP kā avots, maršrutē caur internetu",
+        "transport": "Portu kartēšana saglabāta, lai atbilde varētu atrast sākotnējo ierīci",
+        "application": "Pieprasījums sasniedz galamērķa serveri (vietne, API utt.)"
+      },
+      "internetResponse": {
+        "link": "Atbilde pienāk pie maršrutētāja WAN interfeisa no ISP",
+        "network": "Atbilde adresēta maršrutētāja publiskajai IP, ports identificē plūsmu",
+        "transport": "Serveris atbild uz izveidotā savienojuma (tas pats portu pāris)",
+        "application": "Serveris sūta atbildes datus (HTML, JSON, fails utt.)"
+      },
+      "routerBack": {
+        "link": "Maršrutētājs pārraksta galamērķa MAC uz sākotnējās ierīces MAC",
+        "network": "NAT apgriešana: aizstāj publisko IP ar ierīces privāto IP",
+        "transport": "Sākotnējais avota ports izmantots, lai piegādātu pareizai lietojumprogrammai",
+        "application": "Atbilde piegādāta gaidošajai lietojumprogrammai ierīcē"
+      },
+      "complete": {
+        "link": "Ceļojums pabeigts - ierīce saņēma atbildi caur MAC adresēšanu",
+        "network": "Ceļojums pabeigts - privātā IP veiksmīgi sazinājās ar internetu",
+        "transport": "Ceļojums pabeigts - pilns pieprasījuma/atbildes cikls caur portiem",
+        "application": "Ceļojums pabeigts - lietojumprogramma saņēma servera atbildi"
+      }
+    }
+  },
+  "encryption": {
+    "encrypted": "Šifrēta trafika",
+    "unencrypted": "Nešifrēta trafika",
+    "mixed": "Jaukta šifrēšana"
+  },
+  "zones": {
+    "main": "Galvenais tīkls",
+    "guest": "Viesu tīkls",
+    "iot": "IoT tīkls"
+  },
+  "legend": {
+    "localId": "Lokālais ID (MAC)",
+    "physicalConnection": "Fizisks savienojums",
+    "privateIp": "Privātā IP",
+    "gateway": "Vārteja",
+    "publicIp": "Publiskā IP",
+    "webTraffic": "Tīmekļa trafika (443)",
+    "videoStream": "Video straume",
+    "email": "E-pasts (587)",
+    "httpsEncrypted": "HTTPS (šifrēts)",
+    "httpNotEncrypted": "HTTP (nešifrēts)",
+    "streaming": "Straumēšana"
+  },
+  "common": {
+    "internet": "Internets",
+    "reset": "Atiestatīt",
+    "noData": "—",
+    "hasSecurityConcerns": "ir drošības problēmas"
+  },
   "learningPrompts": {
     "privateIp": {
       "question": "Kura no šīm ir privāta IP adrese?",
