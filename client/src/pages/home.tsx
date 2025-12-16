@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useTranslation } from "react-i18next";
 import type { LayerMode, Device, Network, Scenario } from "@shared/schema";
 import { NetworkCanvas } from "@/components/NetworkCanvas";
 import { LayerGoggles, LayerLegend } from "@/components/LayerGoggles";
@@ -8,6 +9,7 @@ import { DeviceDetailsPanel } from "@/components/DeviceDetailsPanel";
 import { LearningPrompts } from "@/components/LearningPrompts";
 import { TableView } from "@/components/TableView";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { DeviceFilter, defaultFilters, useDeviceFilter, type DeviceFilters } from "@/components/DeviceFilter";
 import { PacketJourney } from "@/components/PacketJourney";
 import { ScenarioComparison } from "@/components/ScenarioComparison";
@@ -38,6 +40,7 @@ interface ScenarioSummary {
 }
 
 export default function Home() {
+  const { t } = useTranslation();
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
   const [activeLayer, setActiveLayer] = useState<LayerMode>("network");
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
@@ -181,8 +184,8 @@ export default function Home() {
               <Map className="h-5 w-5 text-primary" />
             </div>
             <div>
-              <h1 className="text-lg font-semibold leading-tight">Network Cartographer</h1>
-              <p className="hidden text-xs text-muted-foreground sm:block">Interactive Network Visualization</p>
+              <h1 className="text-lg font-semibold leading-tight">{t('app.title')}</h1>
+              <p className="hidden text-xs text-muted-foreground sm:block">{t('app.subtitle')}</p>
             </div>
           </div>
         </div>
@@ -206,9 +209,9 @@ export default function Home() {
             </DialogTrigger>
             <DialogContent className="max-w-lg">
               <DialogHeader>
-                <DialogTitle>About Network Cartographer</DialogTitle>
+                <DialogTitle>{t('app.title')}</DialogTitle>
                 <DialogDescription>
-                  Learn how networks work through interactive visualization
+                  {t('app.subtitle')}
                 </DialogDescription>
               </DialogHeader>
               <div className="space-y-4 text-sm">
@@ -216,12 +219,12 @@ export default function Home() {
                   This sandbox helps you understand what a network really is: a router connected to many devices, each with their own identities and addresses.
                 </p>
                 <div>
-                  <h4 className="mb-2 font-medium">Layer Goggles</h4>
+                  <h4 className="mb-2 font-medium">{t('layers.title')}</h4>
                   <ul className="space-y-1 text-muted-foreground">
-                    <li><span className="font-medium text-foreground">Link/Local:</span> See MAC addresses used for local delivery</li>
-                    <li><span className="font-medium text-foreground">Network:</span> See IP addresses and routing boundaries</li>
-                    <li><span className="font-medium text-foreground">Transport:</span> See data flows and port usage</li>
-                    <li><span className="font-medium text-foreground">Application:</span> See protocols and encryption status</li>
+                    <li><span className="font-medium text-foreground">{t('layers.link')}:</span> {t('layers.linkDescription')}</li>
+                    <li><span className="font-medium text-foreground">{t('layers.network')}:</span> {t('layers.networkDescription')}</li>
+                    <li><span className="font-medium text-foreground">{t('layers.transport')}:</span> {t('layers.transportDescription')}</li>
+                    <li><span className="font-medium text-foreground">{t('layers.application')}:</span> {t('layers.applicationDescription')}</li>
                   </ul>
                 </div>
                 <div>
@@ -229,7 +232,7 @@ export default function Home() {
                   <ul className="space-y-1 text-muted-foreground">
                     <li><kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">1-4</kbd> Switch layer views</li>
                     <li><kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">Esc</kbd> Deselect device</li>
-                    <li><kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">R</kbd> Reset view</li>
+                    <li><kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">R</kbd> {t('common.reset')}</li>
                   </ul>
                 </div>
                 <p className="text-xs text-muted-foreground">
@@ -239,6 +242,7 @@ export default function Home() {
             </DialogContent>
           </Dialog>
           
+          <LanguageSwitcher />
           <ThemeToggle />
         </div>
       </header>

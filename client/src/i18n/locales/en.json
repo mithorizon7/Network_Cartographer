@@ -1,0 +1,153 @@
+{
+  "app": {
+    "title": "Network Cartographer",
+    "subtitle": "Interactive Network Visualization"
+  },
+  "nav": {
+    "scenarios": "Scenarios",
+    "tableView": "Table View",
+    "quiz": "Quiz"
+  },
+  "common": {
+    "start": "Start",
+    "continue": "Continue",
+    "learnMore": "Learn more",
+    "back": "Back",
+    "reset": "Reset",
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "Error",
+    "retry": "Retry",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "dismiss": "Dismiss"
+  },
+  "network": {
+    "network": "Network",
+    "privateNetwork": "Private network",
+    "publicNetwork": "Public network",
+    "guestNetwork": "Guest network",
+    "mainNetwork": "Main network",
+    "router": "Router",
+    "accessPoint": "Access point",
+    "device": "Device",
+    "connectedDevice": "Connected device",
+    "unknownDevice": "Unknown device",
+    "iotDevice": "IoT device",
+    "encryption": "Encryption",
+    "encrypted": "Encrypted",
+    "unencrypted": "Unencrypted",
+    "port": "Port",
+    "request": "Request",
+    "response": "Response"
+  },
+  "layers": {
+    "title": "Layer Goggles",
+    "link": "Link/Local",
+    "network": "Network",
+    "transport": "Transport",
+    "application": "Application",
+    "linkDescription": "Physical device identifiers (MAC addresses)",
+    "networkDescription": "IP addresses and routing",
+    "transportDescription": "Ports and protocols",
+    "applicationDescription": "Apps and encryption status"
+  },
+  "deviceTypes": {
+    "router": "Router",
+    "laptop": "Laptop",
+    "phone": "Phone",
+    "tablet": "Tablet",
+    "smarttv": "Smart TV",
+    "camera": "Camera",
+    "thermostat": "Thermostat",
+    "speaker": "Speaker",
+    "server": "Server",
+    "printer": "Printer",
+    "unknown": "Unknown Device"
+  },
+  "riskFlags": {
+    "unknown_device": "Unknown device",
+    "forgotten_device": "Forgotten device",
+    "default_password": "Default password",
+    "outdated_firmware": "Outdated firmware",
+    "iot_device": "IoT device",
+    "unencrypted": "Unencrypted traffic"
+  },
+  "zones": {
+    "main": "Main Network",
+    "guest": "Guest Network",
+    "iot": "IoT Network"
+  },
+  "scenarios": {
+    "selectScenario": "Select a Scenario",
+    "familyHome": "Family Home with IoT Sprawl",
+    "smallBusiness": "Small Business Office",
+    "hotelPublic": "Hotel / Public Wi-Fi",
+    "deviceCount": "{count, plural, one {# device} other {# devices}}",
+    "networkCount": "{count, plural, one {# network} other {# networks}}"
+  },
+  "devicePanel": {
+    "details": "Device Details",
+    "manufacturer": "Manufacturer",
+    "ipAddress": "IP Address",
+    "macAddress": "MAC Address",
+    "protocols": "Protocols",
+    "openPorts": "Open Ports",
+    "risks": "Security Risks",
+    "noRisks": "No security risks detected"
+  },
+  "packetJourney": {
+    "title": "Packet Journey",
+    "description": "Watch how data travels from this device to the internet",
+    "startJourney": "Start Journey",
+    "pause": "Pause",
+    "replay": "Replay",
+    "deviceToRouter": "Device sends packet to router",
+    "routerProcessing": "Router processes and applies NAT",
+    "routerToInternet": "Router forwards to internet",
+    "internetResponse": "Response returns from internet",
+    "routerBack": "Router delivers to device",
+    "complete": "Journey complete"
+  },
+  "unknownDeviceModal": {
+    "title": "What Would You Do?",
+    "subtitle": "You've discovered an unknown device on your network",
+    "investigate": "Investigate",
+    "investigateDesc": "Check router logs and identify the device",
+    "block": "Block",
+    "blockDesc": "Remove the device from the network",
+    "ignore": "Ignore",
+    "ignoreDesc": "Leave it alone for now",
+    "investigateFeedback": "Good choice! Investigating helps you understand if this device belongs on your network before taking action.",
+    "blockFeedback": "This is a safe choice, but you might accidentally block a legitimate device. Consider investigating first.",
+    "ignoreFeedback": "Risky! Unknown devices could be security threats. Always investigate unfamiliar devices on your network."
+  },
+  "quiz": {
+    "title": "Test Your Knowledge",
+    "question": "Question",
+    "correct": "Correct!",
+    "incorrect": "Not quite",
+    "nextQuestion": "Next Question",
+    "complete": "Quiz Complete",
+    "score": "Your score: {score} out of {total}",
+    "tryAgain": "Try Again"
+  },
+  "tableView": {
+    "title": "Network Devices Table",
+    "name": "Name",
+    "type": "Type",
+    "network": "Network",
+    "ipAddress": "IP Address",
+    "macAddress": "MAC Address",
+    "status": "Status",
+    "noDevices": "No devices found"
+  },
+  "accessibility": {
+    "selectDevice": "Select device: {name}",
+    "selectedDevice": "Selected: {name}",
+    "toggleLayer": "Switch to {layer} layer view",
+    "closePanel": "Close panel",
+    "networkVisualization": "Network visualization showing devices connected to router"
+  }
+}

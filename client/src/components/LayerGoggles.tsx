@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useTranslation } from "react-i18next";
 import type { LayerMode } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Link2, Network, ArrowLeftRight, Globe, ChevronRight } from "lucide-react";
@@ -9,11 +10,11 @@ interface LayerGogglesProps {
   onChange: (layer: LayerMode) => void;
 }
 
-const layers: { mode: LayerMode; label: string; shortLabel: string; icon: typeof Link2; description: string; focus: string }[] = [
-  { mode: "link", label: "Link/Local", shortLabel: "Link", icon: Link2, description: "MAC addresses & local delivery", focus: "Physical device identity on your local network" },
-  { mode: "network", label: "Network", shortLabel: "Net", icon: Network, description: "IP addresses & routing", focus: "How devices find each other across networks" },
-  { mode: "transport", label: "Transport", shortLabel: "Trans", icon: ArrowLeftRight, description: "Ports & data flows", focus: "Which services are communicating" },
-  { mode: "application", label: "Application", shortLabel: "App", icon: Globe, description: "Protocols & encryption", focus: "What apps and protocols are in use" },
+const layerConfigs: { mode: LayerMode; labelKey: string; shortLabelKey: string; icon: typeof Link2; descriptionKey: string }[] = [
+  { mode: "link", labelKey: "layers.link", shortLabelKey: "layers.link", icon: Link2, descriptionKey: "layers.linkDescription" },
+  { mode: "network", labelKey: "layers.network", shortLabelKey: "layers.network", icon: Network, descriptionKey: "layers.networkDescription" },
+  { mode: "transport", labelKey: "layers.transport", shortLabelKey: "layers.transport", icon: ArrowLeftRight, descriptionKey: "layers.transportDescription" },
+  { mode: "application", labelKey: "layers.application", shortLabelKey: "layers.application", icon: Globe, descriptionKey: "layers.applicationDescription" },
 ];
 
 const layerTransitions: Record<string, string> = {
@@ -32,6 +33,7 @@ const layerTransitions: Record<string, string> = {
 };
 
 export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
+  const { t } = useTranslation();
   const [previousLayer, setPreviousLayer] = useState<LayerMode | null>(null);
   const [transitionMessage, setTransitionMessage] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -64,12 +66,12 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
     }, 2500);
   };
 
-  const activeLayerInfo = layers.find(l => l.mode === activeLayer);
+  const activeLayerInfo = layerConfigs.find(l => l.mode === activeLayer);
 
   return (
     <div className="flex flex-col gap-2">
-      <div className="flex items-center gap-1 rounded-md bg-muted p-1" role="group" aria-label="Layer view selector">
-        {layers.map(({ mode, label, shortLabel, icon: Icon }, index) => {
+      <div className="flex items-center gap-1 rounded-md bg-muted p-1" role="group" aria-label={t('layers.title')}>
+        {layerConfigs.map(({ mode, labelKey, shortLabelKey, icon: Icon }) => {
           const isActive = activeLayer === mode;
           const wasPrevious = previousLayer === mode;
           
@@ -97,8 +99,8 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                 </motion.div>
-                <span className="hidden sm:inline">{label}</span>
-                <span className="sm:hidden">{shortLabel}</span>
+                <span className="hidden sm:inline">{t(labelKey)}</span>
+                <span className="sm:hidden">{t(shortLabelKey)}</span>
               </Button>
               
               <AnimatePresence>
@@ -148,16 +150,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.2 }}
               >
-                {activeLayerInfo?.description}
-              </motion.p>
-              <motion.p 
-                className="mt-0.5 text-[10px] text-muted-foreground/70"
-                key={`${activeLayer}-focus`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ duration: 0.3, delay: 0.1 }}
-              >
-                {activeLayerInfo?.focus}
+                {activeLayerInfo ? t(activeLayerInfo.descriptionKey) : null}
               </motion.p>
             </motion.div>
           )}

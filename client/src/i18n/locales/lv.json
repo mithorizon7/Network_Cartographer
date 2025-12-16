@@ -1,0 +1,153 @@
+{
+  "app": {
+    "title": "Tīkla kartogrāfs",
+    "subtitle": "Interaktīva tīkla vizualizācija"
+  },
+  "nav": {
+    "scenarios": "Scenāriji",
+    "tableView": "Tabulas skats",
+    "quiz": "Tests"
+  },
+  "common": {
+    "start": "Sākt",
+    "continue": "Turpināt",
+    "learnMore": "Uzzināt vairāk",
+    "back": "Atpakaļ",
+    "reset": "Atiestatīt",
+    "close": "Aizvērt",
+    "loading": "Ielādē...",
+    "error": "Kļūda",
+    "retry": "Mēģināt vēlreiz",
+    "save": "Saglabāt",
+    "cancel": "Atcelt",
+    "confirm": "Apstiprināt",
+    "dismiss": "Noraidīt"
+  },
+  "network": {
+    "network": "Tīkls",
+    "privateNetwork": "Privātais tīkls",
+    "publicNetwork": "Publiskais tīkls",
+    "guestNetwork": "Viesu tīkls",
+    "mainNetwork": "Galvenais tīkls",
+    "router": "Maršrutētājs",
+    "accessPoint": "Piekļuves punkts",
+    "device": "Ierīce",
+    "connectedDevice": "Pieslēgtā ierīce",
+    "unknownDevice": "Nezināma ierīce",
+    "iotDevice": "IoT ierīce",
+    "encryption": "Šifrēšana",
+    "encrypted": "Šifrēts",
+    "unencrypted": "Nešifrēts",
+    "port": "Ports",
+    "request": "Pieprasījums",
+    "response": "Atbilde"
+  },
+  "layers": {
+    "title": "Slāņu brilles",
+    "link": "Saite/Lokāls",
+    "network": "Tīkls",
+    "transport": "Transports",
+    "application": "Lietojumprogramma",
+    "linkDescription": "Fiziskās ierīces identifikatori (MAC adreses)",
+    "networkDescription": "IP adreses un maršrutēšana",
+    "transportDescription": "Porti un protokoli",
+    "applicationDescription": "Lietotnes un šifrēšanas statuss"
+  },
+  "deviceTypes": {
+    "router": "Maršrutētājs",
+    "laptop": "Portatīvais dators",
+    "phone": "Tālrunis",
+    "tablet": "Planšetdators",
+    "smarttv": "Viedtelevizors",
+    "camera": "Kamera",
+    "thermostat": "Termostats",
+    "speaker": "Skaļrunis",
+    "server": "Serveris",
+    "printer": "Printeris",
+    "unknown": "Nezināma ierīce"
+  },
+  "riskFlags": {
+    "unknown_device": "Nezināma ierīce",
+    "forgotten_device": "Aizmirsta ierīce",
+    "default_password": "Noklusējuma parole",
+    "outdated_firmware": "Novecojusi programmaparatūra",
+    "iot_device": "IoT ierīce",
+    "unencrypted": "Nešifrēta satiksme"
+  },
+  "zones": {
+    "main": "Galvenais tīkls",
+    "guest": "Viesu tīkls",
+    "iot": "IoT tīkls"
+  },
+  "scenarios": {
+    "selectScenario": "Izvēlieties scenāriju",
+    "familyHome": "Ģimenes māja ar IoT ierīcēm",
+    "smallBusiness": "Mazā uzņēmuma birojs",
+    "hotelPublic": "Viesnīca / Publiskais Wi-Fi",
+    "deviceCount": "{count, plural, one {# ierīce} other {# ierīces}}",
+    "networkCount": "{count, plural, one {# tīkls} other {# tīkli}}"
+  },
+  "devicePanel": {
+    "details": "Ierīces informācija",
+    "manufacturer": "Ražotājs",
+    "ipAddress": "IP adrese",
+    "macAddress": "MAC adrese",
+    "protocols": "Protokoli",
+    "openPorts": "Atvērtie porti",
+    "risks": "Drošības riski",
+    "noRisks": "Nav atklāti drošības riski"
+  },
+  "packetJourney": {
+    "title": "Paketes ceļojums",
+    "description": "Skatieties, kā dati pārvietojas no šīs ierīces uz internetu",
+    "startJourney": "Sākt ceļojumu",
+    "pause": "Pauze",
+    "replay": "Atkārtot",
+    "deviceToRouter": "Ierīce sūta paketi maršrutētājam",
+    "routerProcessing": "Maršrutētājs apstrādā un piemēro NAT",
+    "routerToInternet": "Maršrutētājs pārsūta uz internetu",
+    "internetResponse": "Atbilde atgriežas no interneta",
+    "routerBack": "Maršrutētājs piegādā ierīcei",
+    "complete": "Ceļojums pabeigts"
+  },
+  "unknownDeviceModal": {
+    "title": "Ko jūs darītu?",
+    "subtitle": "Jūs esat atklājuši nezināmu ierīci savā tīklā",
+    "investigate": "Izmeklēt",
+    "investigateDesc": "Pārbaudīt maršrutētāja žurnālus un identificēt ierīci",
+    "block": "Bloķēt",
+    "blockDesc": "Noņemt ierīci no tīkla",
+    "ignore": "Ignorēt",
+    "ignoreDesc": "Pagaidām atstāt to mierā",
+    "investigateFeedback": "Laba izvēle! Izmeklēšana palīdz saprast, vai šī ierīce pieder jūsu tīklam, pirms rīkojaties.",
+    "blockFeedback": "Šī ir droša izvēle, bet jūs varat nejauši bloķēt likumīgu ierīci. Apsveriet vispirms izmeklēt.",
+    "ignoreFeedback": "Riskanti! Nezināmas ierīces var būt drošības draudi. Vienmēr izmeklējiet nepazīstamas ierīces savā tīklā."
+  },
+  "quiz": {
+    "title": "Pārbaudiet savas zināšanas",
+    "question": "Jautājums",
+    "correct": "Pareizi!",
+    "incorrect": "Nav gluži",
+    "nextQuestion": "Nākamais jautājums",
+    "complete": "Tests pabeigts",
+    "score": "Jūsu rezultāts: {score} no {total}",
+    "tryAgain": "Mēģināt vēlreiz"
+  },
+  "tableView": {
+    "title": "Tīkla ierīču tabula",
+    "name": "Nosaukums",
+    "type": "Tips",
+    "network": "Tīkls",
+    "ipAddress": "IP adrese",
+    "macAddress": "MAC adrese",
+    "status": "Statuss",
+    "noDevices": "Nav atrasta neviena ierīce"
+  },
+  "accessibility": {
+    "selectDevice": "Izvēlēties ierīci: {name}",
+    "selectedDevice": "Izvēlēts: {name}",
+    "toggleLayer": "Pārslēgties uz {layer} slāņa skatu",
+    "closePanel": "Aizvērt paneli",
+    "networkVisualization": "Tīkla vizualizācija, kas parāda ierīces, kas savienotas ar maršrutētāju"
+  }
+}
