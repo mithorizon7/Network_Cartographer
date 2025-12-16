@@ -177,7 +177,7 @@ export default function Home() {
   const error = listError || scenarioError;
 
   return (
-    <div className="flex h-screen flex-col bg-background" data-testid="page-home">
+    <div className="flex h-screen flex-col overflow-x-hidden bg-background" data-testid="page-home">
       <header className="flex flex-wrap items-center justify-between gap-4 border-b px-4 py-3">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-2">

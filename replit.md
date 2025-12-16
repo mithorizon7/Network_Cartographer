@@ -132,3 +132,8 @@ Preferred communication style: Simple, everyday language.
 - **CSP Security**: Content-Security-Policy now uses strict policy in production (no 'unsafe-inline' or 'unsafe-eval'); development mode allows these for Vite HMR/dev tools
 - **Production Logging**: ErrorBoundary console.error now gated behind development mode check to prevent stack trace leakage
 - **Pattern**: All environment-specific behavior uses `import.meta.env.DEV` (frontend) or `process.env.NODE_ENV` (backend)
+
+### Visual UI Fixes - December 16, 2024
+- **Encryption Icon Positioning**: Fixed Application layer encryption icons overlapping device nodes; icons now positioned clearly outside node bounds
+- **Mobile Layout**: Fixed 1px horizontal overflow on mobile viewports (375px) by adding overflow-x-hidden to root container
+- **Verified**: Device panel risk badges properly spaced, Learning prompts layout correct, Filter popover displays properly

@@ -233,10 +233,10 @@ function DeviceNode({
             transition={{ duration: 0.2 }}
           >
             <foreignObject
-              x={pos.x + nodeSize / 2 - 2}
-              y={pos.y - nodeSize / 2 - 4}
-              width={16}
-              height={16}
+              x={pos.x + nodeSize / 2 + 6}
+              y={pos.y - nodeSize / 2 - 12}
+              width={18}
+              height={18}
             >
               <div 
                 className={`flex items-center justify-center rounded-full w-4 h-4 ${
