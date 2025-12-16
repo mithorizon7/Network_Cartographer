@@ -5,7 +5,7 @@ import type { NetworkEvent, Device } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { AlertTriangle, X, Info } from "lucide-react";
-import { scenarioIdToKey } from "@/lib/scenarioUtils";
+import { scenarioIdToKey, deviceLabelToKey } from "@/lib/scenarioUtils";
 
 interface EventNotificationsProps {
   events: NetworkEvent[];
@@ -130,7 +130,9 @@ export function EventNotifications({
             <div className="flex-1">
               {device && (
                 <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  {device.label}
+                  {deviceLabelToKey[device.label] 
+                    ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
+                    : device.label}
                 </p>
               )}
               <p className="text-sm leading-relaxed" data-testid="event-message">

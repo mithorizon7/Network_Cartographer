@@ -12,6 +12,7 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { AlertTriangle, Shield, Ban, Eye, CheckCircle2 } from "lucide-react";
+import { deviceLabelToKey } from "@/lib/scenarioUtils";
 
 interface UnknownDeviceModalProps {
   device: Device | null;
@@ -59,7 +60,11 @@ export function UnknownDeviceModal({ device, isOpen, onClose }: UnknownDeviceMod
             </div>
             <div>
               <DialogTitle>{t('unknownDevice.title')}</DialogTitle>
-              <DialogDescription>{device.label}</DialogDescription>
+              <DialogDescription>
+                {deviceLabelToKey[device.label] 
+                  ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
+                  : device.label}
+              </DialogDescription>
             </div>
           </div>
         </DialogHeader>

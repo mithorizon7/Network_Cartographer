@@ -128,6 +128,19 @@ Preferred communication style: Simple, everyday language.
 - **Type safety**: Replaced `any` with proper Environment type in home.tsx
 - **Localization**: Reset button, footer descriptions now use translation keys
 
+### Translation Mapping Utilities - December 16, 2024
+- **Centralized utilities in `client/src/lib/scenarioUtils.ts`**:
+  - `scenarioIdToKey`: Maps scenario IDs to translation keys (familyIoT, smallBusiness, hotelPublic)
+  - `deviceLabelToKey`: Maps 28 device labels to translation keys (e.g., "Home Router" → "homeRouter")
+  - `promptIdToKey`: Maps 14 learning prompt IDs to translation keys (e.g., "prompt_private_ip" → "privateIp")
+- **Device labels now fully translated** in all 3 languages:
+  - Used in: NetworkCanvas, DeviceDetailsPanel, TableView, EventNotifications, UnknownDeviceModal, ScenarioComparison
+  - Translation path: `deviceLabels.{key}` (e.g., `deviceLabels.homeRouter`)
+- **Learning prompts fully translated** in all 3 languages:
+  - Questions, answers (array indexed), and explanations
+  - Translation path: `learningPrompts.{key}.{question|answers.N|explanation}`
+- **299 translation keys** validated across all locales (up from 271)
+
 ### Security Hardening - December 16, 2024
 - **CSP Security**: Content-Security-Policy now uses strict policy in production (no 'unsafe-inline' or 'unsafe-eval'); development mode allows these for Vite HMR/dev tools
 - **Production Logging**: ErrorBoundary console.error now gated behind development mode check to prevent stack trace leakage

@@ -106,10 +106,32 @@
     "manufacturer": "Ražotājs",
     "ipAddress": "IP adrese",
     "macAddress": "MAC adrese",
+    "localId": "Lokālais ID (MAC)",
     "protocols": "Protokoli",
+    "activeProtocols": "Aktīvie protokoli",
     "openPorts": "Atvērtie porti",
     "risks": "Drošības riski",
-    "noRisks": "Nav atklāti drošības riski"
+    "noRisks": "Nav atklāti drošības riski",
+    "noDeviceSelected": "Ierīce nav izvēlēta",
+    "clickToSelect": "Noklikšķiniet uz ierīces tīkla kartē, lai redzētu tās informāciju",
+    "description": "Apraksts",
+    "network": "Tīkls",
+    "zone": "Zona",
+    "securityConcerns": "Drošības problēmas",
+    "whatToNotice": "Kam pievērst uzmanību",
+    "tabs": {
+      "details": "Detaļas",
+      "network": "Tīkls",
+      "learn": "Mācīties"
+    },
+    "learnContent": {
+      "router": "Maršrutētājs ir jebkura tīkla centrālais mezgls. Visas ierīces savienojas caur to, un tas pārvalda robežu starp jūsu privāto tīklu un publisko internetu.",
+      "unknown": "Nezināmas ierīces vienmēr jāizmeklē. Tas varētu būt aizmirsts sīkrīks, kaimiņš, kas izmanto jūsu Wi-Fi, vai potenciāli kaut kas ļaunprātīgs.",
+      "defaultPassword": "Ierīces ar noklusējuma parolēm ir viegls mērķis uzbrucējiem. Vienmēr mainiet noklusējuma akreditācijas datus uzreiz pēc uzstādīšanas.",
+      "iotDevice": "IoT ierīcēm bieži ir ierobežotas drošības funkcijas. To izolēšana atsevišķā tīklā neļauj kompromitētai ierīcei piekļūt jūsu personīgajiem datiem.",
+      "forgottenDevice": "Aizmirstas ierīces ir drošības riski - tām var būt novecojusi programmatūra, vājas paroles vai tās var būt uzbrukumu mērķi, kamēr jūs tās neuzraugāt.",
+      "safeDevice": "Šī ierīce šķiet pareizi konfigurēta. Parastās ierīces jūsu galvenajā tīklā jāatjaunina un jāuzrauga, lai atklātu neparastu darbību."
+    }
   },
   "packetJourney": {
     "title": "Paketes ceļojums",
@@ -414,5 +436,35 @@
       "answers": ["Ziņu vietņu pārlūkošanas", "Pieslēgšanās bankai bez VPN", "Laika apstākļu pārbaudīšanas"],
       "explanation": "Sensitīvām darbībām kā banku operācijām jāgaida drošs tīkls vai jāizmanto VPN. Pat HTTPS nevar aizsargāt pret visiem uzbrukumiem kompromitētos tīklos."
     }
+  },
+  "deviceLabels": {
+    "homeRouter": "Mājas maršrutētājs",
+    "workLaptop": "Darba portatīvais dators",
+    "momsIphone": "Mammas iPhone",
+    "kidsIpad": "Bērnu iPad",
+    "livingRoomTv": "Viesistabas televizors",
+    "indoorCamera": "Iekštelpu kamera",
+    "smartThermostat": "Viedais termostats",
+    "voiceAssistant": "Balss asistents",
+    "guestsPhone": "Viesa tālrunis",
+    "genericSmartController": "Vispārīgais viedais kontrolieris",
+    "oldTablet": "Vecais planšetdators (neaktīvs)",
+    "officeRouter": "Biroja maršrutētājs",
+    "fileServer": "Failu serveris",
+    "ceosLaptop": "Direktora portatīvais dators",
+    "salesLaptop": "Pārdošanas portatīvais dators",
+    "workPhone": "Darba tālrunis",
+    "officePrinter": "Biroja printeris",
+    "customerDevice": "Klienta ierīce",
+    "entranceCamera": "Ieejas kamera",
+    "unregisteredDevice": "Nereģistrēta ierīce",
+    "hotelAccessPoint": "Viesnīcas piekļuves punkts",
+    "yourLaptop": "Jūsu portatīvais dators",
+    "unknownGuest": "Nezināms viesis",
+    "guestPhone": "Viesa tālrunis",
+    "suspiciousDevice": "Aizdomīga ierīce",
+    "businessTraveler": "Biznesa ceļotājs",
+    "frontDeskComputer": "Reģistratūras dators",
+    "grandHotelFreeWifi": "GrandHotel_Free_WiFi"
   }
 }

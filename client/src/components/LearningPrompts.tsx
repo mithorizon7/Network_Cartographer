@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { CheckCircle2, XCircle, Lightbulb, ChevronRight, RotateCcw } from "lucide-react";
+import { promptIdToKey } from "@/lib/scenarioUtils";
 
 interface LearningPromptsProps {
   prompts: LearningPrompt[];
@@ -113,7 +114,9 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
             </Badge>
           )}
           <p className="text-sm font-medium leading-relaxed" data-testid="text-prompt-question">
-            {currentPrompt.question}
+            {promptIdToKey[currentPrompt.id]
+              ? t(`learningPrompts.${promptIdToKey[currentPrompt.id]}.question`, { defaultValue: currentPrompt.question })
+              : currentPrompt.question}
           </p>
         </div>
         
@@ -136,6 +139,10 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
               }
             }
             
+            const translatedAnswer = promptIdToKey[currentPrompt.id]
+              ? t(`learningPrompts.${promptIdToKey[currentPrompt.id]}.answers.${index}`, { defaultValue: answer.text })
+              : answer.text;
+            
             return (
               <Button
                 key={index}
@@ -145,7 +152,7 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
                 disabled={selectedAnswer !== null}
                 data-testid={`button-answer-${index}`}
               >
-                <span className="flex-1">{answer.text}</span>
+                <span className="flex-1">{translatedAnswer}</span>
                 {showResult && statusIcon}
               </Button>
             );
@@ -155,7 +162,9 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
         {showExplanation && (
           <div className="rounded-md border border-chart-2/30 bg-chart-2/5 p-3">
             <p className="text-sm leading-relaxed text-foreground">
-              {currentPrompt.explanation}
+              {promptIdToKey[currentPrompt.id]
+                ? t(`learningPrompts.${promptIdToKey[currentPrompt.id]}.explanation`, { defaultValue: currentPrompt.explanation })
+                : currentPrompt.explanation}
             </p>
           </div>
         )}

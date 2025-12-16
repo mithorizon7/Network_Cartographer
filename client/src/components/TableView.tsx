@@ -1,9 +1,11 @@
+import { useTranslation } from "react-i18next";
 import type { Device, Network, LayerMode } from "@shared/schema";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Router, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, AlertTriangle } from "lucide-react";
+import { deviceLabelToKey } from "@/lib/scenarioUtils";
 
 interface TableViewProps {
   devices: Device[];
@@ -28,6 +30,7 @@ const deviceIcons: Record<string, typeof Router> = {
 };
 
 export function TableView({ devices, networks, activeLayer, selectedDeviceId, onDeviceSelect }: TableViewProps) {
+  const { t } = useTranslation();
   const getNetworkForDevice = (networkId: string) => networks.find(n => n.id === networkId);
 
   return (
@@ -72,7 +75,9 @@ export function TableView({ devices, networks, activeLayer, selectedDeviceId, on
                   </div>
                 </TableCell>
                 <TableCell className="font-medium" data-testid={`text-device-label-${device.id}`}>
-                  {device.label}
+                  {deviceLabelToKey[device.label] 
+                    ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
+                    : device.label}
                 </TableCell>
                 <TableCell className="capitalize text-muted-foreground">
                   {device.type === "unknown" ? "Unidentified" : device.type}

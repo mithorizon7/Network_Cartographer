@@ -20,7 +20,7 @@ import {
   Wifi,
   Globe
 } from "lucide-react";
-import { scenarioIdToKey } from "@/lib/scenarioUtils";
+import { scenarioIdToKey, deviceLabelToKey } from "@/lib/scenarioUtils";
 
 interface ScenarioComparisonProps {
   scenarios: Array<{ id: string; title: string }>;
@@ -207,7 +207,11 @@ function ScenarioPanel({
                     key={device.id} 
                     className="flex items-center justify-between rounded border border-destructive/30 bg-card px-2 py-1"
                   >
-                    <span>{device.label}</span>
+                    <span>
+                      {deviceLabelToKey[device.label] 
+                        ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
+                        : device.label}
+                    </span>
                     <div className="flex gap-1">
                       {device.riskFlags.map(flag => (
                         <Badge key={flag} variant="destructive" className="text-xs">

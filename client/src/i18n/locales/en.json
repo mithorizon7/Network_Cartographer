@@ -106,10 +106,32 @@
     "manufacturer": "Manufacturer",
     "ipAddress": "IP Address",
     "macAddress": "MAC Address",
+    "localId": "Local ID (MAC)",
     "protocols": "Protocols",
+    "activeProtocols": "Active Protocols",
     "openPorts": "Open Ports",
     "risks": "Security Risks",
-    "noRisks": "No security risks detected"
+    "noRisks": "No security risks detected",
+    "noDeviceSelected": "No device selected",
+    "clickToSelect": "Click on a device in the network map to see its details",
+    "description": "Description",
+    "network": "Network",
+    "zone": "Zone",
+    "securityConcerns": "Security Concerns",
+    "whatToNotice": "What to Notice",
+    "tabs": {
+      "details": "Details",
+      "network": "Network",
+      "learn": "Learn"
+    },
+    "learnContent": {
+      "router": "The router is the central hub of any network. All devices connect through it, and it manages the boundary between your private network and the public internet.",
+      "unknown": "Unknown devices should always be investigated. This could be a forgotten gadget, a neighbor using your Wi-Fi, or potentially something malicious.",
+      "defaultPassword": "Devices with default passwords are low-hanging fruit for attackers. Always change default credentials immediately after setup.",
+      "iotDevice": "IoT devices often have limited security features. Isolating them on a separate network prevents a compromised device from accessing your personal data.",
+      "forgottenDevice": "Forgotten devices are security risks - they may have outdated software, weak passwords, or be targets for attacks while you're not monitoring them.",
+      "safeDevice": "This device appears to be properly configured. Regular devices on your main network should be kept updated and monitored for unusual activity."
+    }
   },
   "packetJourney": {
     "title": "Packet Journey",
@@ -414,5 +436,35 @@
       "answers": ["Browsing news websites", "Logging into your bank without a VPN", "Checking the weather"],
       "explanation": "Sensitive activities like banking should wait for a secure network or require a VPN. Even HTTPS can't protect against all attacks on compromised networks."
     }
+  },
+  "deviceLabels": {
+    "homeRouter": "Home Router",
+    "workLaptop": "Work Laptop",
+    "momsIphone": "Mom's iPhone",
+    "kidsIpad": "Kids' iPad",
+    "livingRoomTv": "Living Room TV",
+    "indoorCamera": "Indoor Camera",
+    "smartThermostat": "Smart Thermostat",
+    "voiceAssistant": "Voice Assistant",
+    "guestsPhone": "Guest's Phone",
+    "genericSmartController": "Generic Smart Controller",
+    "oldTablet": "Old Tablet (Inactive)",
+    "officeRouter": "Office Router",
+    "fileServer": "File Server",
+    "ceosLaptop": "CEO's Laptop",
+    "salesLaptop": "Sales Laptop",
+    "workPhone": "Work Phone",
+    "officePrinter": "Office Printer",
+    "customerDevice": "Customer Device",
+    "entranceCamera": "Entrance Camera",
+    "unregisteredDevice": "Unregistered Device",
+    "hotelAccessPoint": "Hotel Access Point",
+    "yourLaptop": "Your Laptop",
+    "unknownGuest": "Unknown Guest",
+    "guestPhone": "Guest Phone",
+    "suspiciousDevice": "Suspicious Device",
+    "businessTraveler": "Business Traveler",
+    "frontDeskComputer": "Front Desk Computer",
+    "grandHotelFreeWifi": "GrandHotel_Free_WiFi"
   }
 }

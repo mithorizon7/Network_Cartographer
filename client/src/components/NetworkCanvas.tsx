@@ -3,7 +3,7 @@ import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Device, Network, LayerMode, Scenario } from "@shared/schema";
 import { Router, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, Globe, ArrowRight, Lock, Unlock } from "lucide-react";
-import { scenarioIdToKey } from "@/lib/scenarioUtils";
+import { scenarioIdToKey, deviceLabelToKey } from "@/lib/scenarioUtils";
 
 interface NetworkCanvasProps {
   scenario: Scenario;
@@ -203,7 +203,12 @@ function DeviceNode({
         textAnchor="middle"
         className="fill-foreground text-[11px] font-medium"
       >
-        {device.label.length > 16 ? device.label.slice(0, 14) + "..." : device.label}
+        {(() => {
+          const translatedLabel = deviceLabelToKey[device.label] 
+            ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
+            : device.label;
+          return translatedLabel.length > 16 ? translatedLabel.slice(0, 14) + "..." : translatedLabel;
+        })()}
       </text>
       
       {activeLayer !== "link" || device.type !== "router" ? (
@@ -616,7 +621,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
             : scenario.title}
         </div>
         <div className="mt-1 text-muted-foreground">
-          {scenario.devices.length} devices • {scenario.networks.length} networks
+          {t('scenarios.deviceCount', { count: scenario.devices.length })} • {t('scenarios.networkCount', { count: scenario.networks.length })}
         </div>
       </motion.div>
     </div>
