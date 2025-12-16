@@ -21,6 +21,12 @@ import {
   Globe
 } from "lucide-react";
 
+const scenarioIdToKey: Record<string, string> = {
+  "family_iot_sprawl_v1": "familyIoT",
+  "small_business_v1": "smallBusiness",
+  "hotel_public_v1": "hotelPublic",
+};
+
 interface ScenarioComparisonProps {
   scenarios: Array<{ id: string; title: string }>;
   activeLayer: LayerMode;
@@ -119,8 +125,16 @@ function ScenarioPanel({
     <ScrollArea className="h-full">
       <div className="space-y-4 p-4">
         <div>
-          <h3 className="text-lg font-semibold">{scenario.title}</h3>
-          <p className="mt-1 text-sm text-muted-foreground">{scenario.description}</p>
+          <h3 className="text-lg font-semibold">
+            {scenarioIdToKey[scenario.id] 
+              ? t(`scenarioContent.${scenarioIdToKey[scenario.id]}.title`, { defaultValue: scenario.title })
+              : scenario.title}
+          </h3>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {scenarioIdToKey[scenario.id] 
+              ? t(`scenarioContent.${scenarioIdToKey[scenario.id]}.description`, { defaultValue: scenario.description })
+              : scenario.description}
+          </p>
         </div>
 
         <div className="flex flex-wrap gap-2">

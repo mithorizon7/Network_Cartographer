@@ -32,6 +32,12 @@ const zoneColors: Record<string, { ring: string; fill: string; labelKey: string 
   iot: { ring: "stroke-chart-5", fill: "fill-chart-5/10", labelKey: "zones.iot" },
 };
 
+const scenarioIdToKey: Record<string, string> = {
+  "family_iot_sprawl_v1": "familyIoT",
+  "small_business_v1": "smallBusiness",
+  "hotel_public_v1": "hotelPublic",
+};
+
 const zoneRadii: Record<string, number> = {
   main: 140,
   guest: 220,
@@ -443,8 +449,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
                 y1={routerPos.y}
                 x2={pos.x}
                 y2={pos.y}
-                style={{ strokeWidth: 1 }}
-                initial={{ pathLength: 0, opacity: 0 }}
+                initial={{ pathLength: 0, opacity: 0, strokeWidth: 1 }}
                 animate={{ 
                   pathLength: 1, 
                   opacity: 1,
@@ -610,7 +615,11 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
-        <div className="font-medium">{scenario.title}</div>
+        <div className="font-medium">
+          {scenarioIdToKey[scenario.id] 
+            ? t(`scenarioContent.${scenarioIdToKey[scenario.id]}.title`, { defaultValue: scenario.title })
+            : scenario.title}
+        </div>
         <div className="mt-1 text-muted-foreground">
           {scenario.devices.length} devices • {scenario.networks.length} networks
         </div>

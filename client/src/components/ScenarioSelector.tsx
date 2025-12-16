@@ -7,6 +7,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Home, Building2, Wifi } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 interface ScenarioSelectorProps {
   scenarios: Scenario[];
@@ -20,11 +21,27 @@ const scenarioIcons: Record<string, typeof Home> = {
   public: Wifi,
 };
 
+const scenarioIdToKey: Record<string, string> = {
+  "family_iot_sprawl_v1": "familyIoT",
+  "small_business_v1": "smallBusiness",
+  "hotel_public_v1": "hotelPublic",
+};
+
 export function ScenarioSelector({ scenarios, selectedId, onSelect }: ScenarioSelectorProps) {
+  const { t } = useTranslation();
+  
+  const getLocalizedTitle = (scenario: Scenario): string => {
+    const key = scenarioIdToKey[scenario.id];
+    if (key) {
+      return t(`scenarioContent.${key}.title`, { defaultValue: scenario.title });
+    }
+    return scenario.title;
+  };
+
   return (
     <Select value={selectedId ?? ""} onValueChange={onSelect}>
       <SelectTrigger className="w-full min-w-[200px] sm:w-[280px]" data-testid="select-scenario">
-        <SelectValue placeholder="Select a scenario..." />
+        <SelectValue placeholder={t('scenarios.selectScenario')} />
       </SelectTrigger>
       <SelectContent>
         {scenarios.map((scenario) => {
@@ -37,7 +54,7 @@ export function ScenarioSelector({ scenarios, selectedId, onSelect }: ScenarioSe
             >
               <div className="flex items-center gap-2">
                 <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
-                <span>{scenario.title}</span>
+                <span>{getLocalizedTitle(scenario)}</span>
               </div>
             </SelectItem>
           );
