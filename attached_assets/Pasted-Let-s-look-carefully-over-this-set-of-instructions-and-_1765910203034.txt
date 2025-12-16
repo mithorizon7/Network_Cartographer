@@ -1,0 +1,59 @@
+Let's look carefully over this set of instructions and do a full audit of the current program and make a prioritized list of improvements and fixes and completions that we need to do:
+
+Module 1: The Network Cartographer
+What it is
+
+The Network Cartographer is a visual map of a network that turns invisible relationships into something you can literally see.
+
+Instead of learning networking as a list of definitions, you explore a network like a physical place.
+
+In this module, the router is the “sun,” and every device is a “planet” orbiting it. Phones. Laptops. Smart TVs. Printers. Cameras. Speakers. Random IoT gadgets.
+
+You click devices and the lab reveals what they are, what they’re connected to, and what risks they introduce.
+
+What it teaches (in beginner language)
+
+A network is devices + connections + rules
+
+Your router is the hub that connects your private world to the public internet
+
+Devices have two kinds of identity/addressing:
+
+Local identity: how devices identify each other inside the local network
+
+Network address: how things route data to the right place
+
+You don’t need to memorize those terms yet. You’ll feel the difference by switching views.
+
+The “wow” moment
+
+People almost always underestimate what’s on a normal network. This module recreates that feeling safely with realistic “story networks”:
+
+The family home network that has far more devices than anyone remembers.
+
+The small business network where guest Wi-Fi and internal systems are mixed.
+
+The hotel/public Wi-Fi environment with confusing network names.
+
+Even though it’s fictional, it mirrors the reality that most networks are messier than we think.
+
+The “healthy fear” moment
+
+You’ll see “unknown” or “unfamiliar” devices appear in the network map—because that’s the truth of the modern world:
+
+We buy devices that are computers in disguise.
+
+We forget what we connected.
+
+We assume “if it’s working, it must be safe.”
+
+This module makes that assumption feel questionable.
+
+What learners should walk away able to say
+
+“I can explain what a router does.”
+
+“I can explain why networks have multiple kinds of addresses.”
+
+“I can describe what makes a device ‘risky’ on a network.”
+
