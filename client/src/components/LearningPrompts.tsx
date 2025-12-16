@@ -1,0 +1,169 @@
+import { useState } from "react";
+import type { LearningPrompt } from "@shared/schema";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
+import { CheckCircle2, XCircle, Lightbulb, ChevronRight, RotateCcw } from "lucide-react";
+
+interface LearningPromptsProps {
+  prompts: LearningPrompt[];
+  onComplete?: () => void;
+}
+
+export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
+  const [showExplanation, setShowExplanation] = useState(false);
+  const [completedPrompts, setCompletedPrompts] = useState<Set<string>>(new Set());
+  const [correctAnswers, setCorrectAnswers] = useState(0);
+
+  if (prompts.length === 0) {
+    return (
+      <Card data-testid="panel-learning-empty">
+        <CardHeader className="pb-4 text-center">
+          <div className="text-muted-foreground">
+            <Lightbulb className="mx-auto mb-3 h-10 w-10 opacity-50" />
+            <p className="text-sm">No learning prompts for this scenario</p>
+          </div>
+        </CardHeader>
+      </Card>
+    );
+  }
+
+  const currentPrompt = prompts[currentIndex];
+  const progress = (completedPrompts.size / prompts.length) * 100;
+  const isComplete = completedPrompts.size === prompts.length;
+
+  const handleAnswerSelect = (answerIndex: number) => {
+    if (selectedAnswer !== null) return;
+    setSelectedAnswer(answerIndex);
+    setShowExplanation(true);
+    
+    const isCorrect = currentPrompt.answers[answerIndex].isCorrect;
+    if (isCorrect) {
+      setCorrectAnswers(prev => prev + 1);
+    }
+    setCompletedPrompts(prev => new Set(prev).add(currentPrompt.id));
+  };
+
+  const handleNext = () => {
+    if (currentIndex < prompts.length - 1) {
+      setCurrentIndex(prev => prev + 1);
+      setSelectedAnswer(null);
+      setShowExplanation(false);
+    } else if (isComplete && onComplete) {
+      onComplete();
+    }
+  };
+
+  const handleReset = () => {
+    setCurrentIndex(0);
+    setSelectedAnswer(null);
+    setShowExplanation(false);
+    setCompletedPrompts(new Set());
+    setCorrectAnswers(0);
+  };
+
+  if (isComplete && currentIndex === prompts.length - 1 && showExplanation) {
+    return (
+      <Card data-testid="panel-learning-complete">
+        <CardContent className="pt-6 text-center">
+          <CheckCircle2 className="mx-auto mb-4 h-12 w-12 text-green-500" />
+          <h3 className="mb-2 text-lg font-semibold">All Prompts Completed!</h3>
+          <p className="mb-4 text-sm text-muted-foreground">
+            You got {correctAnswers} out of {prompts.length} correct
+          </p>
+          <Badge variant={correctAnswers === prompts.length ? "default" : "secondary"} className="mb-6">
+            {Math.round((correctAnswers / prompts.length) * 100)}% Score
+          </Badge>
+          <div>
+            <Button variant="outline" onClick={handleReset} data-testid="button-restart-prompts">
+              <RotateCcw className="mr-2 h-4 w-4" />
+              Try Again
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
+    );
+  }
+
+  return (
+    <Card data-testid="panel-learning-prompts">
+      <CardHeader className="pb-3">
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-2">
+            <Lightbulb className="h-5 w-5 text-chart-5" />
+            <span className="text-sm font-medium">Learning Check</span>
+          </div>
+          <span className="text-xs text-muted-foreground">
+            {completedPrompts.size} of {prompts.length}
+          </span>
+        </div>
+        <Progress value={progress} className="mt-2 h-1.5" />
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <div>
+          {currentPrompt.relatedLayer && (
+            <Badge variant="secondary" className="mb-2 text-xs capitalize">
+              {currentPrompt.relatedLayer} Layer
+            </Badge>
+          )}
+          <p className="text-sm font-medium leading-relaxed" data-testid="text-prompt-question">
+            {currentPrompt.question}
+          </p>
+        </div>
+        
+        <div className="space-y-2">
+          {currentPrompt.answers.map((answer, index) => {
+            const isSelected = selectedAnswer === index;
+            const isCorrect = answer.isCorrect;
+            const showResult = selectedAnswer !== null;
+            
+            let buttonVariant: "outline" | "default" | "destructive" = "outline";
+            let statusIcon = null;
+            
+            if (showResult) {
+              if (isCorrect) {
+                buttonVariant = "default";
+                statusIcon = <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />;
+              } else if (isSelected && !isCorrect) {
+                buttonVariant = "destructive";
+                statusIcon = <XCircle className="h-4 w-4 shrink-0" />;
+              }
+            }
+            
+            return (
+              <Button
+                key={index}
+                variant={buttonVariant}
+                className="h-auto w-full justify-start gap-3 whitespace-normal py-3 text-left"
+                onClick={() => handleAnswerSelect(index)}
+                disabled={selectedAnswer !== null}
+                data-testid={`button-answer-${index}`}
+              >
+                <span className="flex-1">{answer.text}</span>
+                {showResult && statusIcon}
+              </Button>
+            );
+          })}
+        </div>
+        
+        {showExplanation && (
+          <div className="rounded-md border border-chart-2/30 bg-chart-2/5 p-3">
+            <p className="text-sm leading-relaxed text-foreground">
+              {currentPrompt.explanation}
+            </p>
+          </div>
+        )}
+        
+        {showExplanation && currentIndex < prompts.length - 1 && (
+          <Button onClick={handleNext} className="w-full" data-testid="button-next-prompt">
+            Next Question
+            <ChevronRight className="ml-2 h-4 w-4" />
+          </Button>
+        )}
+      </CardContent>
+    </Card>
+  );
+}

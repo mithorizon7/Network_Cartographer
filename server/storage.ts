@@ -1,37 +1,27 @@
-import { type User, type InsertUser } from "@shared/schema";
-import { randomUUID } from "crypto";
-
-// modify the interface with any CRUD methods
-// you might need
+import type { Scenario } from "@shared/schema";
+import { familyIoTScenario, smallBusinessScenario, hotelPublicScenario } from "@shared/scenarios";
 
 export interface IStorage {
-  getUser(id: string): Promise<User | undefined>;
-  getUserByUsername(username: string): Promise<User | undefined>;
-  createUser(user: InsertUser): Promise<User>;
+  getAllScenarios(): Promise<Scenario[]>;
+  getScenarioById(id: string): Promise<Scenario | undefined>;
 }
 
 export class MemStorage implements IStorage {
-  private users: Map<string, User>;
+  private scenarios: Map<string, Scenario>;
 
   constructor() {
-    this.users = new Map();
+    this.scenarios = new Map();
+    this.scenarios.set(familyIoTScenario.id, familyIoTScenario);
+    this.scenarios.set(smallBusinessScenario.id, smallBusinessScenario);
+    this.scenarios.set(hotelPublicScenario.id, hotelPublicScenario);
   }
 
-  async getUser(id: string): Promise<User | undefined> {
-    return this.users.get(id);
+  async getAllScenarios(): Promise<Scenario[]> {
+    return Array.from(this.scenarios.values());
   }
 
-  async getUserByUsername(username: string): Promise<User | undefined> {
-    return Array.from(this.users.values()).find(
-      (user) => user.username === username,
-    );
-  }
-
-  async createUser(insertUser: InsertUser): Promise<User> {
-    const id = randomUUID();
-    const user: User = { ...insertUser, id };
-    this.users.set(id, user);
-    return user;
+  async getScenarioById(id: string): Promise<Scenario | undefined> {
+    return this.scenarios.get(id);
   }
 }
 
