@@ -70,9 +70,10 @@ Preferred communication style: Simple, everyday language.
 - **Fully localized components**:
   - DeviceFilter: Search placeholder, filter labels, results count
   - LearningPrompts: Quiz UI, progress, scoring, layer badges
-  - ScenarioComparison: Metrics labels, zone names, device types
+  - ScenarioSelector: Scenario titles via scenarioIdToKey mapping
+  - ScenarioComparison: Scenario titles/descriptions, metrics labels, zone names, device types
   - EventNotifications: Event messages with scenario-specific lookups
-  - NetworkCanvas: Zone labels, encryption status, security aria-labels
+  - NetworkCanvas: Scenario title in info overlay, zone labels, encryption status, security aria-labels
   - LayerGoggles: Legend items (encryption status, data flow indicators)
   - PacketJourney: Step descriptions, timeline labels, connection types
   - UnknownDeviceModal: Response options, feedback, educational content
