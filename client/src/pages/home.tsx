@@ -12,6 +12,8 @@ import { DeviceFilter, defaultFilters, useDeviceFilter, type DeviceFilters } fro
 import { PacketJourney } from "@/components/PacketJourney";
 import { ScenarioComparison } from "@/components/ScenarioComparison";
 import { ScenarioExportImport } from "@/components/ScenarioExportImport";
+import { EventNotifications } from "@/components/EventNotifications";
+import { UnknownDeviceModal } from "@/components/UnknownDeviceModal";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -44,6 +46,7 @@ export default function Home() {
   const [showPacketJourney, setShowPacketJourney] = useState(false);
   const [showComparison, setShowComparison] = useState(false);
   const [importedScenario, setImportedScenario] = useState<Scenario | null>(null);
+  const [showUnknownModal, setShowUnknownModal] = useState(false);
 
   const { 
     data: scenarioSummaries, 
@@ -119,6 +122,14 @@ export default function Home() {
     setShowPacketJourney(false);
     setShowComparison(false);
   }, []);
+
+  const handleDeviceSelect = useCallback((deviceId: string) => {
+    setSelectedDeviceId(deviceId);
+    const device = activeScenario?.devices.find(d => d.id === deviceId);
+    if (device && (device.type === "unknown" || device.riskFlags.includes("unknown_device"))) {
+      setShowUnknownModal(true);
+    }
+  }, [activeScenario]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -323,7 +334,7 @@ export default function Home() {
                   scenario={filteredScenario}
                   activeLayer={activeLayer}
                   selectedDeviceId={selectedDeviceId}
-                  onDeviceSelect={setSelectedDeviceId}
+                  onDeviceSelect={handleDeviceSelect}
                   highlightedDeviceIds={filteredDeviceIds}
                 />
               ) : (
@@ -332,7 +343,7 @@ export default function Home() {
                   networks={activeScenario?.networks || []}
                   activeLayer={activeLayer}
                   selectedDeviceId={selectedDeviceId}
-                  onDeviceSelect={setSelectedDeviceId}
+                  onDeviceSelect={handleDeviceSelect}
                 />
               )
             ) : (
@@ -400,6 +411,21 @@ export default function Home() {
           </p>
         </footer>
       )}
+
+      {activeScenario && (
+        <EventNotifications
+          events={activeScenario.events}
+          devices={activeScenario.devices}
+          scenarioId={activeScenario.id}
+          selectedDeviceId={selectedDeviceId}
+        />
+      )}
+
+      <UnknownDeviceModal
+        device={selectedDevice && (selectedDevice.type === "unknown" || selectedDevice.riskFlags.includes("unknown_device")) ? selectedDevice : null}
+        isOpen={showUnknownModal}
+        onClose={() => setShowUnknownModal(false)}
+      />
     </div>
   );
 }
