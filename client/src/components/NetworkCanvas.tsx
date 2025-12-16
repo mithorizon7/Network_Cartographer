@@ -1,7 +1,7 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Device, Network, LayerMode, Scenario } from "@shared/schema";
-import { Router, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, Globe, ArrowRight } from "lucide-react";
+import { Router, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, Globe, ArrowRight, Lock, Unlock } from "lucide-react";
 
 interface NetworkCanvasProps {
   scenario: Scenario;
@@ -44,16 +44,43 @@ const layerLabelColors: Record<LayerMode, string> = {
   application: "fill-green-500 dark:fill-green-400",
 };
 
+const portToService: Record<number, string> = {
+  22: "SSH",
+  80: "HTTP",
+  443: "HTTPS",
+  445: "SMB",
+  554: "RTSP",
+  9100: "Print",
+};
+
+const encryptedProtocols = new Set(["HTTPS", "SSH", "TLS", "SFTP", "WSS"]);
+const unencryptedProtocols = new Set(["HTTP", "FTP", "Telnet", "RTSP"]);
+
+function getEncryptionStatus(device: Device): "encrypted" | "mixed" | "unencrypted" | "unknown" {
+  if (!device.protocols || device.protocols.length === 0) return "unknown";
+  const hasEncrypted = device.protocols.some(p => encryptedProtocols.has(p));
+  const hasUnencrypted = device.protocols.some(p => unencryptedProtocols.has(p));
+  if (hasEncrypted && hasUnencrypted) return "mixed";
+  if (hasEncrypted) return "encrypted";
+  if (hasUnencrypted) return "unencrypted";
+  return "unknown";
+}
+
 function getDeviceLabel(device: Device, activeLayer: LayerMode): string {
   switch (activeLayer) {
     case "link":
       return device.localId.slice(-8);
     case "network":
       return device.ip;
-    case "transport":
-      return device.openPorts?.slice(0, 2).join(", ") || "—";
-    case "application":
-      return device.protocols?.slice(0, 2).join(", ") || "—";
+    case "transport": {
+      if (!device.openPorts || device.openPorts.length === 0) return "—";
+      const services = device.openPorts.slice(0, 2).map(p => portToService[p] || `:${p}`);
+      return services.join(", ");
+    }
+    case "application": {
+      if (!device.protocols || device.protocols.length === 0) return "—";
+      return device.protocols.slice(0, 2).join(", ");
+    }
     default:
       return device.label;
   }
@@ -82,6 +109,7 @@ function DeviceNode({
   const isRouter = device.type === "router";
   const label = getDeviceLabel(device, activeLayer);
   const labelColor = layerLabelColors[activeLayer];
+  const encryptionStatus = getEncryptionStatus(device);
 
   const nodeSize = isRouter ? 56 : 44;
   const iconSize = isRouter ? 28 : 20;
@@ -182,6 +210,47 @@ function DeviceNode({
           </motion.text>
         </AnimatePresence>
       ) : null}
+
+      {activeLayer === "application" && encryptionStatus !== "unknown" && !isRouter && (
+        <AnimatePresence>
+          <motion.g
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.2 }}
+          >
+            <foreignObject
+              x={pos.x + nodeSize / 2 - 2}
+              y={pos.y - nodeSize / 2 - 4}
+              width={16}
+              height={16}
+            >
+              <div 
+                className={`flex items-center justify-center rounded-full w-4 h-4 ${
+                  encryptionStatus === "encrypted" 
+                    ? "bg-green-500/20 text-green-600 dark:text-green-400" 
+                    : encryptionStatus === "unencrypted"
+                      ? "bg-destructive/20 text-destructive"
+                      : "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400"
+                }`}
+                title={
+                  encryptionStatus === "encrypted" 
+                    ? "Encrypted traffic" 
+                    : encryptionStatus === "unencrypted"
+                      ? "Unencrypted traffic"
+                      : "Mixed encryption"
+                }
+              >
+                {encryptionStatus === "encrypted" ? (
+                  <Lock className="w-2.5 h-2.5" />
+                ) : (
+                  <Unlock className="w-2.5 h-2.5" />
+                )}
+              </div>
+            </foreignObject>
+          </motion.g>
+        </AnimatePresence>
+      )}
     </g>
   );
 }
