@@ -53,8 +53,15 @@ const portToService: Record<number, string> = {
   9100: "Print",
 };
 
-const encryptedProtocols = new Set(["HTTPS", "SSH", "TLS", "SFTP", "WSS"]);
-const unencryptedProtocols = new Set(["HTTP", "FTP", "Telnet", "RTSP"]);
+const encryptedProtocols = new Set([
+  "HTTPS", "SSH", "TLS", "SFTP", "WSS", "IMAPS", "SMTPS", "POP3S", 
+  "FTPS", "LDAPS", "DNSCrypt", "WireGuard", "OpenVPN", "IPSec",
+  "iMessage", "Signal", "WhatsApp"
+]);
+const unencryptedProtocols = new Set([
+  "HTTP", "FTP", "Telnet", "RTSP", "SMTP", "POP3", "IMAP", 
+  "DNS", "NTP", "SNMP", "TFTP", "Gopher"
+]);
 
 function getEncryptionStatus(device: Device): "encrypted" | "mixed" | "unencrypted" | "unknown" {
   if (!device.protocols || device.protocols.length === 0) return "unknown";
@@ -131,6 +138,7 @@ function DeviceNode({
         cx={pos.x}
         cy={pos.y}
         r={nodeSize / 2 + 8}
+        style={{ strokeWidth: 0 }}
         initial={false}
         animate={{
           fill: isSelected ? "rgba(var(--primary-rgb), 0.2)" : "transparent",
@@ -259,6 +267,13 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
   const centerX = 400;
   const centerY = 350;
   const hasFilter = highlightedDeviceIds !== undefined;
+  const [layerPulse, setLayerPulse] = useState(false);
+
+  useEffect(() => {
+    setLayerPulse(true);
+    const timeout = setTimeout(() => setLayerPulse(false), 600);
+    return () => clearTimeout(timeout);
+  }, [activeLayer]);
 
   const devicePositions = useMemo(() => {
     const positions: Map<string, { x: number; y: number; zone: string }> = new Map();
@@ -324,10 +339,57 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
+          <filter id="softGlow" x="-100%" y="-100%" width="300%" height="300%">
+            <feGaussianBlur stdDeviation="8" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
           <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
             <polygon points="0 0, 10 3.5, 0 7" className="fill-muted-foreground/30" />
           </marker>
+          <radialGradient id="pulseGradient" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.3" />
+            <stop offset="70%" stopColor="hsl(var(--primary))" stopOpacity="0.1" />
+            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+          </radialGradient>
+          <radialGradient id="routerGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="hsl(var(--primary))" stopOpacity="0.15" />
+            <stop offset="100%" stopColor="hsl(var(--primary))" stopOpacity="0" />
+          </radialGradient>
         </defs>
+
+        <AnimatePresence>
+          {layerPulse && (
+            <motion.circle
+              cx={centerX}
+              cy={centerY}
+              r={50}
+              fill="url(#pulseGradient)"
+              initial={{ r: 30, opacity: 0.8 }}
+              animate={{ r: 350, opacity: 0 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.6, ease: "easeOut" }}
+            />
+          )}
+        </AnimatePresence>
+
+        <motion.circle
+          cx={centerX}
+          cy={centerY}
+          r={80}
+          fill="url(#routerGlow)"
+          animate={{ 
+            scale: [1, 1.1, 1],
+            opacity: [0.5, 0.7, 0.5]
+          }}
+          transition={{ 
+            duration: 3,
+            repeat: Infinity,
+            ease: "easeInOut"
+          }}
+        />
 
         {Object.entries(zoneRadii).map(([zone, radius]) => {
           const zoneColor = zoneColors[zone];
@@ -361,35 +423,76 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
           );
         })}
 
-        {routerPos && scenario.devices.filter(d => d.type !== "router").map(device => {
+        {routerPos && scenario.devices.filter(d => d.type !== "router").map((device, deviceIndex) => {
           const pos = devicePositions.get(device.id);
           if (!pos) return null;
 
           const isSelected = selectedDeviceId === device.id;
           const hasRisks = device.riskFlags.length > 0;
+          const showDataFlow = activeLayer === "transport" || activeLayer === "application";
 
           return (
-            <motion.line
-              key={`line-${device.id}`}
-              x1={routerPos.x}
-              y1={routerPos.y}
-              x2={pos.x}
-              y2={pos.y}
-              initial={{ pathLength: 0, opacity: 0 }}
-              animate={{ 
-                pathLength: 1, 
-                opacity: 1,
-                strokeWidth: isSelected ? 2 : 1,
-              }}
-              transition={{ duration: 0.5, delay: 0.2 }}
-              className={`${
-                isSelected 
-                  ? "stroke-primary" 
-                  : hasRisks 
-                    ? "stroke-destructive/30" 
-                    : "stroke-muted-foreground/20"
-              }`}
-            />
+            <g key={`connection-${device.id}`}>
+              <motion.line
+                x1={routerPos.x}
+                y1={routerPos.y}
+                x2={pos.x}
+                y2={pos.y}
+                style={{ strokeWidth: 1 }}
+                initial={{ pathLength: 0, opacity: 0 }}
+                animate={{ 
+                  pathLength: 1, 
+                  opacity: 1,
+                  strokeWidth: isSelected ? 2.5 : 1,
+                }}
+                transition={{ duration: 0.5, delay: 0.2 }}
+                className={`${
+                  isSelected 
+                    ? "stroke-primary" 
+                    : hasRisks 
+                      ? "stroke-destructive/30" 
+                      : "stroke-muted-foreground/20"
+                }`}
+              />
+              
+              {showDataFlow && !hasRisks && (
+                <motion.circle
+                  r={3}
+                  className={isSelected ? "fill-primary" : "fill-chart-1/60"}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: [0, 1, 1, 0],
+                    cx: [routerPos.x, pos.x],
+                    cy: [routerPos.y, pos.y],
+                  }}
+                  transition={{
+                    duration: 2 + deviceIndex * 0.3,
+                    repeat: Infinity,
+                    delay: deviceIndex * 0.4,
+                    ease: "linear",
+                  }}
+                />
+              )}
+              
+              {showDataFlow && !hasRisks && (
+                <motion.circle
+                  r={3}
+                  className={isSelected ? "fill-primary" : "fill-chart-3/60"}
+                  initial={{ opacity: 0 }}
+                  animate={{
+                    opacity: [0, 1, 1, 0],
+                    cx: [pos.x, routerPos.x],
+                    cy: [pos.y, routerPos.y],
+                  }}
+                  transition={{
+                    duration: 2.5 + deviceIndex * 0.2,
+                    repeat: Infinity,
+                    delay: deviceIndex * 0.6 + 1,
+                    ease: "linear",
+                  }}
+                />
+              )}
+            </g>
           );
         })}
 

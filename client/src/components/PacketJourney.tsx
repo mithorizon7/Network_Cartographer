@@ -238,20 +238,75 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
         </motion.div>
       </AnimatePresence>
 
-      <div className="flex items-center justify-center gap-1 text-xs text-muted-foreground">
-        <div className="flex items-center gap-1 rounded bg-muted px-2 py-1">
-          <span className="font-mono">{sourceDevice.ip}</span>
+      <div className="relative flex items-center justify-center gap-2 text-xs text-muted-foreground py-2">
+        <motion.div 
+          className={`flex items-center gap-1 rounded-md border px-2 py-1.5 transition-colors ${
+            currentStep === "device-to-router" || currentStep === "complete" 
+              ? "border-primary bg-primary/10" 
+              : "bg-muted"
+          }`}
+          animate={{ scale: currentStep === "device-to-router" ? [1, 1.05, 1] : 1 }}
+          transition={{ duration: 0.5, repeat: currentStep === "device-to-router" && isPlaying ? Infinity : 0 }}
+        >
+          <Wifi className="h-3 w-3" />
+          <span className="font-mono text-[10px]">{sourceDevice.ip}</span>
+        </motion.div>
+        
+        <div className="relative flex items-center">
+          <div className="h-px w-6 bg-muted-foreground/30" />
+          <AnimatePresence>
+            {(currentStep === "device-to-router" || currentStep === "router-back") && isPlaying && (
+              <motion.div
+                className="absolute left-0 h-2 w-2 rounded-full bg-primary"
+                animate={{
+                  x: currentStep === "device-to-router" ? [0, 24] : [24, 0],
+                }}
+                transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+              />
+            )}
+          </AnimatePresence>
         </div>
-        <ArrowRight className="h-3 w-3" />
-        <div className="flex items-center gap-1 rounded bg-muted px-2 py-1">
+        
+        <motion.div 
+          className={`flex items-center gap-1 rounded-md border px-2 py-1.5 transition-colors ${
+            currentStep === "router-processing" 
+              ? "border-primary bg-primary/10" 
+              : "bg-muted"
+          }`}
+          animate={{ scale: currentStep === "router-processing" ? [1, 1.05, 1] : 1 }}
+          transition={{ duration: 0.5, repeat: currentStep === "router-processing" && isPlaying ? Infinity : 0 }}
+        >
           <Server className="h-3 w-3" />
-          <span className="font-mono">{routerDevice.ip}</span>
+          <span className="font-mono text-[10px]">{routerDevice.ip}</span>
+        </motion.div>
+        
+        <div className="relative flex items-center">
+          <div className="h-px w-6 bg-muted-foreground/30" />
+          <AnimatePresence>
+            {(currentStep === "router-to-internet" || currentStep === "internet-response") && isPlaying && (
+              <motion.div
+                className="absolute left-0 h-2 w-2 rounded-full bg-chart-5"
+                animate={{
+                  x: currentStep === "router-to-internet" ? [0, 24] : [24, 0],
+                }}
+                transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+              />
+            )}
+          </AnimatePresence>
         </div>
-        <ArrowRight className="h-3 w-3" />
-        <div className="flex items-center gap-1 rounded bg-muted px-2 py-1">
+        
+        <motion.div 
+          className={`flex items-center gap-1 rounded-md border px-2 py-1.5 transition-colors ${
+            (currentStep === "router-to-internet" || currentStep === "internet-response") 
+              ? "border-chart-5 bg-chart-5/10" 
+              : "bg-muted"
+          }`}
+          animate={{ scale: (currentStep === "router-to-internet" || currentStep === "internet-response") ? [1, 1.05, 1] : 1 }}
+          transition={{ duration: 0.5, repeat: (currentStep === "router-to-internet" || currentStep === "internet-response") && isPlaying ? Infinity : 0 }}
+        >
           <Globe className="h-3 w-3" />
-          <span className="font-mono">{publicIp}</span>
-        </div>
+          <span className="font-mono text-[10px]">{publicIp}</span>
+        </motion.div>
       </div>
     </div>
   );
