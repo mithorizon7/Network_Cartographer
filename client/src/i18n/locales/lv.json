@@ -84,7 +84,8 @@
     "default_password": "Noklusējuma parole",
     "outdated_firmware": "Novecojusi programmaparatūra",
     "iot_device": "IoT ierīce",
-    "unencrypted": "Nešifrēta satiksme"
+    "unencrypted": "Nešifrēta satiksme",
+    "unencrypted_traffic": "Nešifrēta satiksme"
   },
   "zones": {
     "main": "Galvenais tīkls",

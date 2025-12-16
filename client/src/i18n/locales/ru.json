@@ -84,7 +84,8 @@
     "default_password": "Пароль по умолчанию",
     "outdated_firmware": "Устаревшая прошивка",
     "iot_device": "Устройство IoT",
-    "unencrypted": "Незашифрованный трафик"
+    "unencrypted": "Незашифрованный трафик",
+    "unencrypted_traffic": "Незашифрованный трафик"
   },
   "zones": {
     "main": "Основная сеть",

@@ -84,7 +84,8 @@
     "default_password": "Default password",
     "outdated_firmware": "Outdated firmware",
     "iot_device": "IoT device",
-    "unencrypted": "Unencrypted traffic"
+    "unencrypted": "Unencrypted traffic",
+    "unencrypted_traffic": "Unencrypted traffic"
   },
   "zones": {
     "main": "Main Network",
