@@ -64,6 +64,7 @@ Preferred communication style: Simple, everyday language.
 ### Internationalization (i18n) - December 16, 2024
 - **Production-ready i18n for Latvia market launch**
 - Languages: English (default), Latvian (LV), Russian (RU)
+- **271 translation keys** validated across all locales
 - Translation files in client/src/i18n/locales/{en,lv,ru}.json
 - LanguageSwitcher component in header for easy language switching
 - **Fully localized components**:
@@ -71,6 +72,10 @@ Preferred communication style: Simple, everyday language.
   - LearningPrompts: Quiz UI, progress, scoring, layer badges
   - ScenarioComparison: Metrics labels, zone names, device types
   - EventNotifications: Event messages with scenario-specific lookups
+  - NetworkCanvas: Zone labels, encryption status, security aria-labels
+  - LayerGoggles: Legend items (encryption status, data flow indicators)
+  - PacketJourney: Step descriptions, timeline labels, connection types
+  - UnknownDeviceModal: Response options, feedback, educational content
 - **Key i18n decisions**:
   - Networking terminology (IP, MAC, TCP, UDP, etc.) remains untranslated per i18n best practices
   - Browser language detection with localStorage persistence
