@@ -4,6 +4,7 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { OnboardingProvider } from "@/components/OnboardingProvider";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/home";
 
@@ -21,8 +22,10 @@ function App() {
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <ErrorBoundary>
-          <Toaster />
-          <Router />
+          <OnboardingProvider>
+            <Toaster />
+            <Router />
+          </OnboardingProvider>
         </ErrorBoundary>
       </TooltipProvider>
     </QueryClientProvider>

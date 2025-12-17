@@ -438,6 +438,98 @@
       "explanation": "Sensitīvām darbībām kā banku operācijām jāgaida drošs tīkls vai jāizmanto VPN. Pat HTTPS nevar aizsargāt pret visiem uzbrukumiem kompromitētos tīklos."
     }
   },
+  "onboarding": {
+    "buttons": {
+      "continue": "Turpināt",
+      "next": "Tālāk",
+      "back": "Atpakaļ",
+      "skip": "Izlaist",
+      "finish": "Sākt izpēti",
+      "restart": "Atsākt atklājumu"
+    },
+    "gating": {
+      "selectScenario": "Izvēlieties scenāriju, lai turpinātu",
+      "clickLink": "Noklikšķiniet uz Link/Local, lai turpinātu",
+      "clickNetwork": "Noklikšķiniet uz Network, lai turpinātu",
+      "clickTransport": "Noklikšķiniet uz Transport, lai turpinātu",
+      "clickApplication": "Noklikšķiniet uz Application, lai turpinātu",
+      "clickDevice": "Noklikšķiniet uz jebkuras ierīces, lai turpinātu"
+    },
+    "steps": {
+      "welcome_hook": {
+        "title": "Jūsu tīkls vienmēr runā",
+        "content": "Katra jums piederoša ierīce pastāvīgi sazinās - jūsu viedais televizors, tālrunis, termostats. Bet vai jūs zināt, ar ko tās runā un vai šīs sarunas ir drošas?"
+      },
+      "welcome_challenge": {
+        "title": "Slēptie riski",
+        "content": "Hakeri vairs neuzbrūk tikai datoriem. Viņi izmanto aizmirstas ierīces, vājas paroles un nešifrētus savienojumus. Pirmais solis uz aizsardzību ir izprast, kas notiek jūsu tīklā."
+      },
+      "welcome_mission": {
+        "title": "Jūsu tīkla atklājumu misija",
+        "content": "Nākamo dažu minūšu laikā jūs iemācīsieties redzēt savu tīklu tā, kā to redz drošības profesionāļi - slāni pa slānim, ierīci pa ierīcei. Jūs pamanīsiet ievainojamības, kuras vairums cilvēku pilnībā neievēro."
+      },
+      "map_solar_system": {
+        "title": "Jūsu tīkls kā Saules sistēma",
+        "content": "Šis ir jūsu tīkls, vizualizēts kā Saules sistēma. Centrā ir jūsu maršrutētājs - 'saule', ap kuru viss riņķo. Katrs gredzens apzīmē citu uzticības zonu, un katrs punkts ir ierīce, kas sazinās caur jūsu tīklu."
+      },
+      "map_trust_zones": {
+        "title": "Uzticības zonu izpratne",
+        "content": "Tīkli ir sadalīti zonās. Jūsu galvenajā tīklā ir uzticamas ierīces. Viesu tīkli ir apmeklētājiem. IoT zonas izolē viedās ierīces, kurām var būt vājāka drošība. Šo robežu izpratne ir jūsu pirmā aizsardzība."
+      },
+      "map_device_indicators": {
+        "title": "Ierīču signālu lasīšana",
+        "content": "Katra ierīce uzreiz parāda savu statusu. Pulsējošie gredzeni norāda uz iespējamām problēmām - aizmirstu ierīci, noklusējuma paroli vai novecojušu programmaparatūru. Iemācīties lasīt šos signālus ir kā iemācīties lasīt instrumentu paneli."
+      },
+      "scenario_contexts": {
+        "title": "Reāli tīklu scenāriji",
+        "content": "Tīkli ir dažādi. Ģimenes mājās ir viedie televizori un bērnu monitori. Mazos uzņēmumos ir serveri un klientu Wi-Fi. Viesnīcas vestibilos ir nezināmi viesi kopīgos tīklos. Katrs rada unikālas drošības problēmas."
+      },
+      "scenario_select": {
+        "title": "Izvēlieties savu vidi",
+        "content": "Izvēlieties scenāriju izpētei. Neuztraucieties - jūs jebkurā laikā varat pārslēgties, lai redzētu, kā drošības problēmas atšķiras starp vidēm."
+      },
+      "layers_why": {
+        "title": "Skatīšanās slāņos",
+        "content": "Tīkli darbojas slāņos - kā mizojot sīpolu. Katrs slānis atklāj atšķirīgu informāciju. Drošības profesionāļi pārslēdzas starp šiem skatiem, lai saprastu pilno ainu. Šis ir jūsu spēcīgākais rīks."
+      },
+      "layers_link": {
+        "title": "Link slānis: fiziskā identitāte",
+        "content": "Link slānis parāda fiziskos savienojumus - neapstrādātās adreses (MAC adreses), kas identificē katru aparatūras daļu. Šeit jūs pamanāt neatļautas ierīces, kurām vispār nevajadzētu būt jūsu tīklā."
+      },
+      "layers_network": {
+        "title": "Network slānis: loģiskās adreses",
+        "content": "Network slānis atklāj IP adreses - loģiskās adreses, ko izmanto maršrutēšanai. Šeit jūs redzat, kuras ierīces ir lokālas (privātas IP) un kuras sazinās ar internetu. Negaidīti ārēji savienojumi ir brīdinājuma signāli."
+      },
+      "layers_transport": {
+        "title": "Transport slānis: darbojošies pakalpojumi",
+        "content": "Transport slānis parāda, kā plūst dati - kādi pakalpojumi darbojas (HTTP, SSH, DNS) un vai savienojumi ir uzticami (TCP) vai ātri, bet nepārbaudīti (UDP). Tas atklāj, kādas lietojumprogrammas faktiski sazinās."
+      },
+      "layers_application": {
+        "title": "Application slānis: šifrēšanas statuss",
+        "content": "Application slānī jūs redzat šifrēšanas statusu. Slēdzenes ikonas parāda, kuri savienojumi ir aizsargāti (HTTPS) un kuri ir atklāti (HTTP). Nešifrētu datplūsmu var pārtvert - tas ir kritiski svarīgi jutīgiem datiem."
+      },
+      "device_inspection": {
+        "title": "Ierīču izmeklēšana",
+        "content": "Noklikšķiniet uz jebkuras ierīces, lai to izmeklētu. Detaļu panelis atklāj visu: tās tīkla identitāti, aktīvos savienojumus un, pats svarīgākais - drošības problēmas. Sarkanie karodziņi šeit prasa uzmanību."
+      },
+      "device_risk_flags": {
+        "title": "Riska karodziņu izpratne",
+        "content": "Drošības problēmas ir klasificētas pēc nopietnības. 'Noklusējuma parole' nozīmē, ka ikviens var piekļūt. 'Novecojusi programmaparatūra' nozīmē, ka pastāv zināmas ievainojamības. 'Nezināma ierīce' nozīmē, ka tai tur vispār nevajadzētu būt."
+      },
+      "device_learn_tab": {
+        "title": "Iebūvēta mācīšanās",
+        "content": "Katram ierīces tipam ir izglītojoša satura, kas paskaidro, kam pievērst uzmanību un kāpēc tas ir svarīgi. Izmantojiet cilni Mācīties, lai laika gaitā veidotu savu izpratni."
+      },
+      "quiz_intro": {
+        "title": "Pārbaudiet savu izpratni",
+        "content": "Pētot, jūs sastapsiet jautājumus, kas pārbauda jūsu izpratni. Tie nav vērtēti testi - tās ir iespējas nostiprināt iemācīto. Kļūdīšanās māca tikpat daudz kā pareiza atbilde."
+      },
+      "mission_complete": {
+        "title": "Misija pabeigta",
+        "content": "Tagad jums ir pamatzināšanas jebkura tīkla analīzei. Turpiniet pētīt scenārijus, pārslēdzieties starp slāņiem un izmeklējiet ierīces. Jo vairāk praktizēsiet, jo dabiskāka kļūs tīkla drošības domāšana."
+      }
+    }
+  },
   "deviceLabels": {
     "homeRouter": "Mājas maršrutētājs",
     "workLaptop": "Darba portatīvais dators",

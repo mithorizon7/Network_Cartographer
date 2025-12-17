@@ -4,6 +4,7 @@ import { useTranslation } from "react-i18next";
 import type { LayerMode } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Link2, Network, ArrowLeftRight, Globe, ChevronRight } from "lucide-react";
+import { useOnboardingOptional } from "@/components/OnboardingProvider";
 
 interface LayerGogglesProps {
   activeLayer: LayerMode;
@@ -37,6 +38,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
   const [previousLayer, setPreviousLayer] = useState<LayerMode | null>(null);
   const [transitionMessage, setTransitionMessage] = useState<string | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const onboarding = useOnboardingOptional();
 
   useEffect(() => {
     return () => {
@@ -57,6 +59,18 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
     setTransitionMessage(message);
     onChange(newLayer);
 
+    if (onboarding?.isActive && onboarding.currentStep) {
+      const stepId = onboarding.currentStep.id;
+      if (
+        (stepId === "layers_link" && newLayer === "link") ||
+        (stepId === "layers_network" && newLayer === "network") ||
+        (stepId === "layers_transport" && newLayer === "transport") ||
+        (stepId === "layers_application" && newLayer === "application")
+      ) {
+        onboarding.satisfyGating();
+      }
+    }
+
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
@@ -70,7 +84,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
   const activeLayerInfo = layerConfigs.find(l => l.mode === activeLayer);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2" data-testid="layer-goggles">
       <div className="flex items-center gap-1 rounded-md bg-muted p-1" role="group" aria-label={t('layers.title')}>
         {layerConfigs.map(({ mode, labelKey, shortLabelKey, icon: Icon }) => {
           const isActive = activeLayer === mode;
@@ -86,7 +100,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
                 variant={isActive ? "default" : "ghost"}
                 size="sm"
                 onClick={() => handleLayerChange(mode)}
-                data-testid={`button-layer-${mode}`}
+                data-testid={`layer-button-${mode}`}
                 className="w-full gap-1.5 text-xs sm:text-sm"
                 aria-pressed={isActive}
               >

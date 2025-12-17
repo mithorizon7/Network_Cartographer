@@ -438,6 +438,98 @@
       "explanation": "Sensitive activities like banking should wait for a secure network or require a VPN. Even HTTPS can't protect against all attacks on compromised networks."
     }
   },
+  "onboarding": {
+    "buttons": {
+      "continue": "Continue",
+      "next": "Next",
+      "back": "Back",
+      "skip": "Skip",
+      "finish": "Start Exploring",
+      "restart": "Restart Discovery"
+    },
+    "gating": {
+      "selectScenario": "Select a scenario to continue",
+      "clickLink": "Click Link/Local to continue",
+      "clickNetwork": "Click Network to continue",
+      "clickTransport": "Click Transport to continue",
+      "clickApplication": "Click Application to continue",
+      "clickDevice": "Click any device to continue"
+    },
+    "steps": {
+      "welcome_hook": {
+        "title": "Your Network is Always Talking",
+        "content": "Every device you own is constantly communicating - your smart TV, your phone, your thermostat. But do you know who they're talking to, and whether those conversations are safe?"
+      },
+      "welcome_challenge": {
+        "title": "The Hidden Risks",
+        "content": "Hackers don't just attack computers anymore. They exploit forgotten devices, weak passwords, and unencrypted connections. The first step to protection is understanding what's happening on your network."
+      },
+      "welcome_mission": {
+        "title": "Your Network Discovery Mission",
+        "content": "In the next few minutes, you'll learn to see your network the way security professionals do - layer by layer, device by device. You'll spot vulnerabilities that most people miss entirely."
+      },
+      "map_solar_system": {
+        "title": "Your Network as a Solar System",
+        "content": "This is your network, visualized like a solar system. At the center is your router - the 'sun' that everything orbits around. Every ring represents a different trust zone, and every dot is a device communicating through your network."
+      },
+      "map_trust_zones": {
+        "title": "Understanding Trust Zones",
+        "content": "Networks are divided into zones. Your main network holds trusted devices. Guest networks are for visitors. IoT zones isolate smart devices that may have weaker security. Understanding these boundaries is your first defense."
+      },
+      "map_device_indicators": {
+        "title": "Reading Device Signals",
+        "content": "Each device shows its status at a glance. Pulsing rings indicate potential concerns - a forgotten device, default password, or outdated firmware. Learning to read these signals is like learning to read a dashboard."
+      },
+      "scenario_contexts": {
+        "title": "Real-World Network Scenarios",
+        "content": "Networks come in many forms. A family home has smart TVs and baby monitors. A small business has servers and customer Wi-Fi. A hotel lobby has unknown guests on shared networks. Each presents unique security challenges."
+      },
+      "scenario_select": {
+        "title": "Choose Your Environment",
+        "content": "Select a scenario to explore. Don't worry - you can switch anytime to see how security concerns differ between environments."
+      },
+      "layers_why": {
+        "title": "Seeing in Layers",
+        "content": "Networks operate in layers - like peeling an onion. Each layer reveals different information. Security professionals switch between these views to understand the complete picture. This is your most powerful tool."
+      },
+      "layers_link": {
+        "title": "Link Layer: Physical Identity",
+        "content": "The Link layer shows physical connections - the raw addresses (MAC addresses) that identify each piece of hardware. This is where you spot unauthorized devices that shouldn't be on your network at all."
+      },
+      "layers_network": {
+        "title": "Network Layer: Logical Addresses",
+        "content": "The Network layer reveals IP addresses - the logical addresses used for routing. Here you see which devices are local (private IPs) versus which are reaching out to the internet. Unexpected external connections are red flags."
+      },
+      "layers_transport": {
+        "title": "Transport Layer: Services Running",
+        "content": "The Transport layer shows how data flows - which services are running (HTTP, SSH, DNS) and whether connections are reliable (TCP) or fast but unchecked (UDP). This reveals what applications are actually communicating."
+      },
+      "layers_application": {
+        "title": "Application Layer: Encryption Status",
+        "content": "The Application layer is where you see encryption status. The lock icons show which connections are protected (HTTPS) versus exposed (HTTP). Unencrypted traffic can be intercepted - this is critical for sensitive data."
+      },
+      "device_inspection": {
+        "title": "Investigating Devices",
+        "content": "Click any device to investigate. The details panel reveals everything: its network identity, active connections, and most importantly - security concerns. Red flags here demand attention."
+      },
+      "device_risk_flags": {
+        "title": "Understanding Risk Flags",
+        "content": "Security concerns are categorized by severity. 'Default Password' means anyone can access it. 'Outdated Firmware' means known vulnerabilities exist. 'Unknown Device' means it shouldn't be there at all."
+      },
+      "device_learn_tab": {
+        "title": "Built-in Learning",
+        "content": "Every device type has educational content explaining what to notice and why it matters. Use the Learn tab to build your understanding over time."
+      },
+      "quiz_intro": {
+        "title": "Test Your Understanding",
+        "content": "As you explore, you'll encounter questions that test your understanding. These aren't graded tests - they're opportunities to reinforce what you've learned. Getting one wrong teaches just as much as getting it right."
+      },
+      "mission_complete": {
+        "title": "Mission Complete",
+        "content": "You now have the foundational skills to analyze any network. Continue exploring the scenarios, switch between layers, and investigate devices. The more you practice, the more natural network security thinking becomes."
+      }
+    }
+  },
   "deviceLabels": {
     "homeRouter": "Home Router",
     "workLaptop": "Work Laptop",

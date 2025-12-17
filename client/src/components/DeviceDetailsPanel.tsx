@@ -59,7 +59,7 @@ export function DeviceDetailsPanel({ device, network, activeLayer, onClose }: De
   const hasRisks = device.riskFlags.length > 0;
 
   return (
-    <Card className="flex h-full flex-col" data-testid="panel-device-details">
+    <Card className="flex h-full flex-col" data-testid="device-details-panel">
       <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0 border-b pb-4">
         <div className="flex items-start gap-3">
           <div className={`rounded-md p-2 ${hasRisks ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"}`}>

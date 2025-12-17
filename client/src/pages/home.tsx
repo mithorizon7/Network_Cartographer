@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
 import type { LayerMode, Device, Network, Scenario, Environment } from "@shared/schema";
 import { scenarioIdToKey } from "@/lib/scenarioUtils";
+import { useOnboardingOptional } from "@/components/OnboardingProvider";
 import { NetworkCanvas } from "@/components/NetworkCanvas";
 import { LayerGoggles, LayerLegend } from "@/components/LayerGoggles";
 import { ScenarioSelector } from "@/components/ScenarioSelector";
@@ -42,6 +43,7 @@ interface ScenarioSummary {
 
 export default function Home() {
   const { t } = useTranslation();
+  const onboarding = useOnboardingOptional();
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
   const [activeLayer, setActiveLayer] = useState<LayerMode>("network");
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
@@ -133,7 +135,10 @@ export default function Home() {
     if (device && (device.type === "unknown" || device.riskFlags.includes("unknown_device"))) {
       setShowUnknownModal(true);
     }
-  }, [activeScenario]);
+    if (onboarding?.isActive && onboarding.currentStep?.id === "device_inspection") {
+      onboarding.satisfyGating();
+    }
+  }, [activeScenario, onboarding]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
