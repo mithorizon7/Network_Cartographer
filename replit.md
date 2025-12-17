@@ -64,7 +64,7 @@ Preferred communication style: Simple, everyday language.
 ### Internationalization (i18n) - December 16, 2024
 - **Production-ready i18n for Latvia market launch**
 - Languages: English (default), Latvian (LV), Russian (RU)
-- **271 translation keys** validated across all locales
+- **366 translation keys** validated across all locales
 - Translation files in client/src/i18n/locales/{en,lv,ru}.json
 - LanguageSwitcher component in header for easy language switching
 - **Fully localized components**:
@@ -150,3 +150,25 @@ Preferred communication style: Simple, everyday language.
 - **Encryption Icon Positioning**: Fixed Application layer encryption icons overlapping device nodes; icons now positioned clearly outside node bounds
 - **Mobile Layout**: Fixed 1px horizontal overflow on mobile viewports (375px) by adding overflow-x-hidden to root container
 - **Verified**: Device panel risk badges properly spaced, Learning prompts layout correct, Filter popover displays properly
+
+### Educational Onboarding System - December 17, 2024
+- **Network Discovery Mission**: Spotlight-based guided tutorial system that teaches (not just shows) each part of the application
+- **6 Chapters, 18 Steps**:
+  1. Mission Briefing: Welcome and educational overview
+  2. Network Map Understanding: Explains solar system visualization metaphor
+  3. Scenario Selection: User must select a scenario (gated step)
+  4. Layer-by-Layer Exploration: Explores Link, Network, Transport, Application layers (4 gated steps)
+  5. Device Investigation: User must click a device to see details (gated step)
+  6. Knowledge Testing: Explains learning prompts and quizzes
+- **Components**:
+  - `SpotlightOverlay.tsx`: Dark overlay with cutout highlighting for target elements
+  - `OnboardingProvider.tsx`: React context managing onboarding state and step progression
+- **Gating Logic**: Interactive steps require user action (scenario select, layer toggle, device click) before advancing
+- **Accessibility**: ARIA dialog roles, reduced-motion support, keyboard navigation
+- **localStorage Persistence**: `network-cartographer-onboarding` key stores completion state
+- **Full i18n Support**: All 18 steps translated in EN, LV, RU (366 total keys validated)
+- **Key data-testid Attributes**:
+  - `scenario-selector`, `select-scenario`
+  - `layer-goggles`, `layer-button-{link|network|transport|application}`
+  - `network-canvas`, `device-details-panel`, `learning-prompts`
+  - `onboarding-tooltip`, `button-onboarding-{next|prev|skip}`
