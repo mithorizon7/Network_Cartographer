@@ -141,15 +141,14 @@ export function SpotlightOverlay({
   const overlayContent = (
     <AnimatePresence>
       <div 
-        className="fixed inset-0 z-[9999]" 
+        className="pointer-events-none fixed inset-0 z-[9999]" 
         aria-modal="true" 
         role="dialog"
         aria-labelledby="spotlight-title"
         aria-describedby="spotlight-content"
       >
         <svg 
-          className="absolute inset-0 h-full w-full"
-          style={{ pointerEvents: 'none' }}
+          className="pointer-events-none absolute inset-0 h-full w-full"
         >
           <defs>
             <mask id="spotlight-mask">
@@ -173,8 +172,6 @@ export function SpotlightOverlay({
             height="100%"
             fill="rgba(0, 0, 0, 0.75)"
             mask="url(#spotlight-mask)"
-            style={{ pointerEvents: 'auto' }}
-            onClick={(e) => e.stopPropagation()}
           />
         </svg>
 
@@ -192,7 +189,7 @@ export function SpotlightOverlay({
 
         <motion.div
           ref={tooltipRef}
-          className="absolute z-[10000] w-[360px] max-w-[calc(100vw-40px)] rounded-lg border bg-card p-5 shadow-xl"
+          className="pointer-events-auto absolute z-[10000] w-[360px] max-w-[calc(100vw-40px)] rounded-lg border bg-card p-5 shadow-xl"
           style={{
             top: tooltipPosition.top,
             left: tooltipPosition.left,
