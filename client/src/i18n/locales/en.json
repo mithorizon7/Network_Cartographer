@@ -50,7 +50,7 @@
     "application": "Application",
     "linkDescription": "Physical device identifiers (MAC addresses)",
     "networkDescription": "IP addresses and routing",
-    "transportDescription": "Ports and protocols",
+    "transportDescription": "Ports and connections (TCP/UDP)",
     "applicationDescription": "Apps and encryption status",
     "transition_link_network": "Now seeing IP addresses instead of hardware IDs",
     "transition_network_link": "Now seeing hardware (MAC) addresses for local delivery",
@@ -375,7 +375,7 @@
     "macPurpose": {
       "question": "What is a MAC address (Local ID) used for?",
       "answers": ["Routing packets across the internet", "Identifying devices on the local network", "Encrypting your data"],
-      "explanation": "MAC addresses are hardware identifiers used for local delivery - like apartment numbers within a building. They don't leave your local network."
+      "explanation": "MAC addresses are unique hardware identifiers burned into each network device. They're used for delivering data on your local network segment - like apartment numbers within a building. Routers strip MAC addresses when forwarding to the internet."
     },
     "guestNetwork": {
       "question": "Why would you put guests on a separate network?",
@@ -425,7 +425,7 @@
     "httpsImportance": {
       "question": "On public Wi-Fi, why is HTTPS especially important?",
       "answers": ["HTTPS makes websites load faster", "HTTPS encrypts your data so others on the network can't read it", "HTTPS prevents viruses"],
-      "explanation": "HTTPS creates an encrypted tunnel between you and the website. Even if someone captures your traffic, they see gibberish instead of your passwords."
+      "explanation": "HTTPS uses TLS encryption to create a secure tunnel between you and the website. Even if someone captures your traffic, they see encrypted data instead of your passwords and personal information."
     },
     "vpn": {
       "question": "What does a VPN do on public Wi-Fi?",
@@ -501,12 +501,12 @@
         "content": "The Network layer reveals IP addresses - the logical addresses used for routing. Here you see which devices are local (private IPs) versus which are reaching out to the internet. Unexpected external connections are red flags."
       },
       "layers_transport": {
-        "title": "Transport Layer: Services Running",
-        "content": "The Transport layer shows how data flows - which services are running (HTTP, SSH, DNS) and whether connections are reliable (TCP) or fast but unchecked (UDP). This reveals what applications are actually communicating."
+        "title": "Transport Layer: Connections & Ports",
+        "content": "The Transport layer shows how data flows - which port numbers identify services (443 for HTTPS, 22 for SSH) and whether connections use TCP (reliable, ordered) or UDP (fast, no guarantees). This is where you see the 'plumbing' of network communication."
       },
       "layers_application": {
-        "title": "Application Layer: Encryption Status",
-        "content": "The Application layer is where you see encryption status. The lock icons show which connections are protected (HTTPS) versus exposed (HTTP). Unencrypted traffic can be intercepted - this is critical for sensitive data."
+        "title": "Application Layer: What's Being Communicated",
+        "content": "The Application layer shows what's actually being communicated - web browsing, email, streaming. The lock icons reveal encryption status: HTTPS encrypts your data using TLS, while plain HTTP exposes everything. Unencrypted traffic can be read by anyone on the network."
       },
       "device_inspection": {
         "title": "Investigating Devices",

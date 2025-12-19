@@ -172,7 +172,7 @@ export const familyIoTScenario: Scenario = {
         { text: "Identifying devices on the local network", isCorrect: true },
         { text: "Encrypting your data", isCorrect: false },
       ],
-      explanation: "MAC addresses are hardware identifiers used for local delivery - like apartment numbers within a building. They don't leave your local network.",
+      explanation: "MAC addresses are unique hardware identifiers burned into each network device. They're used for delivering data on your local network segment - like apartment numbers within a building. Routers strip MAC addresses when forwarding to the internet.",
       relatedLayer: "link",
     },
     {
@@ -522,7 +522,7 @@ export const hotelPublicScenario: Scenario = {
         { text: "HTTPS encrypts your data so others on the network can't read it", isCorrect: true },
         { text: "HTTPS prevents viruses", isCorrect: false },
       ],
-      explanation: "HTTPS creates an encrypted tunnel between you and the website. Even if someone captures your traffic, they see gibberish instead of your passwords.",
+      explanation: "HTTPS uses TLS encryption to create a secure tunnel between you and the website. Even if someone captures your traffic, they see encrypted data instead of your passwords and personal information.",
       relatedLayer: "application",
     },
     {

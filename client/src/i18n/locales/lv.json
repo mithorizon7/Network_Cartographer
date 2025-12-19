@@ -50,7 +50,7 @@
     "application": "Lietojumprogramma",
     "linkDescription": "Fiziskās ierīces identifikatori (MAC adreses)",
     "networkDescription": "IP adreses un maršrutēšana",
-    "transportDescription": "Porti un protokoli",
+    "transportDescription": "Porti un savienojumi (TCP/UDP)",
     "applicationDescription": "Lietotnes un šifrēšanas statuss",
     "transition_link_network": "Tagad redzat IP adreses, nevis aparatūras ID",
     "transition_network_link": "Tagad redzat aparatūras (MAC) adreses lokālai piegādei",
@@ -375,7 +375,7 @@
     "macPurpose": {
       "question": "Kam tiek izmantota MAC adrese (lokālais ID)?",
       "answers": ["Pakešu maršrutēšanai internetā", "Ierīču identificēšanai lokālajā tīklā", "Jūsu datu šifrēšanai"],
-      "explanation": "MAC adreses ir aparatūras identifikatori, ko izmanto lokālai piegādei - kā dzīvokļu numuri ēkā. Tās nepameto jūsu lokālo tīklu."
+      "explanation": "MAC adreses ir unikāli aparatūras identifikatori, kas ieprogrammēti katrā tīkla ierīcē. Tās izmanto datu piegādei jūsu lokālajā tīkla segmentā - kā dzīvokļu numuri ēkā. Maršrutētāji noņem MAC adreses, pārsūtot uz internetu."
     },
     "guestNetwork": {
       "question": "Kāpēc jūs ievietotu viesus atsevišķā tīklā?",
@@ -425,7 +425,7 @@
     "httpsImportance": {
       "question": "Publiskajā Wi-Fi, kāpēc HTTPS ir īpaši svarīgs?",
       "answers": ["HTTPS padara vietnes ātrākas", "HTTPS šifrē jūsu datus, lai citi tīklā tos nevarētu lasīt", "HTTPS novērš vīrusus"],
-      "explanation": "HTTPS izveido šifrētu tuneli starp jums un vietni. Pat ja kāds pārtver jūsu datplūsmu, viņš redz nesakarīgus simbolus, nevis jūsu paroles."
+      "explanation": "HTTPS izmanto TLS šifrēšanu, lai izveidotu drošu tuneli starp jums un vietni. Pat ja kāds pārtver jūsu datplūsmu, viņš redz šifrētus datus, nevis jūsu paroles un personīgo informāciju."
     },
     "vpn": {
       "question": "Ko VPN dara publiskajā Wi-Fi?",
@@ -501,12 +501,12 @@
         "content": "Network slānis atklāj IP adreses - loģiskās adreses, ko izmanto maršrutēšanai. Šeit jūs redzat, kuras ierīces ir lokālas (privātas IP) un kuras sazinās ar internetu. Negaidīti ārēji savienojumi ir brīdinājuma signāli."
       },
       "layers_transport": {
-        "title": "Transport slānis: darbojošies pakalpojumi",
-        "content": "Transport slānis parāda, kā plūst dati - kādi pakalpojumi darbojas (HTTP, SSH, DNS) un vai savienojumi ir uzticami (TCP) vai ātri, bet nepārbaudīti (UDP). Tas atklāj, kādas lietojumprogrammas faktiski sazinās."
+        "title": "Transport slānis: savienojumi un porti",
+        "content": "Transport slānis parāda, kā plūst dati - kuri portu numuri identificē pakalpojumus (443 HTTPS, 22 SSH) un vai savienojumi izmanto TCP (uzticami, sakārtoti) vai UDP (ātri, bez garantijām). Šeit jūs redzat tīkla komunikācijas 'cauruļvadus'."
       },
       "layers_application": {
-        "title": "Application slānis: šifrēšanas statuss",
-        "content": "Application slānī jūs redzat šifrēšanas statusu. Slēdzenes ikonas parāda, kuri savienojumi ir aizsargāti (HTTPS) un kuri ir atklāti (HTTP). Nešifrētu datplūsmu var pārtvert - tas ir kritiski svarīgi jutīgiem datiem."
+        "title": "Application slānis: kas tiek komunikēts",
+        "content": "Application slānis parāda, kas faktiski tiek komunikēts - tīmekļa pārlūkošana, e-pasts, straumēšana. Slēdzenes ikonas atklāj šifrēšanas statusu: HTTPS šifrē jūsu datus, izmantojot TLS, bet vienkāršs HTTP atsedz visu. Nešifrētu datplūsmu var lasīt ikviens tīklā."
       },
       "device_inspection": {
         "title": "Ierīču izmeklēšana",
