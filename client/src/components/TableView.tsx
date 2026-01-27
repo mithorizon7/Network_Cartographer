@@ -4,8 +4,9 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Router, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, AlertTriangle } from "lucide-react";
+import { Router, Server, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, AlertTriangle } from "lucide-react";
 import { deviceLabelToKey } from "@/lib/scenarioUtils";
+import { formatMac } from "@/lib/macUtils";
 
 interface TableViewProps {
   devices: Device[];
@@ -13,10 +14,12 @@ interface TableViewProps {
   activeLayer: LayerMode;
   selectedDeviceId: string | null;
   onDeviceSelect: (deviceId: string) => void;
+  showFullMac?: boolean;
 }
 
 const deviceIcons: Record<string, typeof Router> = {
   router: Router,
+  server: Server,
   laptop: Laptop,
   phone: Smartphone,
   tablet: Tablet,
@@ -29,7 +32,7 @@ const deviceIcons: Record<string, typeof Router> = {
   unknown: HelpCircle,
 };
 
-export function TableView({ devices, networks, activeLayer, selectedDeviceId, onDeviceSelect }: TableViewProps) {
+export function TableView({ devices, networks, activeLayer, selectedDeviceId, onDeviceSelect, showFullMac = true }: TableViewProps) {
   const { t } = useTranslation();
   const getNetworkForDevice = (networkId: string) => networks.find(n => n.id === networkId);
 
@@ -39,11 +42,15 @@ export function TableView({ devices, networks, activeLayer, selectedDeviceId, on
         <TableHeader>
           <TableRow>
             <TableHead className="w-12"></TableHead>
-            <TableHead>Device</TableHead>
-            <TableHead>Type</TableHead>
-            <TableHead>Network</TableHead>
-            <TableHead>{activeLayer === "link" ? "MAC Address" : "IP Address"}</TableHead>
-            <TableHead>Status</TableHead>
+            <TableHead>{t('tableView.name')}</TableHead>
+            <TableHead>{t('tableView.type')}</TableHead>
+            <TableHead>{t('tableView.network')}</TableHead>
+            <TableHead>
+              {activeLayer === "link"
+                ? t(showFullMac ? 'tableView.macAddressFull' : 'tableView.macAddressShort')
+                : t('tableView.ipAddress')}
+            </TableHead>
+            <TableHead>{t('tableView.status')}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -80,31 +87,33 @@ export function TableView({ devices, networks, activeLayer, selectedDeviceId, on
                     : device.label}
                 </TableCell>
                 <TableCell className="capitalize text-muted-foreground">
-                  {device.type === "unknown" ? "Unidentified" : device.type}
+                  {t(`deviceTypes.${device.type}`, device.type)}
                 </TableCell>
                 <TableCell>
                   {network ? (
                     <div>
                       <span className="text-sm">{network.ssid}</span>
                       <Badge variant="secondary" className="ml-2 text-xs capitalize">
-                        {network.zone}
+                        {t(`zones.${network.zone}`, network.zone)}
                       </Badge>
                     </div>
                   ) : (
-                    <span className="text-muted-foreground">—</span>
+                    <span className="text-muted-foreground">{t('common.noData')}</span>
                   )}
                 </TableCell>
                 <TableCell className="font-mono text-sm">
-                  {activeLayer === "link" ? device.localId : device.ip}
+                  {activeLayer === "link" ? formatMac(device.localId, showFullMac) : device.ip}
                 </TableCell>
                 <TableCell>
                   {hasRisks ? (
                     <div className="flex items-center gap-1.5 text-destructive">
                       <AlertTriangle className="h-4 w-4" />
-                      <span className="text-xs">{device.riskFlags.length} issue{device.riskFlags.length > 1 ? "s" : ""}</span>
+                      <span className="text-xs">
+                        {t('tableView.issue', { count: device.riskFlags.length })}
+                      </span>
                     </div>
                   ) : (
-                    <Badge variant="secondary" className="text-xs">OK</Badge>
+                    <Badge variant="secondary" className="text-xs">{t('tableView.ok')}</Badge>
                   )}
                 </TableCell>
               </TableRow>

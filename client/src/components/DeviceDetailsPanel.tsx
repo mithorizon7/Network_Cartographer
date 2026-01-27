@@ -5,18 +5,23 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Button } from "@/components/ui/button";
-import { X, Router, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, AlertTriangle, Shield, Lock, Unlock } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { X, Router, Server, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, AlertTriangle, Shield, Lock, Unlock } from "lucide-react";
 import { deviceLabelToKey } from "@/lib/scenarioUtils";
+import { formatMac } from "@/lib/macUtils";
 
 interface DeviceDetailsPanelProps {
   device: Device | null;
   network: Network | null;
   activeLayer: LayerMode;
   onClose: () => void;
+  showFullMac?: boolean;
+  onToggleMacDisplay?: (showFull: boolean) => void;
 }
 
 const deviceIcons: Record<string, typeof Router> = {
   router: Router,
+  server: Server,
   laptop: Laptop,
   phone: Smartphone,
   tablet: Tablet,
@@ -38,7 +43,7 @@ const riskVariants: Record<string, "default" | "destructive" | "secondary"> = {
   forgotten_device: "secondary",
 };
 
-export function DeviceDetailsPanel({ device, network, activeLayer, onClose }: DeviceDetailsPanelProps) {
+export function DeviceDetailsPanel({ device, network, activeLayer, onClose, showFullMac = true, onToggleMacDisplay }: DeviceDetailsPanelProps) {
   const { t } = useTranslation();
   
   if (!device) {
@@ -57,6 +62,8 @@ export function DeviceDetailsPanel({ device, network, activeLayer, onClose }: De
 
   const Icon = deviceIcons[device.type] || HelpCircle;
   const hasRisks = device.riskFlags.length > 0;
+  const macLabelKey = showFullMac ? "devicePanel.localIdFull" : "devicePanel.localIdShort";
+  const formattedMac = formatMac(device.localId, showFullMac);
 
   return (
     <Card className="flex h-full flex-col" data-testid="device-details-panel">
@@ -126,10 +133,10 @@ export function DeviceDetailsPanel({ device, network, activeLayer, onClose }: De
                   <div className="flex flex-wrap gap-1.5">
                     {device.protocols.map((protocol) => (
                       <Badge key={protocol} variant="secondary" className="text-xs">
-                        {protocol.startsWith("HTTP") ? (
-                          <Lock className="mr-1 h-3 w-3" />
-                        ) : protocol === "HTTP" ? (
+                        {protocol === "HTTP" ? (
                           <Unlock className="mr-1 h-3 w-3" />
+                        ) : protocol.startsWith("HTTPS") ? (
+                          <Lock className="mr-1 h-3 w-3" />
                         ) : null}
                         {protocol}
                       </Badge>
@@ -141,20 +148,37 @@ export function DeviceDetailsPanel({ device, network, activeLayer, onClose }: De
             
             <TabsContent value="network" className="mt-0 space-y-4">
               <div className="space-y-3">
+                <div className="flex items-center justify-between gap-3 rounded-md bg-muted/50 p-3">
+                  <div>
+                    <h3 className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                      {t('devicePanel.macDisplay')}
+                    </h3>
+                    <p className="text-xs text-muted-foreground">
+                      {showFullMac ? t('devicePanel.macDisplayFull') : t('devicePanel.macDisplayShort')}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={showFullMac}
+                    onCheckedChange={(checked) => onToggleMacDisplay?.(checked)}
+                    disabled={!onToggleMacDisplay}
+                    aria-label={t('devicePanel.macDisplay')}
+                    data-testid="toggle-mac-display"
+                  />
+                </div>
                 <div className="rounded-md bg-muted/50 p-3">
                   <h3 className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                     {activeLayer === "link" ? <Shield className="h-3 w-3" /> : null}
-                    {activeLayer === "link" ? t('devicePanel.localId') : t('devicePanel.ipAddress')}
+                    {activeLayer === "link" ? t(macLabelKey) : t('devicePanel.ipAddress')}
                   </h3>
                   <p className="font-mono text-sm" data-testid="text-device-address">
-                    {activeLayer === "link" ? device.localId : device.ip}
+                    {activeLayer === "link" ? formattedMac : device.ip}
                   </p>
                 </div>
                 
                 {activeLayer !== "link" && (
                   <div className="rounded-md bg-muted/50 p-3">
-                    <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t('devicePanel.localId')}</h3>
-                    <p className="font-mono text-sm">{device.localId}</p>
+                    <h3 className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">{t(macLabelKey)}</h3>
+                    <p className="font-mono text-sm">{formattedMac}</p>
                   </div>
                 )}
                 
@@ -224,6 +248,16 @@ export function DeviceDetailsPanel({ device, network, activeLayer, onClose }: De
                   </p>
                 )}
               </div>
+              {activeLayer === "link" && (
+                <div className="rounded-md border border-chart-1/30 bg-chart-1/5 p-3">
+                  <h4 className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+                    {t('devicePanel.macRandomizationTitle')}
+                  </h4>
+                  <p className="text-sm leading-relaxed">
+                    {t('devicePanel.macRandomizationNote')}
+                  </p>
+                </div>
+              )}
             </TabsContent>
           </ScrollArea>
         </Tabs>

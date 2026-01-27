@@ -13,11 +13,13 @@ import {
 } from "@/components/ui/dialog";
 import { AlertTriangle, Shield, Ban, Eye, CheckCircle2 } from "lucide-react";
 import { deviceLabelToKey } from "@/lib/scenarioUtils";
+import { formatMac } from "@/lib/macUtils";
 
 interface UnknownDeviceModalProps {
   device: Device | null;
   isOpen: boolean;
   onClose: () => void;
+  showFullMac?: boolean;
 }
 
 const responseIds = ["investigate", "block", "ignore"] as const;
@@ -32,7 +34,7 @@ const responseCorrect = {
   ignore: false,
 };
 
-export function UnknownDeviceModal({ device, isOpen, onClose }: UnknownDeviceModalProps) {
+export function UnknownDeviceModal({ device, isOpen, onClose, showFullMac = true }: UnknownDeviceModalProps) {
   const { t } = useTranslation();
   const [selectedResponse, setSelectedResponse] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
@@ -77,10 +79,10 @@ export function UnknownDeviceModal({ device, isOpen, onClose }: UnknownDeviceMod
               </p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Badge variant="secondary" className="font-mono text-xs">
-                  IP: {device.ip}
+                  {t('devicePanel.ipAddress')}: {device.ip}
                 </Badge>
                 <Badge variant="secondary" className="font-mono text-xs">
-                  MAC: {device.localId.slice(-8)}
+                  {t(showFullMac ? 'unknownDevice.macFull' : 'unknownDevice.macShort')}: {formatMac(device.localId, showFullMac)}
                 </Badge>
               </div>
             </CardContent>

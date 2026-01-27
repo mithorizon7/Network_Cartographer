@@ -51,7 +51,19 @@ export const promptIdToKey: Record<string, string> = {
   "prompt_corp_isolation": "corpIsolation",
   "prompt_open_wifi": "openWifi",
   "prompt_evil_twin": "evilTwin",
+  "prompt_public_private_ip": "publicPrivateIp",
   "prompt_https_importance": "httpsImportance",
   "prompt_vpn": "vpn",
   "prompt_safe_behavior": "safeBehavior",
+};
+
+export const taskIdToKey: Record<string, string> = {
+  "family_block_unknown": "familyIoT.blockUnknown",
+  "family_change_camera_password": "familyIoT.changeCameraPassword",
+  "family_enable_guest": "familyIoT.enableGuest",
+  "business_enable_guest": "smallBusiness.enableGuest",
+  "business_isolate_printer": "smallBusiness.isolatePrinter",
+  "business_block_unknown": "smallBusiness.blockUnknown",
+  "hotel_verify_ssid": "hotelPublic.verifySsid",
+  "hotel_block_fake_ap": "hotelPublic.blockFakeAp",
 };

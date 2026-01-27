@@ -1,9 +1,10 @@
 import { useMemo, useCallback, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Device, Network, LayerMode, Scenario } from "@shared/schema";
-import { Router, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, Globe, ArrowRight, Lock, Unlock } from "lucide-react";
+import type { Device, LayerMode, Scenario, Flow, FlowCategory } from "@shared/schema";
+import { Router, Server, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, Globe, Lock, Unlock } from "lucide-react";
 import { scenarioIdToKey, deviceLabelToKey } from "@/lib/scenarioUtils";
+import { formatMac } from "@/lib/macUtils";
 
 interface NetworkCanvasProps {
   scenario: Scenario;
@@ -11,10 +12,12 @@ interface NetworkCanvasProps {
   selectedDeviceId: string | null;
   onDeviceSelect: (deviceId: string) => void;
   highlightedDeviceIds?: Set<string>;
+  showFullMac?: boolean;
 }
 
 const deviceIcons: Record<string, typeof Router> = {
   router: Router,
+  server: Server,
   laptop: Laptop,
   phone: Smartphone,
   tablet: Tablet,
@@ -46,6 +49,15 @@ const layerLabelColors: Record<LayerMode, string> = {
   application: "fill-green-500 dark:fill-green-400",
 };
 
+const flowCategoryColors: Record<FlowCategory, string> = {
+  web: "fill-chart-1/60",
+  video: "fill-chart-2/60",
+  email: "fill-chart-4/60",
+  chat: "fill-chart-3/60",
+  remote: "fill-chart-5/60",
+  file: "fill-chart-2/60",
+};
+
 const portToService: Record<number, string> = {
   22: "SSH",
   80: "HTTP",
@@ -53,6 +65,39 @@ const portToService: Record<number, string> = {
   445: "SMB",
   554: "RTSP",
   9100: "Print",
+};
+
+const protocolToFlow: Record<string, string> = {
+  https: "web",
+  http: "web",
+  smtp: "email",
+  imap: "email",
+  pop3: "email",
+  email: "email",
+  youtube: "video",
+  netflix: "video",
+  "disney+": "video",
+  zoom: "video",
+  ssh: "remote",
+  rdp: "remote",
+  smb: "file",
+  imessage: "chat",
+  whatsapp: "chat",
+  signal: "chat",
+  alexa: "chat",
+  wireguard: "remote",
+  openvpn: "remote",
+  ipsec: "remote",
+  crm: "web",
+};
+
+const portToFlow: Record<number, string> = {
+  80: "web",
+  443: "web",
+  22: "remote",
+  445: "file",
+  554: "video",
+  9100: "file",
 };
 
 const encryptedProtocols = new Set([
@@ -65,7 +110,15 @@ const unencryptedProtocols = new Set([
   "DNS", "NTP", "SNMP", "TFTP", "Gopher"
 ]);
 
-function getEncryptionStatus(device: Device): "encrypted" | "mixed" | "unencrypted" | "unknown" {
+function getEncryptionStatus(device: Device, flows: Flow[]): "encrypted" | "mixed" | "unencrypted" | "unknown" {
+  if (device.riskFlags.includes("unencrypted_traffic")) return "unencrypted";
+  if (flows.length > 0) {
+    const hasEncrypted = flows.some(flow => flow.encrypted);
+    const hasUnencrypted = flows.some(flow => !flow.encrypted);
+    if (hasEncrypted && hasUnencrypted) return "mixed";
+    if (hasEncrypted) return "encrypted";
+    if (hasUnencrypted) return "unencrypted";
+  }
   if (!device.protocols || device.protocols.length === 0) return "unknown";
   const hasEncrypted = device.protocols.some(p => encryptedProtocols.has(p));
   const hasUnencrypted = device.protocols.some(p => unencryptedProtocols.has(p));
@@ -75,18 +128,74 @@ function getEncryptionStatus(device: Device): "encrypted" | "mixed" | "unencrypt
   return "unknown";
 }
 
-function getDeviceLabel(device: Device, activeLayer: LayerMode): string {
+function getDeviceFlows(flows: Flow[], deviceId: string): Flow[] {
+  return flows.filter(flow => flow.srcDeviceId === deviceId);
+}
+
+function getFlowCategories(flows: Flow[]): FlowCategory[] {
+  const categories = new Set<FlowCategory>();
+  flows.forEach(flow => categories.add(flow.category));
+  return Array.from(categories);
+}
+
+function getTransportFlows(device: Device): string[] {
+  const flows = new Set<string>();
+
+  if (device.protocols) {
+    for (const protocol of device.protocols) {
+      const flow = protocolToFlow[protocol.toLowerCase()];
+      if (flow) flows.add(flow);
+    }
+  }
+
+  if (flows.size === 0 && device.openPorts) {
+    for (const port of device.openPorts) {
+      const flow = portToFlow[port];
+      if (flow) flows.add(flow);
+    }
+  }
+
+  return Array.from(flows);
+}
+
+function getDeviceLabel(
+  device: Device,
+  activeLayer: LayerMode,
+  t?: (key: string, options?: { defaultValue?: string }) => string,
+  flows: Flow[] = [],
+  showFullMac = true
+): string {
   switch (activeLayer) {
     case "link":
-      return device.localId.slice(-8);
+      return formatMac(device.localId, showFullMac);
     case "network":
       return device.ip;
     case "transport": {
+      const flowCategories = getFlowCategories(flows);
+      if (flowCategories.length > 0) {
+        const labels = flowCategories
+          .slice(0, 2)
+          .map((flow) => (t ? t(`transportFlows.${flow}`, { defaultValue: flow }) : flow));
+        return labels.join(", ");
+      }
+      const transportFlows = getTransportFlows(device);
+      if (transportFlows.length > 0) {
+        const labels = transportFlows
+          .slice(0, 2)
+          .map((flow) => (t ? t(`transportFlows.${flow}`, { defaultValue: flow }) : flow));
+        return labels.join(", ");
+      }
       if (!device.openPorts || device.openPorts.length === 0) return "—";
       const services = device.openPorts.slice(0, 2).map(p => portToService[p] || `:${p}`);
       return services.join(", ");
     }
     case "application": {
+      if (flows.length > 0) {
+        return flows
+          .slice(0, 2)
+          .map(flow => flow.dstLabel)
+          .join(", ");
+      }
       if (!device.protocols || device.protocols.length === 0) return "—";
       return device.protocols.slice(0, 2).join(", ");
     }
@@ -99,6 +208,8 @@ function DeviceNode({
   device, 
   pos, 
   activeLayer, 
+  flows,
+  showFullMac,
   isSelected,
   isHighlighted = true,
   onClick, 
@@ -107,6 +218,8 @@ function DeviceNode({
   device: Device; 
   pos: { x: number; y: number; zone: string };
   activeLayer: LayerMode;
+  flows: Flow[];
+  showFullMac: boolean;
   isSelected: boolean;
   isHighlighted?: boolean;
   onClick: () => void;
@@ -117,11 +230,11 @@ function DeviceNode({
   const hasRisks = device.riskFlags.length > 0;
   const isUnknown = device.type === "unknown" || device.riskFlags.includes("unknown_device");
   const isRouter = device.type === "router";
-  const rawLabel = getDeviceLabel(device, activeLayer);
+  const rawLabel = getDeviceLabel(device, activeLayer, t, flows, showFullMac);
   const label = rawLabel === "—" ? t('common.noData') : rawLabel;
   const labelColor = layerLabelColors[activeLayer];
   const securityLabel = hasRisks ? `, ${t('common.hasSecurityConcerns')}` : "";
-  const encryptionStatus = getEncryptionStatus(device);
+  const encryptionStatus = getEncryptionStatus(device, flows);
 
   const nodeSize = isRouter ? 56 : 44;
   const iconSize = isRouter ? 28 : 20;
@@ -273,12 +386,32 @@ function DeviceNode({
   );
 }
 
-export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDeviceSelect, highlightedDeviceIds }: NetworkCanvasProps) {
+export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDeviceSelect, highlightedDeviceIds, showFullMac = true }: NetworkCanvasProps) {
   const { t } = useTranslation();
   const centerX = 400;
   const centerY = 350;
   const hasFilter = highlightedDeviceIds !== undefined;
   const [layerPulse, setLayerPulse] = useState(false);
+  const flowsByDevice = useMemo(() => {
+    const map = new Map<string, Flow[]>();
+    (scenario.flows || []).forEach((flow) => {
+      const list = map.get(flow.srcDeviceId) || [];
+      list.push(flow);
+      map.set(flow.srcDeviceId, list);
+    });
+    return map;
+  }, [scenario]);
+
+  const topFlowCategories = useMemo(() => {
+    const counts = new Map<FlowCategory, number>();
+    (scenario.flows || []).forEach((flow) => {
+      counts.set(flow.category, (counts.get(flow.category) || 0) + 1);
+    });
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([category]) => category);
+  }, [scenario]);
 
   useEffect(() => {
     setLayerPulse(true);
@@ -441,6 +574,10 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
           const isSelected = selectedDeviceId === device.id;
           const hasRisks = device.riskFlags.length > 0;
           const showDataFlow = activeLayer === "transport" || activeLayer === "application";
+          const deviceFlows = flowsByDevice.get(device.id) || [];
+          const flowCategories = getFlowCategories(deviceFlows);
+          const primaryFlowColor = flowCategories[0] ? flowCategoryColors[flowCategories[0]] : "fill-chart-1/60";
+          const secondaryFlowColor = flowCategories[1] ? flowCategoryColors[flowCategories[1]] : "fill-chart-3/60";
 
           return (
             <g key={`connection-${device.id}`}>
@@ -468,7 +605,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
               {showDataFlow && !hasRisks && (
                 <motion.circle
                   r={3}
-                  className={isSelected ? "fill-primary" : "fill-chart-1/60"}
+                  className={isSelected ? "fill-primary" : primaryFlowColor}
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: [0, 1, 1, 0],
@@ -487,7 +624,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
               {showDataFlow && !hasRisks && (
                 <motion.circle
                   r={3}
-                  className={isSelected ? "fill-primary" : "fill-chart-3/60"}
+                  className={isSelected ? "fill-primary" : secondaryFlowColor}
                   initial={{ opacity: 0 }}
                   animate={{
                     opacity: [0, 1, 1, 0],
@@ -514,6 +651,20 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
             >
+              <circle
+                cx={centerX}
+                cy={centerY}
+                r={110}
+                className="stroke-chart-5/40 fill-transparent stroke-[1.5] stroke-dashed"
+                strokeDasharray="6 4"
+              />
+              <text
+                x={centerX + 120}
+                y={centerY - 10}
+                className="fill-muted-foreground text-[9px] uppercase tracking-wider"
+              >
+                {t('legend.natBoundary')}
+              </text>
               <line
                 x1={routerPos.x}
                 y1={routerPos.y}
@@ -539,7 +690,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
                 y={65}
                 className="fill-muted-foreground text-[10px] uppercase tracking-wider"
               >
-                Internet
+                {t('common.internet')}
               </text>
             </motion.g>
           )}
@@ -550,6 +701,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
           if (!pos) return null;
 
           const isHighlighted = !hasFilter || highlightedDeviceIds.has(device.id) || device.type === "router";
+          const deviceFlows = flowsByDevice.get(device.id) || [];
 
           return (
             <DeviceNode
@@ -557,6 +709,8 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
               device={device}
               pos={pos}
               activeLayer={activeLayer}
+              flows={deviceFlows}
+              showFullMac={showFullMac}
               isSelected={selectedDeviceId === device.id}
               isHighlighted={isHighlighted}
               onClick={() => handleDeviceClick(device.id)}
@@ -566,7 +720,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
         })}
 
         <AnimatePresence>
-          {activeLayer === "transport" && routerPos && (
+          {activeLayer === "transport" && routerPos && topFlowCategories.length > 0 && (
             <motion.g 
               className="pointer-events-none"
               initial={{ opacity: 0 }}
@@ -574,35 +728,46 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              {[
-                { label: "HTTPS", offset: -30, color: "text-green-500 dark:text-green-400" },
-                { label: "Video", offset: 0, color: "text-chart-2" },
-                { label: "Email", offset: 30, color: "text-chart-4" },
-              ].map((flow, i) => (
-                <motion.g 
-                  key={flow.label}
-                  initial={{ opacity: 0, y: 10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: i * 0.1 }}
-                >
-                  <line
-                    x1={routerPos.x + flow.offset}
-                    y1={routerPos.y - 35}
-                    x2={routerPos.x + flow.offset}
-                    y2={100}
-                    className={`stroke-current ${flow.color} stroke-[1.5] opacity-40`}
-                    strokeDasharray="4 4"
-                  />
-                  <text
-                    x={routerPos.x + flow.offset}
-                    y={90}
-                    textAnchor="middle"
-                    className={`text-[8px] ${flow.color}`}
+              {topFlowCategories.map((category, i) => {
+                const offset = (i - 1) * 30;
+                const colorClass =
+                  category === "web"
+                    ? "text-chart-1"
+                    : category === "video"
+                      ? "text-chart-2"
+                      : category === "email"
+                        ? "text-chart-4"
+                        : category === "chat"
+                          ? "text-chart-3"
+                          : category === "remote"
+                            ? "text-chart-5"
+                            : "text-chart-2";
+                return (
+                  <motion.g 
+                    key={category}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ delay: i * 0.1 }}
                   >
-                    {flow.label}
-                  </text>
-                </motion.g>
-              ))}
+                    <line
+                      x1={routerPos.x + offset}
+                      y1={routerPos.y - 35}
+                      x2={routerPos.x + offset}
+                      y2={100}
+                      className={`stroke-current ${colorClass} stroke-[1.5] opacity-40`}
+                      strokeDasharray="4 4"
+                    />
+                    <text
+                      x={routerPos.x + offset}
+                      y={90}
+                      textAnchor="middle"
+                      className={`text-[8px] ${colorClass}`}
+                    >
+                      {t(`transportFlows.${category}`, { defaultValue: category })}
+                    </text>
+                  </motion.g>
+                );
+              })}
             </motion.g>
           )}
         </AnimatePresence>

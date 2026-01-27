@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTranslation } from "react-i18next";
-import type { LayerMode } from "@shared/schema";
+import type { LayerMode, FlowCategory } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Link2, Network, ArrowLeftRight, Globe, ChevronRight } from "lucide-react";
 import { useOnboardingOptional } from "@/components/OnboardingProvider";
@@ -176,28 +176,43 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
   );
 }
 
-export function LayerLegend({ activeLayer }: { activeLayer: LayerMode }) {
+const flowLegendConfig: Record<FlowCategory, { color: string; labelKey: string }> = {
+  web: { color: "bg-chart-1", labelKey: "legend.flowWeb" },
+  video: { color: "bg-chart-2", labelKey: "legend.flowVideo" },
+  email: { color: "bg-chart-4", labelKey: "legend.flowEmail" },
+  chat: { color: "bg-chart-3", labelKey: "legend.flowChat" },
+  remote: { color: "bg-chart-5", labelKey: "legend.flowRemote" },
+  file: { color: "bg-chart-2", labelKey: "legend.flowFile" },
+};
+
+export function LayerLegend({ activeLayer, flowCategories = [], showFullMac = true }: { activeLayer: LayerMode; flowCategories?: FlowCategory[]; showFullMac?: boolean }) {
   const { t } = useTranslation();
+  const macLabelKey = showFullMac ? "legend.localIdFull" : "legend.localIdShort";
   
+  const transportItems = flowCategories.length > 0
+    ? flowCategories.map((category) => flowLegendConfig[category]).filter(Boolean)
+    : [
+        { color: "bg-chart-1", labelKey: "legend.flowWeb" },
+        { color: "bg-chart-2", labelKey: "legend.flowVideo" },
+        { color: "bg-chart-4", labelKey: "legend.flowEmail" },
+      ];
+
   const legendItems: Record<LayerMode, { color: string; labelKey: string }[]> = {
     link: [
-      { color: "bg-chart-1", labelKey: "legend.localId" },
+      { color: "bg-chart-1", labelKey: macLabelKey },
       { color: "bg-chart-2", labelKey: "legend.physicalConnection" },
     ],
     network: [
       { color: "bg-chart-1", labelKey: "legend.privateIp" },
       { color: "bg-chart-3", labelKey: "legend.gateway" },
       { color: "bg-chart-5", labelKey: "legend.publicIp" },
+      { color: "bg-chart-5/40", labelKey: "legend.natBoundary" },
     ],
-    transport: [
-      { color: "bg-chart-1", labelKey: "legend.webTraffic" },
-      { color: "bg-chart-2", labelKey: "legend.videoStream" },
-      { color: "bg-chart-4", labelKey: "legend.email" },
-    ],
+    transport: transportItems,
     application: [
-      { color: "bg-green-500 dark:bg-green-400", labelKey: "legend.httpsEncrypted" },
-      { color: "bg-red-500 dark:bg-red-400", labelKey: "legend.httpNotEncrypted" },
-      { color: "bg-chart-2", labelKey: "legend.streaming" },
+      { color: "bg-green-500 dark:bg-green-400", labelKey: "legend.encryptedFlow" },
+      { color: "bg-red-500 dark:bg-red-400", labelKey: "legend.unencryptedFlow" },
+      { color: "bg-chart-2", labelKey: "legend.destination" },
     ],
   };
 

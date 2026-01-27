@@ -18,6 +18,7 @@ import { ScenarioComparison } from "@/components/ScenarioComparison";
 import { ScenarioExportImport } from "@/components/ScenarioExportImport";
 import { EventNotifications } from "@/components/EventNotifications";
 import { UnknownDeviceModal } from "@/components/UnknownDeviceModal";
+import { ScenarioActions } from "@/components/ScenarioActions";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -53,6 +54,8 @@ export default function Home() {
   const [showComparison, setShowComparison] = useState(false);
   const [importedScenario, setImportedScenario] = useState<Scenario | null>(null);
   const [showUnknownModal, setShowUnknownModal] = useState(false);
+  const [actionsResetKey, setActionsResetKey] = useState(0);
+  const [showFullMac, setShowFullMac] = useState(true);
 
   const { 
     data: scenarioSummaries, 
@@ -95,6 +98,18 @@ export default function Home() {
     };
   }, [activeScenario]);
 
+  const flowLegendCategories = useMemo(() => {
+    if (!activeScenario?.flows || activeScenario.flows.length === 0) return [];
+    const counts = new Map<string, number>();
+    activeScenario.flows.forEach((flow) => {
+      counts.set(flow.category, (counts.get(flow.category) || 0) + 1);
+    });
+    return Array.from(counts.entries())
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([category]) => category);
+  }, [activeScenario?.flows]);
+
   const selectedDevice = activeScenario?.devices.find(d => d.id === selectedDeviceId) || null;
   const selectedNetwork = selectedDevice 
     ? activeScenario?.networks.find(n => n.id === selectedDevice.networkId) || null
@@ -107,6 +122,7 @@ export default function Home() {
     setShowPacketJourney(false);
     setShowComparison(false);
     setImportedScenario(null);
+    setActionsResetKey(prev => prev + 1);
   }, []);
 
   const handleScenarioChange = useCallback((id: string) => {
@@ -115,6 +131,7 @@ export default function Home() {
     setFilters(defaultFilters);
     setShowPacketJourney(false);
     setImportedScenario(null);
+    setActionsResetKey(prev => prev + 1);
   }, []);
 
   const handleTogglePacketJourney = useCallback(() => {
@@ -127,6 +144,7 @@ export default function Home() {
     setFilters(defaultFilters);
     setShowPacketJourney(false);
     setShowComparison(false);
+    setActionsResetKey(prev => prev + 1);
   }, []);
 
   const handleDeviceSelect = useCallback((deviceId: string) => {
@@ -176,6 +194,8 @@ export default function Home() {
     devices: [],
     events: [],
     learningPrompts: [],
+    scenarioTasks: [],
+    flows: [],
   })) || [];
 
   const isLoading = isLoadingList || (selectedScenarioId && isLoadingScenario);
@@ -346,6 +366,7 @@ export default function Home() {
                   selectedDeviceId={selectedDeviceId}
                   onDeviceSelect={handleDeviceSelect}
                   highlightedDeviceIds={filteredDeviceIds}
+                  showFullMac={showFullMac}
                 />
               ) : (
                 <TableView
@@ -354,6 +375,7 @@ export default function Home() {
                   activeLayer={activeLayer}
                   selectedDeviceId={selectedDeviceId}
                   onDeviceSelect={handleDeviceSelect}
+                  showFullMac={showFullMac}
                 />
               )
             ) : (
@@ -367,7 +389,7 @@ export default function Home() {
           </Card>
 
           <div className="rounded-md border bg-card px-4 py-2">
-            <LayerLegend activeLayer={activeLayer} />
+            <LayerLegend activeLayer={activeLayer} flowCategories={flowLegendCategories} showFullMac={showFullMac} />
           </div>
         </div>
 
@@ -379,6 +401,8 @@ export default function Home() {
                 network={selectedNetwork}
                 activeLayer={activeLayer}
                 onClose={() => setSelectedDeviceId(null)}
+                showFullMac={showFullMac}
+                onToggleMacDisplay={setShowFullMac}
               />
 
               {selectedDevice && selectedDevice.type !== "router" && (
@@ -389,7 +413,9 @@ export default function Home() {
                       routerDevice={routerDevice}
                       activeLayer={activeLayer}
                       publicIp={activeScenario?.environment.publicIp || "0.0.0.0"}
+                      flows={activeScenario?.flows || []}
                       onClose={() => setShowPacketJourney(false)}
+                      showFullMac={showFullMac}
                     />
                   ) : (
                     <div className="text-center">
@@ -404,6 +430,14 @@ export default function Home() {
                     </div>
                   )}
                 </Card>
+              )}
+
+              {activeScenario && activeScenario.scenarioTasks.length > 0 && (
+                <ScenarioActions
+                  scenario={activeScenario}
+                  selectedDevice={selectedDevice}
+                  resetKey={actionsResetKey}
+                />
               )}
               
               {activeScenario && activeScenario.learningPrompts.length > 0 && (
@@ -437,6 +471,7 @@ export default function Home() {
         device={selectedDevice && (selectedDevice.type === "unknown" || selectedDevice.riskFlags.includes("unknown_device")) ? selectedDevice : null}
         isOpen={showUnknownModal}
         onClose={() => setShowUnknownModal(false)}
+        showFullMac={showFullMac}
       />
     </div>
   );

@@ -108,6 +108,13 @@
     "ipAddress": "IP Address",
     "macAddress": "MAC Address",
     "localId": "Local ID (MAC)",
+    "localIdFull": "MAC (full)",
+    "localIdShort": "MAC (last 3 bytes)",
+    "macDisplay": "MAC display",
+    "macDisplayFull": "Full",
+    "macDisplayShort": "Short",
+    "macRandomizationTitle": "MAC randomization",
+    "macRandomizationNote": "Many devices randomize their MAC on Wi-Fi to improve privacy.",
     "protocols": "Protocols",
     "activeProtocols": "Active Protocols",
     "openPorts": "Open Ports",
@@ -177,7 +184,12 @@
     "network": "Network",
     "ipAddress": "IP Address",
     "macAddress": "MAC Address",
+    "macAddressFull": "MAC (full)",
+    "macAddressShort": "MAC (last 3 bytes)",
     "status": "Status",
+    "ok": "OK",
+    "issue_one": "{{count}} issue",
+    "issue_other": "{{count}} issues",
     "noDevices": "No devices found"
   },
   "accessibility": {
@@ -226,6 +238,13 @@
     "scorePercent": "{{percent}}% Score",
     "tryAgain": "Try Again",
     "nextQuestion": "Next Question",
+    "finish": "Finish",
+    "whyMatters": "Why this matters",
+    "whatToDoNext": "What to do next",
+    "summaryTitle": "Next steps",
+    "summaryIntro": "Based on your answers, focus on:",
+    "summaryAllCorrect": "Great job — you answered everything correctly.",
+    "defaultNextStep": "Apply this to your own network when you get the chance.",
     "layer": "{{layer}} Layer"
   },
   "comparison": {
@@ -267,6 +286,8 @@
   "unknownDevice": {
     "title": "Unknown Device Detected",
     "description": "You've discovered an unidentified device on your network. This could be a forgotten gadget, a guest's device, or something suspicious.",
+    "macFull": "MAC (full)",
+    "macShort": "MAC (last 3 bytes)",
     "whatWouldYouDo": "What would you do?",
     "gotIt": "Got it",
     "investigate": {
@@ -292,6 +313,12 @@
     "reset": "Reset",
     "selectDevice": "Select a device to trace its packet journey",
     "ready": "Ready",
+    "activeFlow": "Active flow: {{destination}} | {{protocol}}/{{transport}} {{port}} | {{encryption}}",
+    "noFlow": "No active flow data for this device",
+    "flowIndex": "Flow {{current}} of {{total}}",
+    "prevFlow": "Previous flow",
+    "nextFlow": "Next flow",
+    "ispGateway": "ISP Gateway",
     "steps": {
       "idle": {
         "link": "Ready to trace packet journey using MAC addresses",
@@ -342,6 +369,14 @@
     "unencrypted": "Unencrypted traffic",
     "mixed": "Mixed encryption"
   },
+  "transportFlows": {
+    "web": "Web",
+    "video": "Video",
+    "email": "Email",
+    "chat": "Chat",
+    "remote": "Remote",
+    "file": "File"
+  },
   "zones": {
     "main": "Main Network",
     "guest": "Guest Network",
@@ -349,15 +384,27 @@
   },
   "legend": {
     "localId": "Local ID (MAC)",
+    "localIdFull": "MAC (full)",
+    "localIdShort": "MAC (last 3 bytes)",
     "physicalConnection": "Physical connection",
     "privateIp": "Private IP",
     "gateway": "Gateway",
     "publicIp": "Public IP",
+    "natBoundary": "NAT boundary",
     "webTraffic": "Web traffic (443)",
     "videoStream": "Video stream",
     "email": "Email (587)",
+    "flowWeb": "Web flow",
+    "flowVideo": "Video flow",
+    "flowEmail": "Email flow",
+    "flowChat": "Chat flow",
+    "flowRemote": "Remote flow",
+    "flowFile": "File flow",
     "httpsEncrypted": "HTTPS (Encrypted)",
     "httpNotEncrypted": "HTTP (Not encrypted)",
+    "encryptedFlow": "Encrypted flow",
+    "unencryptedFlow": "Unencrypted flow",
+    "destination": "Destination",
     "streaming": "Streaming"
   },
   "common": {
@@ -370,72 +417,195 @@
     "privateIp": {
       "question": "Which of these is a private IP address?",
       "answers": ["192.168.10.14", "8.8.8.8", "203.0.113.12"],
-      "explanation": "192.168.x.x addresses are private - they only work inside your home network. 8.8.8.8 is Google's public DNS, and 203.0.113.12 is your public IP (how the internet sees you)."
+      "explanation": "192.168.x.x addresses are private - they only work inside your home network. 8.8.8.8 is Google's public DNS, and 203.0.113.12 is your public IP (how the internet sees you).",
+      "why": "Knowing private ranges helps you spot which devices are local and which are on the internet.",
+      "nextStep": "When you see 192.168.x.x, 10.x.x.x, or 172.16-31.x.x, treat it as local and find the public IP on your router."
     },
     "macPurpose": {
       "question": "What is a MAC address (Local ID) used for?",
       "answers": ["Routing packets across the internet", "Identifying devices on the local network", "Encrypting your data"],
-      "explanation": "MAC addresses are unique hardware identifiers burned into each network device. They're used for delivering data on your local network segment - like apartment numbers within a building. Routers strip MAC addresses when forwarding to the internet."
+      "explanation": "MAC addresses are unique hardware identifiers burned into each network device. They're used for delivering data on your local network segment - like apartment numbers within a building. Routers strip MAC addresses when forwarding to the internet.",
+      "why": "MACs identify devices only on your local network, not across the internet.",
+      "nextStep": "Use your router's device list to match MAC addresses to real devices when troubleshooting."
     },
     "guestNetwork": {
       "question": "Why would you put guests on a separate network?",
       "answers": ["To give them faster internet speed", "To prevent them from accessing your personal devices", "Because there's a limit to devices on one network"],
-      "explanation": "Guest networks create isolation. Visitors can use the internet, but they can't see or access your personal computers, cameras, or smart devices."
+      "explanation": "Guest networks create isolation. Visitors can use the internet, but they can't see or access your personal computers, cameras, or smart devices.",
+      "why": "Segmentation keeps guest devices from reaching your personal devices if they are compromised.",
+      "nextStep": "Enable a guest SSID and keep it isolated from your main network."
     },
     "unknownDevice": {
       "question": "You notice an unknown device on your network. What should you do?",
       "answers": ["Ignore it - it's probably fine", "Investigate and possibly block it", "Unplug your router immediately"],
-      "explanation": "Unknown devices could be forgotten gadgets, neighbors leeching Wi-Fi, or even malicious actors. Check your router's admin page to identify and remove suspicious devices."
+      "explanation": "Unknown devices could be forgotten gadgets, neighbors leeching Wi-Fi, or even malicious actors. Check your router's admin page to identify and remove suspicious devices.",
+      "why": "Unknown devices can indicate shared Wi-Fi abuse or a real intrusion.",
+      "nextStep": "Identify it in your router and block it or change your Wi-Fi password."
     },
     "iotIsolation": {
       "question": "Why are IoT devices (cameras, thermostats) often put on a separate network?",
       "answers": ["They need special internet settings", "They're often insecure and could be used to attack other devices", "They use too much bandwidth"],
-      "explanation": "Many IoT devices have weak security, use default passwords, or don't get updates. Isolating them prevents a compromised camera from spying on your laptop."
+      "explanation": "Many IoT devices have weak security, use default passwords, or don't get updates. Isolating them prevents a compromised camera from spying on your laptop.",
+      "why": "IoT devices are common entry points; isolation limits how far an attacker can move.",
+      "nextStep": "Put IoT devices on a separate network or VLAN with limited access."
     },
     "tenNetwork": {
       "question": "What type of IP address range is 10.0.x.x?",
       "answers": ["Public IP range", "Private IP range for internal networks", "Reserved for government use"],
-      "explanation": "10.0.0.0/8 is one of three private IP ranges (along with 172.16.x.x and 192.168.x.x). These addresses work only inside your network and can't be reached directly from the internet."
+      "explanation": "10.0.0.0/8 is one of three private IP ranges (along with 172.16.x.x and 192.168.x.x). These addresses work only inside your network and can't be reached directly from the internet.",
+      "why": "Recognizing private ranges prevents you from assuming a device is publicly reachable.",
+      "nextStep": "Treat 10.x addresses as internal and look for the public IP on the router."
     },
     "wpa3": {
       "question": "Why does the staff network use WPA3 while guest uses WPA2?",
       "answers": ["WPA3 is slower, only staff can handle it", "WPA3 provides stronger encryption for sensitive data", "There's no meaningful difference"],
-      "explanation": "WPA3 offers better protection against password guessing attacks and uses newer encryption. Corporate data deserves the strongest protection available."
+      "explanation": "WPA3 offers better protection against password guessing attacks and uses newer encryption. Corporate data deserves the strongest protection available.",
+      "why": "Stronger Wi-Fi encryption reduces the risk of password guessing and data exposure.",
+      "nextStep": "Use WPA3 when available and keep WPA2 only for legacy devices."
     },
     "printerRisk": {
       "question": "Why is the printer flagged as a security risk?",
       "answers": ["Printers can't be secure", "It still has the default password, making it easy to hack", "It's connected to the wrong network"],
-      "explanation": "Printers with default passwords are often targeted by attackers. They can be used to intercept documents, spread to other devices, or even become part of botnets."
+      "explanation": "Printers with default passwords are often targeted by attackers. They can be used to intercept documents, spread to other devices, or even become part of botnets.",
+      "why": "Default credentials are a common entry point for attackers.",
+      "nextStep": "Change default passwords and move printers to a restricted network."
     },
     "corpIsolation": {
       "question": "Why can't customers on guest Wi-Fi access the file server?",
       "answers": ["The file server is turned off", "Guest network is isolated from corporate network", "Customers don't have the password"],
-      "explanation": "Network segmentation means different networks can't communicate. Guests get internet access but are completely walled off from internal resources."
+      "explanation": "Network segmentation means different networks can't communicate. Guests get internet access but are completely walled off from internal resources.",
+      "why": "Segmentation protects internal data even if guest Wi-Fi is compromised.",
+      "nextStep": "Verify guest Wi-Fi cannot reach internal servers or printers."
     },
     "openWifi": {
       "question": "What does 'Open' network security mean?",
       "answers": ["Anyone can join without a password", "The network has no firewall", "The Wi-Fi signal is publicly visible"],
-      "explanation": "Open networks have no encryption. This means anyone nearby can potentially see your traffic - it's like sending postcards instead of sealed letters."
+      "explanation": "Open networks have no encryption. This means anyone nearby can potentially see your traffic - it's like sending postcards instead of sealed letters.",
+      "why": "Open Wi-Fi lets nearby users observe traffic, which increases risk for sensitive data.",
+      "nextStep": "Avoid sensitive logins on open Wi-Fi or use a VPN."
     },
     "evilTwin": {
       "question": "What is an 'evil twin' attack?",
       "answers": ["When someone clones your device", "A fake Wi-Fi network that mimics a legitimate one", "When two routers interfere with each other"],
-      "explanation": "Attackers set up fake access points with names like 'Hotel_Free_WiFi' to lure victims. When you connect, they can see everything you do."
+      "explanation": "Attackers set up fake access points with names like 'Hotel_Free_WiFi' to lure victims. When you connect, they can see everything you do.",
+      "why": "Fake SSIDs can capture your traffic and steal credentials.",
+      "nextStep": "Verify the official SSID with staff and turn off auto-join for public Wi-Fi."
+    },
+    "publicPrivateIp": {
+      "question": "On public Wi-Fi, why might your IP still be private (e.g., 172.16.x.x)?",
+      "answers": ["Because the hotspot uses NAT and private addressing", "Because public Wi-Fi always gives out public IPs", "Because private IPs are only for home networks"],
+      "explanation": "Public Wi-Fi often uses private IP ranges and NAT. Your device has a private address locally, while the hotspot uses one public IP to reach the internet.",
+      "why": "Private IPs can exist in public places too; NAT hides many devices behind one public IP.",
+      "nextStep": "Look for the NAT boundary: your device has a private IP and the hotspot has the public IP."
     },
     "httpsImportance": {
       "question": "On public Wi-Fi, why is HTTPS especially important?",
       "answers": ["HTTPS makes websites load faster", "HTTPS encrypts your data so others on the network can't read it", "HTTPS prevents viruses"],
-      "explanation": "HTTPS uses TLS encryption to create a secure tunnel between you and the website. Even if someone captures your traffic, they see encrypted data instead of your passwords and personal information."
+      "explanation": "HTTPS uses TLS encryption to create a secure tunnel between you and the website. Even if someone captures your traffic, they see encrypted data instead of your passwords and personal information.",
+      "why": "HTTPS keeps your data readable only to you and the website, even on untrusted networks.",
+      "nextStep": "Check for HTTPS (lock icon) before entering passwords or personal data."
     },
     "vpn": {
       "question": "What does a VPN do on public Wi-Fi?",
       "answers": ["Makes your internet faster", "Creates an encrypted tunnel for all your traffic", "Blocks other users from connecting"],
-      "explanation": "A VPN encrypts everything leaving your device, not just web traffic. It's like putting all your postcards in a locked box before sending them."
+      "explanation": "A VPN encrypts everything leaving your device, not just web traffic. It's like putting all your postcards in a locked box before sending them.",
+      "why": "A VPN protects all apps, not just browsers, on untrusted networks.",
+      "nextStep": "Use a reputable VPN when working or banking on public Wi-Fi."
     },
     "safeBehavior": {
       "question": "What should you avoid doing on public Wi-Fi?",
       "answers": ["Browsing news websites", "Logging into your bank without a VPN", "Checking the weather"],
-      "explanation": "Sensitive activities like banking should wait for a secure network or require a VPN. Even HTTPS can't protect against all attacks on compromised networks."
+      "explanation": "Sensitive activities like banking should wait for a secure network or require a VPN. Even HTTPS can't protect against all attacks on compromised networks.",
+      "why": "Some actions are higher-risk on public networks, even with encryption.",
+      "nextStep": "Delay banking or change passwords until you're on a trusted network."
+    }
+  },
+  "actions": {
+    "title": "Actions",
+    "progress": "Step {{current}} of {{total}}",
+    "completeAction": "Complete Action",
+    "nextAction": "Next Action",
+    "viewDebrief": "View Debrief",
+    "tryAgain": "Try Again",
+    "requireDevice": "Select: {{device}}",
+    "requireNetwork": "Select a device on: {{network}}",
+    "requireNone": "No selection required",
+    "complete": "Complete",
+    "debriefTitle": "Scenario Debrief",
+    "debriefIntro": "Here's what you did and why it matters.",
+    "yourActions": "Your actions",
+    "keyTakeaways": "Key takeaways",
+    "restart": "Restart actions"
+  },
+  "actionTypes": {
+    "isolate_device": "Isolate device",
+    "change_password": "Change password",
+    "verify_ssid": "Verify Wi-Fi",
+    "enable_guest": "Enable guest network",
+    "block_unknown": "Block unknown device"
+  },
+  "scenarioTasks": {
+    "familyIoT": {
+      "blockUnknown": {
+        "title": "Block the unknown device",
+        "instruction": "Select the \"Generic Smart Controller\" and block it from your network.",
+        "success": "You blocked the unknown device, reducing immediate risk.",
+        "failure": "That isn't the unknown device. Identify the unfamiliar one first.",
+        "tip": "Unknown devices should be investigated and blocked if they don't belong."
+      },
+      "changeCameraPassword": {
+        "title": "Change the camera password",
+        "instruction": "Find the Indoor Camera and change its default password.",
+        "success": "Default password changed - a common IoT weakness is now removed.",
+        "failure": "Select the Indoor Camera that still has a default password.",
+        "tip": "Default credentials are one of the most common IoT compromises."
+      },
+      "enableGuest": {
+        "title": "Enable the guest network",
+        "instruction": "Confirm the guest network is enabled for visitors.",
+        "success": "Guest access is separated, protecting your personal devices.",
+        "failure": "Select a device on the guest network to confirm it's enabled.",
+        "tip": "Guest networks keep visitors from reaching your main devices."
+      }
+    },
+    "smallBusiness": {
+      "enableGuest": {
+        "title": "Separate customer Wi-Fi",
+        "instruction": "Confirm the guest network is enabled for customers.",
+        "success": "Customers are isolated from internal systems.",
+        "failure": "Select a device on the guest network to confirm it's enabled.",
+        "tip": "Guest networks protect internal resources from visitors."
+      },
+      "isolatePrinter": {
+        "title": "Isolate the printer",
+        "instruction": "Move the office printer to the device network or keep it isolated.",
+        "success": "The printer is isolated from staff devices, reducing risk.",
+        "failure": "Select the office printer to isolate it.",
+        "tip": "Printers often have weak security and should be segmented."
+      },
+      "blockUnknown": {
+        "title": "Block the unregistered device",
+        "instruction": "Identify the unregistered device and remove it from the network.",
+        "success": "The unknown device is blocked and no longer a threat.",
+        "failure": "Select the unregistered device before blocking it.",
+        "tip": "Unknown corporate devices should be removed immediately."
+      }
+    },
+    "hotelPublic": {
+      "verifySsid": {
+        "title": "Verify the official Wi-Fi",
+        "instruction": "Select the real hotel access point, not the fake one.",
+        "success": "You identified the official access point.",
+        "failure": "That isn't the official hotel access point. Try again.",
+        "tip": "Attackers often create look-alike Wi-Fi names to trick guests."
+      },
+      "blockFakeAp": {
+        "title": "Report the fake access point",
+        "instruction": "Identify the suspicious Wi-Fi device and flag it.",
+        "success": "The fake access point is flagged and avoided.",
+        "failure": "Select the suspicious access point before reporting it.",
+        "tip": "If a network name looks off, avoid it and alert staff."
+      }
     }
   },
   "onboarding": {

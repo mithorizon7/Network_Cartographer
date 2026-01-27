@@ -108,6 +108,13 @@
     "ipAddress": "IP adrese",
     "macAddress": "MAC adrese",
     "localId": "Lokālais ID (MAC)",
+    "localIdFull": "MAC (pilns)",
+    "localIdShort": "MAC (pēdējie 3 baiti)",
+    "macDisplay": "MAC attēlojums",
+    "macDisplayFull": "Pilns",
+    "macDisplayShort": "Īss",
+    "macRandomizationTitle": "MAC randomizācija",
+    "macRandomizationNote": "Daudzas ierīces Wi-Fi tīklā randomizē savu MAC, lai uzlabotu privātumu.",
     "protocols": "Protokoli",
     "activeProtocols": "Aktīvie protokoli",
     "openPorts": "Atvērtie porti",
@@ -177,7 +184,12 @@
     "network": "Tīkls",
     "ipAddress": "IP adrese",
     "macAddress": "MAC adrese",
+    "macAddressFull": "MAC (pilns)",
+    "macAddressShort": "MAC (pēdējie 3 baiti)",
     "status": "Statuss",
+    "ok": "Labi",
+    "issue_one": "{{count}} problēma",
+    "issue_other": "{{count}} problēmas",
     "noDevices": "Nav atrasta neviena ierīce"
   },
   "accessibility": {
@@ -226,6 +238,13 @@
     "scorePercent": "{{percent}}% rezultāts",
     "tryAgain": "Mēģināt vēlreiz",
     "nextQuestion": "Nākamais jautājums",
+    "finish": "Pabeigt",
+    "whyMatters": "Kāpēc tas ir svarīgi",
+    "whatToDoNext": "Ko darīt tālāk",
+    "summaryTitle": "Nākamie soļi",
+    "summaryIntro": "Pamatojoties uz jūsu atbildēm, koncentrējieties uz:",
+    "summaryAllCorrect": "Lieliski — jūs atbildējāt pareizi uz visiem jautājumiem.",
+    "defaultNextStep": "Pamēģiniet to pielietot savā tīklā, kad būs iespēja.",
     "layer": "{{layer}} slānis"
   },
   "comparison": {
@@ -267,6 +286,8 @@
   "unknownDevice": {
     "title": "Atklāta nezināma ierīce",
     "description": "Jūs atklājāt neidentificētu ierīci savā tīklā. Tas varētu būt aizmirsts sīkrīks, viesa ierīce vai kaut kas aizdomīgs.",
+    "macFull": "MAC (pilns)",
+    "macShort": "MAC (pēdējie 3 baiti)",
     "whatWouldYouDo": "Ko jūs darītu?",
     "gotIt": "Sapratu",
     "investigate": {
@@ -292,6 +313,12 @@
     "reset": "Atiestatīt",
     "selectDevice": "Izvēlieties ierīci, lai izsekotu tās paketes ceļojumu",
     "ready": "Gatavs",
+    "activeFlow": "Aktīvā plūsma: {{destination}} | {{protocol}}/{{transport}} {{port}} | {{encryption}}",
+    "noFlow": "Šai ierīcei nav aktīvo plūsmu datu",
+    "flowIndex": "Plūsma {{current}} no {{total}}",
+    "prevFlow": "Iepriekšējā plūsma",
+    "nextFlow": "Nākamā plūsma",
+    "ispGateway": "ISP vārteja",
     "steps": {
       "idle": {
         "link": "Gatavs izsekot paketes ceļojumu, izmantojot MAC adreses",
@@ -342,6 +369,14 @@
     "unencrypted": "Nešifrēta trafika",
     "mixed": "Jaukta šifrēšana"
   },
+  "transportFlows": {
+    "web": "Tīmeklis",
+    "video": "Video",
+    "email": "E-pasts",
+    "chat": "Tērzēšana",
+    "remote": "Attālinātā piekļuve",
+    "file": "Faili"
+  },
   "zones": {
     "main": "Galvenais tīkls",
     "guest": "Viesu tīkls",
@@ -349,15 +384,27 @@
   },
   "legend": {
     "localId": "Lokālais ID (MAC)",
+    "localIdFull": "MAC (pilns)",
+    "localIdShort": "MAC (pēdējie 3 baiti)",
     "physicalConnection": "Fizisks savienojums",
     "privateIp": "Privātā IP",
     "gateway": "Vārteja",
     "publicIp": "Publiskā IP",
+    "natBoundary": "NAT robeža",
     "webTraffic": "Tīmekļa trafika (443)",
     "videoStream": "Video straume",
     "email": "E-pasts (587)",
+    "flowWeb": "Tīmekļa plūsma",
+    "flowVideo": "Video plūsma",
+    "flowEmail": "E-pasta plūsma",
+    "flowChat": "Tērzēšanas plūsma",
+    "flowRemote": "Attālinātās piekļuves plūsma",
+    "flowFile": "Failu plūsma",
     "httpsEncrypted": "HTTPS (šifrēts)",
     "httpNotEncrypted": "HTTP (nešifrēts)",
+    "encryptedFlow": "Šifrēta plūsma",
+    "unencryptedFlow": "Nešifrēta plūsma",
+    "destination": "Galamērķis",
     "streaming": "Straumēšana"
   },
   "common": {
@@ -370,72 +417,195 @@
     "privateIp": {
       "question": "Kura no šīm ir privāta IP adrese?",
       "answers": ["192.168.10.14", "8.8.8.8", "203.0.113.12"],
-      "explanation": "192.168.x.x adreses ir privātas - tās darbojas tikai jūsu mājas tīklā. 8.8.8.8 ir Google publiskais DNS, un 203.0.113.12 ir jūsu publiskā IP (kā internets jūs redz)."
+      "explanation": "192.168.x.x adreses ir privātas - tās darbojas tikai jūsu mājas tīklā. 8.8.8.8 ir Google publiskais DNS, un 203.0.113.12 ir jūsu publiskā IP (kā internets jūs redz).",
+      "why": "Privāto diapazonu atpazīšana palīdz saprast, kuras ierīces ir lokālas un kuras — internetā.",
+      "nextStep": "Ja redzi 192.168.x.x, 10.x.x.x vai 172.16–31.x.x, uztver to kā lokālu adresi un atrodi publisko IP maršrutētājā."
     },
     "macPurpose": {
       "question": "Kam tiek izmantota MAC adrese (lokālais ID)?",
       "answers": ["Pakešu maršrutēšanai internetā", "Ierīču identificēšanai lokālajā tīklā", "Jūsu datu šifrēšanai"],
-      "explanation": "MAC adreses ir unikāli aparatūras identifikatori, kas ieprogrammēti katrā tīkla ierīcē. Tās izmanto datu piegādei jūsu lokālajā tīkla segmentā - kā dzīvokļu numuri ēkā. Maršrutētāji noņem MAC adreses, pārsūtot uz internetu."
+      "explanation": "MAC adreses ir unikāli aparatūras identifikatori, kas ieprogrammēti katrā tīkla ierīcē. Tās izmanto datu piegādei jūsu lokālajā tīkla segmentā - kā dzīvokļu numuri ēkā. Maršrutētāji noņem MAC adreses, pārsūtot uz internetu.",
+      "why": "MAC adreses identificē ierīces tikai lokālajā tīklā, nevis internetā.",
+      "nextStep": "Izmanto maršrutētāja ierīču sarakstu, lai sasaistītu MAC adreses ar reālām ierīcēm."
     },
     "guestNetwork": {
       "question": "Kāpēc jūs ievietotu viesus atsevišķā tīklā?",
       "answers": ["Lai viņiem būtu ātrāks internets", "Lai neļautu viņiem piekļūt jūsu personīgajām ierīcēm", "Jo vienā tīklā ir ierīču limits"],
-      "explanation": "Viesu tīkli rada izolāciju. Apmeklētāji var izmantot internetu, bet viņi nevar redzēt vai piekļūt jūsu personīgajiem datoriem, kamerām vai viedierīcēm."
+      "explanation": "Viesu tīkli rada izolāciju. Apmeklētāji var izmantot internetu, bet viņi nevar redzēt vai piekļūt jūsu personīgajiem datoriem, kamerām vai viedierīcēm.",
+      "why": "Segmentēšana neļauj viesu ierīcēm piekļūt tavām personīgajām, ja tās ir kompromitētas.",
+      "nextStep": "Ieslēdz viesu SSID un turi to izolētu no galvenā tīkla."
     },
     "unknownDevice": {
       "question": "Jūs pamanāt nezināmu ierīci savā tīklā. Ko jums vajadzētu darīt?",
       "answers": ["Ignorēt - droši vien viss kārtībā", "Izmeklēt un, iespējams, bloķēt", "Nekavējoties atvienot maršrutētāju"],
-      "explanation": "Nezināmas ierīces var būt aizmirstas ierīces, kaimiņi, kas izmanto jūsu Wi-Fi, vai pat ļaunprātīgi dalībnieki. Pārbaudiet maršrutētāja administrēšanas lapu, lai identificētu un noņemtu aizdomīgas ierīces."
+      "explanation": "Nezināmas ierīces var būt aizmirstas ierīces, kaimiņi, kas izmanto jūsu Wi-Fi, vai pat ļaunprātīgi dalībnieki. Pārbaudiet maršrutētāja administrēšanas lapu, lai identificētu un noņemtu aizdomīgas ierīces.",
+      "why": "Nezināma ierīce var nozīmēt Wi‑Fi izmantošanu bez atļaujas vai reālu ielaušanos.",
+      "nextStep": "Identificē ierīci maršrutētājā un bloķē to vai nomaini Wi‑Fi paroli."
     },
     "iotIsolation": {
       "question": "Kāpēc IoT ierīces (kameras, termostati) bieži tiek ievietotas atsevišķā tīklā?",
       "answers": ["Tām nepieciešami īpaši interneta iestatījumi", "Tās bieži ir nedrošas un var tikt izmantotas uzbrukumiem citām ierīcēm", "Tās izmanto pārāk daudz joslas platuma"],
-      "explanation": "Daudzām IoT ierīcēm ir vāja drošība, noklusējuma paroles vai tās nesaņem atjauninājumus. To izolēšana novērš kompromitētas kameras spiegošanu pēc jūsu portatīvā datora."
+      "explanation": "Daudzām IoT ierīcēm ir vāja drošība, noklusējuma paroles vai tās nesaņem atjauninājumus. To izolēšana novērš kompromitētas kameras spiegošanu pēc jūsu portatīvā datora.",
+      "why": "IoT ierīces bieži ir ieejas punkts; izolēšana ierobežo uzbrukuma izplatīšanos.",
+      "nextStep": "Novieto IoT ierīces atsevišķā tīklā vai VLAN ar ierobežotu piekļuvi."
     },
     "tenNetwork": {
       "question": "Kāda veida IP adrešu diapazons ir 10.0.x.x?",
       "answers": ["Publisko IP diapazons", "Privāto IP diapazons iekšējiem tīkliem", "Rezervēts valdības lietošanai"],
-      "explanation": "10.0.0.0/8 ir viens no trim privāto IP diapazoniem (kopā ar 172.16.x.x un 192.168.x.x). Šīs adreses darbojas tikai jūsu tīklā un tām nevar tieši piekļūt no interneta."
+      "explanation": "10.0.0.0/8 ir viens no trim privāto IP diapazoniem (kopā ar 172.16.x.x un 192.168.x.x). Šīs adreses darbojas tikai jūsu tīklā un tām nevar tieši piekļūt no interneta.",
+      "why": "Privāto diapazonu atpazīšana neļauj kļūdaini uzskatīt ierīci par publiski sasniedzamu.",
+      "nextStep": "Uztver 10.x adreses kā iekšējas un meklē publisko IP maršrutētājā."
     },
     "wpa3": {
       "question": "Kāpēc darbinieku tīkls izmanto WPA3, bet viesu tīkls WPA2?",
       "answers": ["WPA3 ir lēnāks, tikai darbinieki to var izmantot", "WPA3 nodrošina spēcīgāku šifrēšanu sensitīviem datiem", "Starp tiem nav nozīmīgas atšķirības"],
-      "explanation": "WPA3 piedāvā labāku aizsardzību pret paroļu uzminēšanas uzbrukumiem un izmanto jaunāku šifrēšanu. Korporatīvie dati ir pelnījuši visspēcīgāko pieejamo aizsardzību."
+      "explanation": "WPA3 piedāvā labāku aizsardzību pret paroļu uzminēšanas uzbrukumiem un izmanto jaunāku šifrēšanu. Korporatīvie dati ir pelnījuši visspēcīgāko pieejamo aizsardzību.",
+      "why": "Spēcīgāka Wi-Fi šifrēšana samazina paroļu uzminēšanas un datu noplūdes risku.",
+      "nextStep": "Izmanto WPA3, kad iespējams, un atstāj WPA2 tikai vecākām ierīcēm."
     },
     "printerRisk": {
       "question": "Kāpēc printeris ir atzīmēts kā drošības risks?",
       "answers": ["Printerus nevar padarīt drošus", "Tam joprojām ir noklusējuma parole, kas padara to viegli uzlaužamu", "Tas ir savienots ar nepareizo tīklu"],
-      "explanation": "Printeri ar noklusējuma parolēm bieži ir uzbrucēju mērķis. Tos var izmantot dokumentu pārtveršanai, izplatīšanai uz citām ierīcēm vai pat kļūšanai par botnet daļu."
+      "explanation": "Printeri ar noklusējuma parolēm bieži ir uzbrucēju mērķis. Tos var izmantot dokumentu pārtveršanai, izplatīšanai uz citām ierīcēm vai pat kļūšanai par botnet daļu.",
+      "why": "Noklusējuma paroles ir izplatīts uzbrukuma ieejas punkts.",
+      "nextStep": "Nomaini noklusējuma paroles un pārvieto printerus uz ierobežotu tīklu."
     },
     "corpIsolation": {
       "question": "Kāpēc klienti viesu Wi-Fi nevar piekļūt failu serverim?",
       "answers": ["Failu serveris ir izslēgts", "Viesu tīkls ir izolēts no korporatīvā tīkla", "Klientiem nav paroles"],
-      "explanation": "Tīkla segmentācija nozīmē, ka dažādi tīkli nevar sazināties. Viesi saņem interneta piekļuvi, bet ir pilnībā nodalīti no iekšējiem resursiem."
+      "explanation": "Tīkla segmentācija nozīmē, ka dažādi tīkli nevar sazināties. Viesi saņem interneta piekļuvi, bet ir pilnībā nodalīti no iekšējiem resursiem.",
+      "why": "Segmentēšana pasargā iekšējos datus pat tad, ja viesu Wi-Fi ir kompromitēts.",
+      "nextStep": "Pārliecinies, ka viesu Wi-Fi nevar sasniegt iekšējos serverus vai printerus."
     },
     "openWifi": {
       "question": "Ko nozīmē 'Open' tīkla drošība?",
       "answers": ["Ikviens var pievienoties bez paroles", "Tīklam nav ugunsmūra", "Wi-Fi signāls ir publiski redzams"],
-      "explanation": "Atvērtiem tīkliem nav šifrēšanas. Tas nozīmē, ka ikviens tuvumā var potenciāli redzēt jūsu datplūsmu - tas ir kā sūtīt pastkartes nevis aizzīmogotas vēstules."
+      "explanation": "Atvērtiem tīkliem nav šifrēšanas. Tas nozīmē, ka ikviens tuvumā var potenciāli redzēt jūsu datplūsmu - tas ir kā sūtīt pastkartes nevis aizzīmogotas vēstules.",
+      "why": "Atvērts Wi-Fi ļauj citiem novērot trafiku, kas palielina risku sensitīviem datiem.",
+      "nextStep": "Izvairies no sensitīvas pieslēgšanās atvērtā Wi-Fi vai izmanto VPN."
     },
     "evilTwin": {
       "question": "Kas ir 'ļaunā dvīņa' uzbrukums?",
       "answers": ["Kad kāds klonē jūsu ierīci", "Viltus Wi-Fi tīkls, kas atdarina likumīgu", "Kad divi maršrutētāji traucē viens otram"],
-      "explanation": "Uzbrucēji izveido viltus piekļuves punktus ar nosaukumiem kā 'Hotel_Free_WiFi', lai pievilinātu upurus. Kad jūs pieslēdzaties, viņi var redzēt visu, ko jūs darāt."
+      "explanation": "Uzbrucēji izveido viltus piekļuves punktus ar nosaukumiem kā 'Hotel_Free_WiFi', lai pievilinātu upurus. Kad jūs pieslēdzaties, viņi var redzēt visu, ko jūs darāt.",
+      "why": "Viltots SSID var pārtvert trafiku un nozagt piekļuves datus.",
+      "nextStep": "Pārbaudi oficiālo SSID pie personāla un izslēdz automātisko pieslēgšanos publiskam Wi-Fi."
+    },
+    "publicPrivateIp": {
+      "question": "Kāpēc publiskajā Wi-Fi jūsu IP joprojām var būt privāts (piem., 172.16.x.x)?",
+      "answers": ["Tāpēc ka piekļuves punkts izmanto NAT un privātās adreses", "Tāpēc ka publiskais Wi-Fi vienmēr piešķir publiskos IP", "Tāpēc ka privātie IP ir tikai mājas tīkliem"],
+      "explanation": "Publiskais Wi-Fi bieži izmanto privātos IP diapazonus un NAT. Jūsu ierīcei lokāli ir privāta adrese, bet piekļuves punkts izmanto vienu publisko IP, lai sasniegtu internetu.",
+      "why": "Privātās IP adreses ir arī publiskās vietās; NAT slēpj daudz ierīču aiz vienas publiskas IP.",
+      "nextStep": "Meklē NAT robežu: ierīcei ir privāta IP, bet piekļuves punktam — publiska IP."
     },
     "httpsImportance": {
       "question": "Publiskajā Wi-Fi, kāpēc HTTPS ir īpaši svarīgs?",
       "answers": ["HTTPS padara vietnes ātrākas", "HTTPS šifrē jūsu datus, lai citi tīklā tos nevarētu lasīt", "HTTPS novērš vīrusus"],
-      "explanation": "HTTPS izmanto TLS šifrēšanu, lai izveidotu drošu tuneli starp jums un vietni. Pat ja kāds pārtver jūsu datplūsmu, viņš redz šifrētus datus, nevis jūsu paroles un personīgo informāciju."
+      "explanation": "HTTPS izmanto TLS šifrēšanu, lai izveidotu drošu tuneli starp jums un vietni. Pat ja kāds pārtver jūsu datplūsmu, viņš redz šifrētus datus, nevis jūsu paroles un personīgo informāciju.",
+      "why": "HTTPS padara datus salasāmus tikai tev un vietnei, pat nedrošos tīklos.",
+      "nextStep": "Pirms paroļu vai persondatu ievades pārbaudi HTTPS (slēdzenes ikonu)."
     },
     "vpn": {
       "question": "Ko VPN dara publiskajā Wi-Fi?",
       "answers": ["Padara internetu ātrāku", "Izveido šifrētu tuneli visai jūsu datplūsmai", "Bloķē citus lietotājus no pieslēgšanās"],
-      "explanation": "VPN šifrē visu, kas pameto jūsu ierīci, ne tikai web datplūsmu. Tas ir kā ielikt visas savas pastkartes slēgtā kastē pirms nosūtīšanas."
+      "explanation": "VPN šifrē visu, kas pameto jūsu ierīci, ne tikai web datplūsmu. Tas ir kā ielikt visas savas pastkartes slēgtā kastē pirms nosūtīšanas.",
+      "why": "VPN aizsargā visu lietotņu trafiku, ne tikai pārlūku.",
+      "nextStep": "Izmanto uzticamu VPN, strādājot vai veicot bankas darbības publiskā Wi-Fi."
     },
     "safeBehavior": {
       "question": "No kā jums vajadzētu izvairīties publiskajā Wi-Fi?",
       "answers": ["Ziņu vietņu pārlūkošanas", "Pieslēgšanās bankai bez VPN", "Laika apstākļu pārbaudīšanas"],
-      "explanation": "Sensitīvām darbībām kā banku operācijām jāgaida drošs tīkls vai jāizmanto VPN. Pat HTTPS nevar aizsargāt pret visiem uzbrukumiem kompromitētos tīklos."
+      "explanation": "Sensitīvām darbībām kā banku operācijām jāgaida drošs tīkls vai jāizmanto VPN. Pat HTTPS nevar aizsargāt pret visiem uzbrukumiem kompromitētos tīklos.",
+      "why": "Dažas darbības publiskos tīklos ir riskantākas pat ar šifrēšanu.",
+      "nextStep": "Atliec bankas darbības vai paroļu maiņu līdz esi uzticamā tīklā."
+    }
+  },
+  "actions": {
+    "title": "Darbības",
+    "progress": "Solis {{current}} no {{total}}",
+    "completeAction": "Pabeigt darbību",
+    "nextAction": "Nākamā darbība",
+    "viewDebrief": "Skatīt kopsavilkumu",
+    "tryAgain": "Mēģināt vēlreiz",
+    "requireDevice": "Atlasiet: {{device}}",
+    "requireNetwork": "Atlasiet ierīci tīklā: {{network}}",
+    "requireNone": "Izvēle nav nepieciešama",
+    "complete": "Pabeigts",
+    "debriefTitle": "Scenārija kopsavilkums",
+    "debriefIntro": "Šeit ir tas, ko jūs izdarījāt un kāpēc tas ir svarīgi.",
+    "yourActions": "Jūsu darbības",
+    "keyTakeaways": "Galvenie secinājumi",
+    "restart": "Sākt no jauna"
+  },
+  "actionTypes": {
+    "isolate_device": "Izolēt ierīci",
+    "change_password": "Mainīt paroli",
+    "verify_ssid": "Pārbaudīt Wi-Fi",
+    "enable_guest": "Ieslēgt viesu tīklu",
+    "block_unknown": "Bloķēt nezināmu ierīci"
+  },
+  "scenarioTasks": {
+    "familyIoT": {
+      "blockUnknown": {
+        "title": "Bloķēt nezināmo ierīci",
+        "instruction": "Atlasiet \"Generic Smart Controller\" un bloķējiet to tīklā.",
+        "success": "Jūs bloķējāt nezināmo ierīci, samazinot tūlītējo risku.",
+        "failure": "Tā nav nezināmā ierīce. Vispirms atrodiet nepazīstamo.",
+        "tip": "Nezināmas ierīces jāizmeklē un jābloķē, ja tās nepieder jums."
+      },
+      "changeCameraPassword": {
+        "title": "Mainīt kameras paroli",
+        "instruction": "Atrodiet Indoor Camera un nomainiet noklusējuma paroli.",
+        "success": "Noklusējuma parole nomainīta — izplatīta IoT vājā vieta ir novērsta.",
+        "failure": "Atlasiet Indoor Camera ar noklusējuma paroli.",
+        "tip": "Noklusējuma paroles ir biežs IoT kompromitācijas iemesls."
+      },
+      "enableGuest": {
+        "title": "Ieslēgt viesu tīklu",
+        "instruction": "Apstipriniet, ka viesu tīkls ir ieslēgts apmeklētājiem.",
+        "success": "Viesu piekļuve ir atdalīta, personīgās ierīces ir aizsargātas.",
+        "failure": "Atlasiet ierīci viesu tīklā, lai apstiprinātu, ka tas ir ieslēgts.",
+        "tip": "Viesu tīkli neļauj apmeklētājiem piekļūt jūsu galvenajām ierīcēm."
+      }
+    },
+    "smallBusiness": {
+      "enableGuest": {
+        "title": "Atdalīt klientu Wi-Fi",
+        "instruction": "Apstipriniet, ka viesu tīkls ir ieslēgts klientiem.",
+        "success": "Klienti ir izolēti no iekšējām sistēmām.",
+        "failure": "Atlasiet ierīci viesu tīklā, lai apstiprinātu, ka tas ir ieslēgts.",
+        "tip": "Viesu tīkli pasargā iekšējos resursus no apmeklētājiem."
+      },
+      "isolatePrinter": {
+        "title": "Izolēt printeri",
+        "instruction": "Pārvietojiet biroja printeri uz ierīču tīklu vai turiet to izolētu.",
+        "success": "Printeris ir izolēts no darbinieku ierīcēm, risks samazināts.",
+        "failure": "Atlasiet biroja printeri, lai to izolētu.",
+        "tip": "Printeriem bieži ir vāja drošība un tie jāsegmentē."
+      },
+      "blockUnknown": {
+        "title": "Bloķēt nereģistrētu ierīci",
+        "instruction": "Identificējiet nereģistrēto ierīci un noņemiet to no tīkla.",
+        "success": "Nezināmā ierīce ir bloķēta un vairs nerada draudus.",
+        "failure": "Pirms bloķēšanas atlasiet nereģistrēto ierīci.",
+        "tip": "Nezināmas uzņēmuma ierīces jānoņem nekavējoties."
+      }
+    },
+    "hotelPublic": {
+      "verifySsid": {
+        "title": "Pārbaudīt oficiālo Wi-Fi",
+        "instruction": "Atlasiet īsto viesnīcas piekļuves punktu, nevis viltoto.",
+        "success": "Jūs identificējāt oficiālo piekļuves punktu.",
+        "failure": "Tā nav oficiālā viesnīcas piekļuves punkts. Mēģiniet vēlreiz.",
+        "tip": "Uzbrucēji bieži izveido līdzīgus Wi-Fi nosaukumus, lai apmānītu viesus."
+      },
+      "blockFakeAp": {
+        "title": "Ziņot par viltotu piekļuves punktu",
+        "instruction": "Identificējiet aizdomīgo Wi-Fi ierīci un atzīmējiet to.",
+        "success": "Viltotais piekļuves punkts ir atzīmēts un tiek izvairīts.",
+        "failure": "Pirms ziņošanas atlasiet aizdomīgo piekļuves punktu.",
+        "tip": "Ja tīkla nosaukums šķiet aizdomīgs, izvairieties no tā un ziņojiet personālam."
+      }
     }
   },
   "onboarding": {

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import type { LearningPrompt } from "@shared/schema";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
@@ -20,6 +20,18 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
   const [showExplanation, setShowExplanation] = useState(false);
   const [completedPrompts, setCompletedPrompts] = useState<Set<string>>(new Set());
   const [correctAnswers, setCorrectAnswers] = useState(0);
+  const [showSummary, setShowSummary] = useState(false);
+  const [promptResults, setPromptResults] = useState<Record<string, boolean>>({});
+
+  useEffect(() => {
+    setCurrentIndex(0);
+    setSelectedAnswer(null);
+    setShowExplanation(false);
+    setCompletedPrompts(new Set());
+    setCorrectAnswers(0);
+    setShowSummary(false);
+    setPromptResults({});
+  }, [prompts]);
 
   if (prompts.length === 0) {
     return (
@@ -34,9 +46,23 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
     );
   }
 
-  const currentPrompt = prompts[currentIndex];
+  const safeIndex = currentIndex < prompts.length ? currentIndex : 0;
+  const currentPrompt = prompts[safeIndex];
   const progress = (completedPrompts.size / prompts.length) * 100;
   const isComplete = completedPrompts.size === prompts.length;
+  const isLastPrompt = safeIndex === prompts.length - 1;
+  const promptKey = promptIdToKey[currentPrompt.id];
+  const explanationText = promptKey
+    ? t(`learningPrompts.${promptKey}.explanation`, { defaultValue: currentPrompt.explanation })
+    : currentPrompt.explanation;
+  const whyText = promptKey
+    ? t(`learningPrompts.${promptKey}.why`, { defaultValue: currentPrompt.why || "" })
+    : currentPrompt.why;
+  const nextStepText = promptKey
+    ? t(`learningPrompts.${promptKey}.nextStep`, { defaultValue: currentPrompt.nextStep || "" })
+    : currentPrompt.nextStep;
+  const resolvedWhy = whyText || explanationText;
+  const resolvedNextStep = nextStepText || t('learning.defaultNextStep');
 
   const handleAnswerSelect = (answerIndex: number) => {
     if (selectedAnswer !== null) return;
@@ -47,6 +73,7 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
     if (isCorrect) {
       setCorrectAnswers(prev => prev + 1);
     }
+    setPromptResults(prev => ({ ...prev, [currentPrompt.id]: isCorrect }));
     setCompletedPrompts(prev => new Set(prev).add(currentPrompt.id));
   };
 
@@ -55,9 +82,13 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
       setCurrentIndex(prev => prev + 1);
       setSelectedAnswer(null);
       setShowExplanation(false);
-    } else if (isComplete && onComplete) {
-      onComplete();
     }
+  };
+
+  const handleFinish = () => {
+    if (!isComplete) return;
+    setShowSummary(true);
+    onComplete?.();
   };
 
   const handleReset = () => {
@@ -66,10 +97,13 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
     setShowExplanation(false);
     setCompletedPrompts(new Set());
     setCorrectAnswers(0);
+    setShowSummary(false);
+    setPromptResults({});
   };
 
-  if (isComplete && currentIndex === prompts.length - 1 && showExplanation) {
+  if (showSummary) {
     const scorePercent = Math.round((correctAnswers / prompts.length) * 100);
+    const incorrectPrompts = prompts.filter(prompt => promptResults[prompt.id] === false);
     return (
       <Card data-testid="panel-learning-complete">
         <CardContent className="pt-6 text-center">
@@ -81,6 +115,31 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
           <Badge variant={correctAnswers === prompts.length ? "default" : "secondary"} className="mb-6">
             {t('learning.scorePercent', { percent: scorePercent })}
           </Badge>
+          {incorrectPrompts.length > 0 ? (
+            <div className="mb-6 text-left">
+              <h4 className="text-sm font-semibold">{t('learning.summaryTitle')}</h4>
+              <p className="mt-1 text-xs text-muted-foreground">{t('learning.summaryIntro')}</p>
+              <div className="mt-3 space-y-2">
+                {incorrectPrompts.map((prompt) => {
+                  const promptKey = promptIdToKey[prompt.id];
+                  const questionText = promptKey
+                    ? t(`learningPrompts.${promptKey}.question`, { defaultValue: prompt.question })
+                    : prompt.question;
+                  const nextStepText = promptKey
+                    ? t(`learningPrompts.${promptKey}.nextStep`, { defaultValue: prompt.nextStep || t('learning.defaultNextStep') })
+                    : (prompt.nextStep || t('learning.defaultNextStep'));
+                  return (
+                    <div key={prompt.id} className="rounded-md border border-chart-5/30 bg-chart-5/5 p-3">
+                      <p className="text-sm font-medium">{questionText}</p>
+                      <p className="mt-1 text-xs text-muted-foreground">{nextStepText}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ) : (
+            <p className="mb-6 text-sm text-muted-foreground">{t('learning.summaryAllCorrect')}</p>
+          )}
           <div>
             <Button variant="outline" onClick={handleReset} data-testid="button-restart-prompts">
               <RotateCcw className="mr-2 h-4 w-4" />
@@ -114,8 +173,8 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
             </Badge>
           )}
           <p className="text-sm font-medium leading-relaxed" data-testid="text-prompt-question">
-            {promptIdToKey[currentPrompt.id]
-              ? t(`learningPrompts.${promptIdToKey[currentPrompt.id]}.question`, { defaultValue: currentPrompt.question })
+            {promptKey
+              ? t(`learningPrompts.${promptKey}.question`, { defaultValue: currentPrompt.question })
               : currentPrompt.question}
           </p>
         </div>
@@ -139,8 +198,8 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
               }
             }
             
-            const translatedAnswer = promptIdToKey[currentPrompt.id]
-              ? t(`learningPrompts.${promptIdToKey[currentPrompt.id]}.answers.${index}`, { defaultValue: answer.text })
+            const translatedAnswer = promptKey
+              ? t(`learningPrompts.${promptKey}.answers.${index}`, { defaultValue: answer.text })
               : answer.text;
             
             return (
@@ -161,17 +220,34 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
         
         {showExplanation && (
           <div className="rounded-md border border-chart-2/30 bg-chart-2/5 p-3">
-            <p className="text-sm leading-relaxed text-foreground">
-              {promptIdToKey[currentPrompt.id]
-                ? t(`learningPrompts.${promptIdToKey[currentPrompt.id]}.explanation`, { defaultValue: currentPrompt.explanation })
-                : currentPrompt.explanation}
-            </p>
+            <p className="text-sm leading-relaxed text-foreground">{explanationText}</p>
+            <div className="mt-3 space-y-2 border-t border-chart-2/20 pt-3">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {t('learning.whyMatters')}
+                </p>
+                <p className="text-sm leading-relaxed text-foreground">{resolvedWhy}</p>
+              </div>
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                  {t('learning.whatToDoNext')}
+                </p>
+                <p className="text-sm leading-relaxed text-foreground">{resolvedNextStep}</p>
+              </div>
+            </div>
           </div>
         )}
         
         {showExplanation && currentIndex < prompts.length - 1 && (
           <Button onClick={handleNext} className="w-full" data-testid="button-next-prompt">
             {t('learning.nextQuestion')}
+            <ChevronRight className="ml-2 h-4 w-4" />
+          </Button>
+        )}
+        
+        {showExplanation && isLastPrompt && (
+          <Button onClick={handleFinish} className="w-full" data-testid="button-finish-prompts">
+            {t('learning.finish')}
             <ChevronRight className="ml-2 h-4 w-4" />
           </Button>
         )}
