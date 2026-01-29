@@ -11,11 +11,41 @@ interface LayerGogglesProps {
   onChange: (layer: LayerMode) => void;
 }
 
-const layerConfigs: { mode: LayerMode; labelKey: string; shortLabelKey: string; icon: typeof Link2; descriptionKey: string }[] = [
-  { mode: "link", labelKey: "layers.link", shortLabelKey: "layers.link", icon: Link2, descriptionKey: "layers.linkDescription" },
-  { mode: "network", labelKey: "layers.network", shortLabelKey: "layers.network", icon: Network, descriptionKey: "layers.networkDescription" },
-  { mode: "transport", labelKey: "layers.transport", shortLabelKey: "layers.transport", icon: ArrowLeftRight, descriptionKey: "layers.transportDescription" },
-  { mode: "application", labelKey: "layers.application", shortLabelKey: "layers.application", icon: Globe, descriptionKey: "layers.applicationDescription" },
+const layerConfigs: {
+  mode: LayerMode;
+  labelKey: string;
+  shortLabelKey: string;
+  icon: typeof Link2;
+  descriptionKey: string;
+}[] = [
+  {
+    mode: "link",
+    labelKey: "layers.link",
+    shortLabelKey: "layers.link",
+    icon: Link2,
+    descriptionKey: "layers.linkDescription",
+  },
+  {
+    mode: "network",
+    labelKey: "layers.network",
+    shortLabelKey: "layers.network",
+    icon: Network,
+    descriptionKey: "layers.networkDescription",
+  },
+  {
+    mode: "transport",
+    labelKey: "layers.transport",
+    shortLabelKey: "layers.transport",
+    icon: ArrowLeftRight,
+    descriptionKey: "layers.transportDescription",
+  },
+  {
+    mode: "application",
+    labelKey: "layers.application",
+    shortLabelKey: "layers.application",
+    icon: Globe,
+    descriptionKey: "layers.applicationDescription",
+  },
 ];
 
 const layerTransitionKeys: Record<string, string> = {
@@ -50,11 +80,11 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
 
   const handleLayerChange = (newLayer: LayerMode) => {
     if (newLayer === activeLayer) return;
-    
+
     const transitionKey = `${activeLayer}->${newLayer}`;
     const translationKey = layerTransitionKeys[transitionKey];
     const message = translationKey ? t(translationKey) : null;
-    
+
     setPreviousLayer(activeLayer);
     setTransitionMessage(message);
     onChange(newLayer);
@@ -74,28 +104,28 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
     if (timeoutRef.current) {
       clearTimeout(timeoutRef.current);
     }
-    
+
     timeoutRef.current = setTimeout(() => {
       setTransitionMessage(null);
       setPreviousLayer(null);
     }, 2500);
   };
 
-  const activeLayerInfo = layerConfigs.find(l => l.mode === activeLayer);
+  const activeLayerInfo = layerConfigs.find((l) => l.mode === activeLayer);
 
   return (
     <div className="flex flex-col gap-2" data-testid="layer-goggles">
-      <div className="flex items-center gap-1 rounded-md bg-muted p-1" role="group" aria-label={t('layers.title')}>
+      <div
+        className="flex items-center gap-1 rounded-md bg-muted p-1"
+        role="group"
+        aria-label={t("layers.title")}
+      >
         {layerConfigs.map(({ mode, labelKey, shortLabelKey, icon: Icon }) => {
           const isActive = activeLayer === mode;
           const wasPrevious = previousLayer === mode;
-          
+
           return (
-            <motion.div
-              key={mode}
-              className="relative flex-1"
-              initial={false}
-            >
+            <motion.div key={mode} className="relative flex-1" initial={false}>
               <Button
                 variant={isActive ? "default" : "ghost"}
                 size="sm"
@@ -114,11 +144,15 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
                 >
                   <Icon className="h-4 w-4 shrink-0" />
                 </motion.div>
-                <span className="hidden sm:inline" aria-hidden="true">{t(labelKey)}</span>
-                <span className="sm:hidden" aria-hidden="true">{t(shortLabelKey)}</span>
+                <span className="hidden sm:inline" aria-hidden="true">
+                  {t(labelKey)}
+                </span>
+                <span className="sm:hidden" aria-hidden="true">
+                  {t(shortLabelKey)}
+                </span>
                 <span className="sr-only">{t(labelKey)}</span>
               </Button>
-              
+
               <AnimatePresence>
                 {isActive && (
                   <motion.div
@@ -159,7 +193,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
               transition={{ duration: 0.15 }}
               className="text-center"
             >
-              <motion.p 
+              <motion.p
                 className="text-xs text-muted-foreground"
                 key={activeLayer}
                 initial={{ opacity: 0, y: 5 }}
@@ -185,17 +219,26 @@ const flowLegendConfig: Record<FlowCategory, { color: string; labelKey: string }
   file: { color: "bg-chart-2", labelKey: "legend.flowFile" },
 };
 
-export function LayerLegend({ activeLayer, flowCategories = [], showFullMac = true }: { activeLayer: LayerMode; flowCategories?: FlowCategory[]; showFullMac?: boolean }) {
+export function LayerLegend({
+  activeLayer,
+  flowCategories = [],
+  showFullMac = true,
+}: {
+  activeLayer: LayerMode;
+  flowCategories?: FlowCategory[];
+  showFullMac?: boolean;
+}) {
   const { t } = useTranslation();
   const macLabelKey = showFullMac ? "legend.localIdFull" : "legend.localIdShort";
-  
-  const transportItems = flowCategories.length > 0
-    ? flowCategories.map((category) => flowLegendConfig[category]).filter(Boolean)
-    : [
-        { color: "bg-chart-1", labelKey: "legend.flowWeb" },
-        { color: "bg-chart-2", labelKey: "legend.flowVideo" },
-        { color: "bg-chart-4", labelKey: "legend.flowEmail" },
-      ];
+
+  const transportItems =
+    flowCategories.length > 0
+      ? flowCategories.map((category) => flowLegendConfig[category]).filter(Boolean)
+      : [
+          { color: "bg-chart-1", labelKey: "legend.flowWeb" },
+          { color: "bg-chart-2", labelKey: "legend.flowVideo" },
+          { color: "bg-chart-4", labelKey: "legend.flowEmail" },
+        ];
 
   const legendItems: Record<LayerMode, { color: string; labelKey: string }[]> = {
     link: [
@@ -219,8 +262,8 @@ export function LayerLegend({ activeLayer, flowCategories = [], showFullMac = tr
   const items = legendItems[activeLayer];
 
   return (
-    <motion.div 
-      className="flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground" 
+    <motion.div
+      className="flex flex-wrap items-center justify-center gap-4 text-xs text-muted-foreground"
       data-testid="layer-legend"
       key={activeLayer}
       initial={{ opacity: 0, y: 5 }}
@@ -228,14 +271,14 @@ export function LayerLegend({ activeLayer, flowCategories = [], showFullMac = tr
       transition={{ duration: 0.25 }}
     >
       {items.map(({ color, labelKey }, index) => (
-        <motion.div 
-          key={labelKey} 
+        <motion.div
+          key={labelKey}
           className="flex items-center gap-1.5"
           initial={{ opacity: 0, x: -10 }}
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.2, delay: index * 0.05 }}
         >
-          <motion.span 
+          <motion.span
             className={`h-3 w-3 rounded-full ${color}`}
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}

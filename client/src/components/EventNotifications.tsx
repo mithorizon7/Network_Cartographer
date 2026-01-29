@@ -16,9 +16,9 @@ interface EventNotificationsProps {
 }
 
 const eventIdToKey: Record<string, string> = {
-  "unknown_device_reveal": "unknownDeviceReveal",
-  "unknown_device_alert": "unknownDeviceAlert",
-  "evil_twin_warning": "evilTwinWarning",
+  unknown_device_reveal: "unknownDeviceReveal",
+  unknown_device_alert: "unknownDeviceAlert",
+  evil_twin_warning: "evilTwinWarning",
 };
 
 export function EventNotifications({
@@ -41,7 +41,7 @@ export function EventNotifications({
 
   useEffect(() => {
     const onEnterEvents = events.filter(
-      (e) => e.trigger === "onEnter" && !shownOnEnterEvents.has(e.id) && !dismissedEvents.has(e.id)
+      (e) => e.trigger === "onEnter" && !shownOnEnterEvents.has(e.id) && !dismissedEvents.has(e.id),
     );
 
     if (onEnterEvents.length > 0) {
@@ -60,7 +60,7 @@ export function EventNotifications({
       (e) =>
         e.trigger === "onDeviceClick" &&
         e.deviceId === selectedDeviceId &&
-        !dismissedEvents.has(e.id)
+        !dismissedEvents.has(e.id),
     );
 
     if (clickEvent) {
@@ -83,7 +83,7 @@ export function EventNotifications({
   const getTranslatedMessage = (event: NetworkEvent): string => {
     const scenarioKey = scenarioIdToKey[scenarioId];
     const eventKey = eventIdToKey[event.id];
-    
+
     if (scenarioKey && eventKey) {
       const translationKey = `scenarioContent.${scenarioKey}.events.${eventKey}`;
       const translated = t(translationKey, { defaultValue: "" });
@@ -121,17 +121,15 @@ export function EventNotifications({
                 isWarning ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"
               }`}
             >
-              {isWarning ? (
-                <AlertTriangle className="h-5 w-5" />
-              ) : (
-                <Info className="h-5 w-5" />
-              )}
+              {isWarning ? <AlertTriangle className="h-5 w-5" /> : <Info className="h-5 w-5" />}
             </div>
             <div className="flex-1">
               {device && (
                 <p className="mb-1 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-                  {deviceLabelToKey[device.label] 
-                    ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
+                  {deviceLabelToKey[device.label]
+                    ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, {
+                        defaultValue: device.label,
+                      })
                     : device.label}
                 </p>
               )}

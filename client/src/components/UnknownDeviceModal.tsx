@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Device } from "@shared/schema";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -20,6 +20,7 @@ interface UnknownDeviceModalProps {
   isOpen: boolean;
   onClose: () => void;
   showFullMac?: boolean;
+  onSuppressForScenario?: () => void;
 }
 
 const responseIds = ["investigate", "block", "ignore"] as const;
@@ -34,10 +35,23 @@ const responseCorrect = {
   ignore: false,
 };
 
-export function UnknownDeviceModal({ device, isOpen, onClose, showFullMac = true }: UnknownDeviceModalProps) {
+export function UnknownDeviceModal({
+  device,
+  isOpen,
+  onClose,
+  showFullMac = true,
+  onSuppressForScenario,
+}: UnknownDeviceModalProps) {
   const { t } = useTranslation();
   const [selectedResponse, setSelectedResponse] = useState<string | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
+
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedResponse(null);
+      setShowFeedback(false);
+    }
+  }, [isOpen]);
 
   const handleSelect = (responseId: string) => {
     setSelectedResponse(responseId);
@@ -48,6 +62,11 @@ export function UnknownDeviceModal({ device, isOpen, onClose, showFullMac = true
     setSelectedResponse(null);
     setShowFeedback(false);
     onClose();
+  };
+
+  const handleSuppress = () => {
+    onSuppressForScenario?.();
+    handleClose();
   };
 
   if (!device) return null;
@@ -61,10 +80,12 @@ export function UnknownDeviceModal({ device, isOpen, onClose, showFullMac = true
               <AlertTriangle className="h-5 w-5" />
             </div>
             <div>
-              <DialogTitle>{t('unknownDevice.title')}</DialogTitle>
+              <DialogTitle>{t("unknownDevice.title")}</DialogTitle>
               <DialogDescription>
-                {deviceLabelToKey[device.label] 
-                  ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
+                {deviceLabelToKey[device.label]
+                  ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, {
+                      defaultValue: device.label,
+                    })
                   : device.label}
               </DialogDescription>
             </div>
@@ -74,15 +95,14 @@ export function UnknownDeviceModal({ device, isOpen, onClose, showFullMac = true
         <div className="space-y-4">
           <Card className="border-destructive/30 bg-card">
             <CardContent className="pt-4">
-              <p className="text-sm leading-relaxed">
-                {t('unknownDevice.description')}
-              </p>
+              <p className="text-sm leading-relaxed">{t("unknownDevice.description")}</p>
               <div className="mt-3 flex flex-wrap gap-2">
                 <Badge variant="secondary" className="font-mono text-xs">
-                  {t('devicePanel.ipAddress')}: {device.ip}
+                  {t("devicePanel.ipAddress")}: {device.ip}
                 </Badge>
                 <Badge variant="secondary" className="font-mono text-xs">
-                  {t(showFullMac ? 'unknownDevice.macFull' : 'unknownDevice.macShort')}: {formatMac(device.localId, showFullMac)}
+                  {t(showFullMac ? "unknownDevice.macFull" : "unknownDevice.macShort")}:{" "}
+                  {formatMac(device.localId, showFullMac)}
                 </Badge>
               </div>
             </CardContent>
@@ -90,7 +110,7 @@ export function UnknownDeviceModal({ device, isOpen, onClose, showFullMac = true
 
           <div>
             <p className="mb-3 text-sm font-medium" data-testid="text-what-would-you-do">
-              {t('unknownDevice.whatWouldYouDo')}
+              {t("unknownDevice.whatWouldYouDo")}
             </p>
             <div className="space-y-2">
               {responseIds.map((responseId) => {
@@ -127,15 +147,29 @@ export function UnknownDeviceModal({ device, isOpen, onClose, showFullMac = true
               }`}
             >
               <CardContent className="pt-4">
-                <p className="text-sm leading-relaxed">{t(`unknownDevice.${selectedResponse}.feedback`)}</p>
+                <p className="text-sm leading-relaxed">
+                  {t(`unknownDevice.${selectedResponse}.feedback`)}
+                </p>
               </CardContent>
             </Card>
           )}
 
           {showFeedback && (
-            <Button onClick={handleClose} className="w-full" data-testid="button-close-modal">
-              {t('unknownDevice.gotIt')}
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button onClick={handleClose} className="w-full" data-testid="button-close-modal">
+                {t("unknownDevice.gotIt")}
+              </Button>
+              {onSuppressForScenario && (
+                <Button
+                  variant="ghost"
+                  onClick={handleSuppress}
+                  className="w-full"
+                  data-testid="button-dismiss-unknown-scenario"
+                >
+                  {t("unknownDevice.dismissForScenario")}
+                </Button>
+              )}
+            </div>
           )}
         </div>
       </DialogContent>

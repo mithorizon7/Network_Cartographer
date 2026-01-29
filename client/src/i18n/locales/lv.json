@@ -21,7 +21,105 @@
     "save": "Saglabāt",
     "cancel": "Atcelt",
     "confirm": "Apstiprināt",
-    "dismiss": "Noraidīt"
+    "dismiss": "Noraidīt",
+    "internet": "Internets",
+    "noData": "—",
+    "hasSecurityConcerns": "ir drošības problēmas",
+    "failedToLoadScenario": "Neizdevās ielādēt scenāriju",
+    "tryRefresh": "Lūdzu, atsvaidziniet lapu",
+    "loadingNetwork": "Ielādē tīkla vizualizāciju...",
+    "selectScenarioToBegin": "Izvēlieties scenāriju, lai sāktu izpēti",
+    "tracePacketJourney": "Izsekot paketes ceļojumu",
+    "tracePacketJourneyDescription": "Izsekot, kā dati ceļo no šīs ierīces caur tīklu",
+    "selectScenarioToExport": "Izvēlieties scenāriju eksportam"
+  },
+  "errorBoundary": {
+    "title": "Kaut kas nogāja greizi",
+    "description": "Notika negaidīta kļūda. Lūdzu, mēģiniet vēlreiz.",
+    "tryAgain": "Mēģināt vēlreiz",
+    "reload": "Pārlādēt lapu"
+  },
+  "notFound": {
+    "title": "404 Lapa nav atrasta",
+    "description": "Vai aizmirsāt pievienot lapu maršrutētājam?"
+  },
+  "theme": {
+    "switchToLight": "Pārslēgt uz gaišo režīmu",
+    "switchToDark": "Pārslēgt uz tumšo režīmu"
+  },
+  "languages": {
+    "en": "Angļu",
+    "lv": "Latviešu",
+    "ru": "Krievu"
+  },
+  "pagination": {
+    "ariaLabel": "Lapu navigācija",
+    "previous": "Iepriekšējā",
+    "next": "Nākamā",
+    "goToPrevious": "Doties uz iepriekšējo lapu",
+    "goToNext": "Doties uz nākamo lapu",
+    "morePages": "Vairāk lapu"
+  },
+  "breadcrumb": {
+    "ariaLabel": "Drupatceļš",
+    "more": "Vairāk"
+  },
+  "sidebar": {
+    "title": "Sānu josla",
+    "description": "Parāda mobilo sānu joslu.",
+    "toggle": "Pārslēgt sānu joslu"
+  },
+  "carousel": {
+    "carousel": "karuselis",
+    "slide": "slaids",
+    "previousSlide": "Iepriekšējais slaids",
+    "nextSlide": "Nākamais slaids"
+  },
+  "scenarioExportImport": {
+    "trigger": "Eksports / Imports",
+    "title": "Scenārija eksports / imports",
+    "description": "Eksportējiet scenārijus kopīgošanai vai importējiet pielāgotas tīkla konfigurācijas.",
+    "exportTab": "Eksportēt",
+    "importTab": "Importēt",
+    "deviceCount": "{{count}} ierīces",
+    "deviceCount_one": "{{count}} ierīce",
+    "deviceCount_few": "{{count}} ierīces",
+    "deviceCount_many": "{{count}} ierīces",
+    "deviceCount_other": "{{count}} ierīces",
+    "networkCount": "{{count}} tīkli",
+    "networkCount_one": "{{count}} tīkls",
+    "networkCount_few": "{{count}} tīkli",
+    "networkCount_many": "{{count}} tīkli",
+    "networkCount_other": "{{count}} tīkli",
+    "copied": "Nokopēts",
+    "copyJson": "Kopēt JSON",
+    "downloadFile": "Lejupielādēt failu",
+    "uploadJsonFile": "Augšupielādēt JSON failu",
+    "orPaste": "vai ielīmējiet JSON zemāk",
+    "scenarioJsonLabel": "Scenārija JSON",
+    "placeholder": "{\"id\": \"custom\", \"title\": \"Mans tīkls\", ...}",
+    "importSuccess": "Scenārijs veiksmīgi importēts",
+    "importButton": "Importēt scenāriju",
+    "copyToastTitle": "Nokopēts starpliktuvē",
+    "copyToastDescription": "Scenārija JSON ir nokopēts starpliktuvē.",
+    "copyFailedTitle": "Kopēšana neizdevās",
+    "copyFailedDescription": "Neizdevās nokopēt starpliktuvē. Lūdzu, atlasiet un kopējiet manuāli.",
+    "exportToastTitle": "Scenārijs eksportēts",
+    "exportToastDescription": "{{title}} ir lejupielādēts JSON formātā.",
+    "importToastTitle": "Scenārijs importēts",
+    "importToastDescription": "{{title}} ir ielādēts.",
+    "importToastDescriptionFile": "{{title}} ir ielādēts no faila.",
+    "pasteJsonError": "Lūdzu, ielīmējiet scenārija JSON",
+    "invalidFormatError": "Nederīgs scenārija formāts",
+    "invalidJsonError": "Nederīgs JSON formāts. Lūdzu, pārbaudiet ievadi.",
+    "invalidJsonFileError": "Nederīgs JSON fails. Lūdzu, pārbaudiet faila formātu.",
+    "readFileError": "Neizdevās nolasīt failu",
+    "failedReadFileError": "Faila nolasīšana neizdevās",
+    "validationError": "Validācijas kļūda pie \"{{path}}\".",
+    "validationRoot": "sakne",
+    "requiresDevice": "Scenārijā jābūt vismaz vienai ierīcei",
+    "requiresNetwork": "Scenārijā jābūt vismaz vienam tīklam",
+    "requiresRouter": "Scenārijā jābūt maršrutētāja ierīcei"
   },
   "network": {
     "network": "Tīkls",
@@ -41,6 +139,11 @@
     "port": "Ports",
     "request": "Pieprasījums",
     "response": "Atbilde"
+  },
+  "environmentTypes": {
+    "home": "Mājas tīkls",
+    "business": "Biznesa tīkls",
+    "public": "Publiskais Wi‑Fi"
   },
   "layers": {
     "title": "Slāņu brilles",
@@ -97,9 +200,15 @@
     "familyHome": "Ģimenes māja ar IoT ierīcēm",
     "smallBusiness": "Mazā uzņēmuma birojs",
     "hotelPublic": "Viesnīca / Publiskais Wi-Fi",
+    "deviceCount": "{{count}} ierīces",
     "deviceCount_one": "{{count}} ierīce",
+    "deviceCount_few": "{{count}} ierīces",
+    "deviceCount_many": "{{count}} ierīces",
     "deviceCount_other": "{{count}} ierīces",
+    "networkCount": "{{count}} tīkli",
     "networkCount_one": "{{count}} tīkls",
+    "networkCount_few": "{{count}} tīkli",
+    "networkCount_many": "{{count}} tīkli",
     "networkCount_other": "{{count}} tīkli"
   },
   "devicePanel": {
@@ -133,39 +242,26 @@
       "learn": "Mācīties"
     },
     "learnContent": {
-      "router": "Maršrutētājs ir jebkura tīkla centrālais mezgls. Visas ierīces savienojas caur to, un tas pārvalda robežu starp jūsu privāto tīklu un publisko internetu.",
-      "unknown": "Nezināmas ierīces vienmēr jāizmeklē. Tas varētu būt aizmirsts sīkrīks, kaimiņš, kas izmanto jūsu Wi-Fi, vai potenciāli kaut kas ļaunprātīgs.",
-      "defaultPassword": "Ierīces ar noklusējuma parolēm ir viegls mērķis uzbrucējiem. Vienmēr mainiet noklusējuma akreditācijas datus uzreiz pēc uzstādīšanas.",
-      "iotDevice": "IoT ierīcēm bieži ir ierobežotas drošības funkcijas. To izolēšana atsevišķā tīklā neļauj kompromitētai ierīcei piekļūt jūsu personīgajiem datiem.",
-      "forgottenDevice": "Aizmirstas ierīces ir drošības riski - tām var būt novecojusi programmatūra, vājas paroles vai tās var būt uzbrukumu mērķi, kamēr jūs tās neuzraugāt.",
-      "safeDevice": "Šī ierīce šķiet pareizi konfigurēta. Parastās ierīces jūsu galvenajā tīklā jāatjaunina un jāuzrauga, lai atklātu neparastu darbību."
+      "router": "Maršrutētājs atrodas tīkla centrā. Tas savieno ierīces un nosaka robežu starp privāto tīklu un publisko internetu.",
+      "unknown": "Nezināmas ierīces ir jāizmeklē. Pirms piešķirt piekļuvi, izmantojiet maršrutētāja žurnālus un ražotāja ID, lai apstiprinātu identitāti.",
+      "defaultPassword": "Noklusējuma akreditācijas dati ir plaši zināmi un bieži publicēti. Mainiet tos uzreiz pēc uzstādīšanas.",
+      "iotDevice": "IoT ierīcēm bieži ir ierobežotas drošības kontroles un reti atjauninājumi. Izolējiet tās, lai ierobežotu pārvietošanos tīklā.",
+      "forgottenDevice": "Nelietotas ierīces uzkrāj risku: novecojusi programmaparatūra, vājas paroles un nav uzraudzības.",
+      "safeDevice": "Šī ierīce izskatās droša. Turiet to atjauninātu un periodiski pārskatiet tās savienojumus."
     }
   },
-  "packetJourney": {
-    "title": "Paketes ceļojums",
-    "description": "Skatieties, kā dati pārvietojas no šīs ierīces uz internetu",
-    "startJourney": "Sākt ceļojumu",
-    "pause": "Pauze",
-    "replay": "Atkārtot",
-    "deviceToRouter": "Ierīce sūta paketi maršrutētājam",
-    "routerProcessing": "Maršrutētājs apstrādā un piemēro NAT",
-    "routerToInternet": "Maršrutētājs pārsūta uz internetu",
-    "internetResponse": "Atbilde atgriežas no interneta",
-    "routerBack": "Maršrutētājs piegādā ierīcei",
-    "complete": "Ceļojums pabeigts"
-  },
   "unknownDeviceModal": {
-    "title": "Ko jūs darītu?",
-    "subtitle": "Jūs esat atklājuši nezināmu ierīci savā tīklā",
+    "title": "Izvēlieties rīcību",
+    "subtitle": "Jūsu tīklā ir nezināma ierīce",
     "investigate": "Izmeklēt",
     "investigateDesc": "Pārbaudīt maršrutētāja žurnālus un identificēt ierīci",
     "block": "Bloķēt",
     "blockDesc": "Noņemt ierīci no tīkla",
     "ignore": "Ignorēt",
     "ignoreDesc": "Pagaidām atstāt to mierā",
-    "investigateFeedback": "Laba izvēle! Izmeklēšana palīdz saprast, vai šī ierīce pieder jūsu tīklam, pirms rīkojaties.",
-    "blockFeedback": "Šī ir droša izvēle, bet jūs varat nejauši bloķēt likumīgu ierīci. Apsveriet vispirms izmeklēt.",
-    "ignoreFeedback": "Riskanti! Nezināmas ierīces var būt drošības draudi. Vienmēr izmeklējiet nepazīstamas ierīces savā tīklā."
+    "investigateFeedback": "Izmeklēšana apstiprina, vai ierīce pieder tīklam, pirms rīkojaties.",
+    "blockFeedback": "Bloķēšana noņem ierīci, bet jūs varat atvienot likumīgu. Ja iespējams, pārbaudiet identitāti.",
+    "ignoreFeedback": "Nezināmas ierīces ignorēšana atstāj iespējamu iebrukumu neatrisinātu."
   },
   "quiz": {
     "title": "Pārbaudiet savas zināšanas",
@@ -187,8 +283,13 @@
     "macAddressFull": "MAC (pilns)",
     "macAddressShort": "MAC (pēdējie 3 baiti)",
     "status": "Statuss",
+    "filtersHideTarget": "Filtri slēpj ierīci, kas nepieciešama pašreizējam uzdevumam.",
+    "clearFilters": "Notīrīt filtrus",
     "ok": "Labi",
+    "issue": "{{count}} problēmas",
     "issue_one": "{{count}} problēma",
+    "issue_few": "{{count}} problēmas",
+    "issue_many": "{{count}} problēmas",
     "issue_other": "{{count}} problēmas",
     "noDevices": "Nav atrasta neviena ierīce"
   },
@@ -200,7 +301,7 @@
     "networkVisualization": "Tīkla vizualizācija, kas parāda ierīces, kas savienotas ar maršrutētāju"
   },
   "info": {
-    "about": "Šī smilšu kaste palīdz saprast, kas īsti ir tīkls: maršrutētājs, kas savienots ar daudzām ierīcēm, katrai ar savu identitāti un adresi.",
+    "about": "Šī smilškaste modelē lokālu tīklu: maršrutētāju, vairākas ierīces un identifikatorus un adreses, kas tiek izmantotas katrā slānī.",
     "keyboardShortcuts": "Tastatūras īsceļi",
     "switchLayers": "Pārslēgt slāņu skatus",
     "deselectDevice": "Atcelt ierīces izvēli",
@@ -214,6 +315,10 @@
     "import": "Importēt",
     "export": "Eksportēt",
     "filter": "Filtrēt",
+    "focusMode": "Fokusa režīms",
+    "focusModeOn": "Fokusa režīms ieslēgts",
+    "focusModeDescription": "Slēpj papildu rīkus, lai koncentrētos uz uzdevumiem",
+    "focusModeLocked": "Izslēdziet fokusa režīmu, lai to izmantotu",
     "showAll": "Rādīt visu",
     "showMain": "Tikai galvenais",
     "showGuest": "Tikai viesi",
@@ -263,48 +368,69 @@
   "scenarioContent": {
     "familyIoT": {
       "title": "Ģimenes māja ar IoT ierīcēm",
-      "description": "Tipiska piepilsētas māja ar vairākiem ģimenes locekļiem un dažādām viedierīcēm. Ievērojiet, kā IoT ierīces ir izolētas savā tīklā drošības nolūkos.",
+      "description": "Mājas tīkls ar ģimenes ierīcēm un augošu IoT ierīču kopumu. IoT datplūsma drošības nolūkos ir izolēta atsevišķā tīklā.",
       "events": {
-        "unknownDeviceReveal": "Jūsu IoT tīklā parādās nepazīstama ierīce. Jūs neatceraties, ka to būtu pievienojuši..."
+        "unknownDeviceReveal": "IoT tīklā ir parādījusies nepazīstama ierīce. Tā nav jūsu ierīču sarakstā."
       }
     },
     "smallBusiness": {
       "title": "Mazā uzņēmuma birojs",
-      "description": "Mazs uzņēmums ar darbiniekiem, serveri un klientiem pieejamu Wi-Fi. Ievērojiet atdalījumu starp darbinieku un klientu tīkliem.",
+      "description": "Neliels biroja tīkls ar darbinieku ierīcēm, failu serveri un klientu Wi-Fi. Darbinieku un viesu datplūsma ir atdalīta.",
       "events": {
-        "unknownDeviceAlert": "IT brīdinājums: Korporatīvajam tīklam ir pieslēgusies nereģistrēta ierīce!"
+        "unknownDeviceAlert": "IT brīdinājums: korporatīvajam tīklam ir pieslēgusies nereģistrēta ierīce."
       }
     },
     "hotelPublic": {
       "title": "Viesnīca / Publiskais Wi-Fi",
-      "description": "Viesnīcas vestibils ar publisko Wi-Fi. Ievērojiet: Visi viesi izmanto vienu tīklu, un jūs nevarat uzticēties citiem pieslēgumiem.",
+      "description": "Viesnīcas publiskais Wi-Fi, kur daudzi viesi koplieto vienu LAN. Citas pieslēgtās ierīces ir jāuztver kā neuzticamas.",
       "events": {
-        "evilTwinWarning": "Brīdinājums: Šis varētu būt 'ļaunais dvīnis' uzbrukums! Uzbrucēji izveido viltus tīklus ar līdzīgiem nosaukumiem, lai pārtvertu jūsu datus."
+        "evilTwinWarning": "Brīdinājums: iespējams ļaunā dvīņa piekļuves punkts. Uzbrucēji veido līdzīgus SSID, lai pārtvertu datplūsmu."
       }
+    }
+  },
+  "scenarioBrief": {
+    "title": "Scenārija īss apraksts",
+    "watchForLabel": "Kam pievērst uzmanību",
+    "familyIoT": {
+      "body": "Jūsu mājas tīklā ir IoT ierīces un viesi. Identificējiet vājās ierīces un turiet tās izolētas no personīgajām sistēmām.",
+      "watchFor": "Noklusējuma paroles IoT ierīcēs un jebkura nezināma ierīce tīklā."
+    },
+    "smallBusiness": {
+      "body": "Aizsargājiet iekšējās sistēmas, vienlaikus nodrošinot klientiem piekļuvi. Apstipriniet tīkla atdalījumu un noņemiet vājās vietas.",
+      "watchFor": "Viesu izolācija, noklusējuma paroles un nešifrēta datplūsma."
+    },
+    "hotelPublic": {
+      "body": "Publiskais Wi-Fi ir augsta riska. Pārbaudiet īsto piekļuves punktu un izvairieties no nešifrētas datplūsmas.",
+      "watchFor": "NAT robežas, viltoti piekļuves punkti un nešifrēta datplūsma."
     }
   },
   "unknownDevice": {
     "title": "Atklāta nezināma ierīce",
-    "description": "Jūs atklājāt neidentificētu ierīci savā tīklā. Tas varētu būt aizmirsts sīkrīks, viesa ierīce vai kaut kas aizdomīgs.",
+    "description": "Jūsu tīklā ir neatpazīta ierīce. Pirms ļaut tai turpināt piekļuvi, to pārbaudiet.",
     "macFull": "MAC (pilns)",
     "macShort": "MAC (pēdējie 3 baiti)",
-    "whatWouldYouDo": "Ko jūs darītu?",
+    "inlineTitle": "Atklāta nezināma ierīce",
+    "inlineBody": "Izmeklējiet tagad vai turpiniet pašreizējo uzdevumu un atgriezieties vēlāk.",
+    "dismissForScenario": "Vairs nerādīt šajā scenārijā",
+    "viewDetails": "Skatīt detaļas",
+    "whatWouldYouDo": "Izvēlieties rīcību",
     "gotIt": "Sapratu",
     "investigate": {
       "label": "Izmeklēt tālāk",
-      "feedback": "Laba izvēle! Pirms rīkoties, ir prātīgi iegūt vairāk informācijas. Pārbaudiet maršrutētāja administrēšanas lapu, lai redzētu, kad šī ierīce pieslēdzās, un meklējiet modeļus tās uzvedībā."
+      "feedback": "Vispirms izmeklējiet, lai apstiprinātu piederību. Pirms rīcības pārbaudiet maršrutētāja ierīču sarakstu, pieslēgšanās laiku un ražotāja ID."
     },
     "block": {
       "label": "Nekavējoties bloķēt",
-      "feedback": "Nezināmu ierīču bloķēšana var būt piemērota, bet to darot bez izmeklēšanas, jūs varētu atvienot likumīgu ierīci, ko aizmirsāt (piemēram, viedo kontaktligzdu vai viesa tālruni). Apsveriet vispirms izmeklēšanu."
+      "feedback": "Bloķēšana var būt atbilstoša, taču jūs varat atvienot likumīgu ierīci. Kad iespējams, vispirms pārbaudiet ierīces identitāti."
     },
     "ignore": {
       "label": "Ignorēt",
-      "feedback": "Nezināmu ierīču ignorēšana ir riskanta. Tas varētu būt kaimiņš, kas zog jūsu Wi-Fi, uzbrucējs vai aizmirsta viedierīce ar drošības ievainojamībām. Vienmēr izmeklējiet nepazīstamas ierīces."
+      "feedback": "Nezināmu ierīču ignorēšana atstāj risku neatrisinātu. Uzskatiet jebkuru neatpazītu ierīci par iespējamu iebrukumu, līdz tā tiek pārbaudīta."
     }
   },
   "packetJourney": {
     "title": "Paketes ceļojums",
+    "description": "Izsekojiet, kā pakete pārvietojas no ierīces caur maršrutētāju uz internetu un atpakaļ.",
     "close": "Aizvērt",
     "pause": "Pauze",
     "replay": "Atkārtot",
@@ -321,46 +447,46 @@
     "ispGateway": "ISP vārteja",
     "steps": {
       "idle": {
-        "link": "Gatavs izsekot paketes ceļojumu, izmantojot MAC adreses",
-        "network": "Gatavs izsekot paketes ceļojumu, izmantojot IP adreses",
-        "transport": "Gatavs izsekot paketes ceļojumu caur portiem",
-        "application": "Gatavs izsekot paketes ceļojumu lietojumprogrammu līmenī"
+        "link": "Gatavs izsekošanai, izmantojot MAC adreses",
+        "network": "Gatavs izsekošanai, izmantojot IP adreses",
+        "transport": "Gatavs izsekošanai caur portiem",
+        "application": "Gatavs izsekošanai lietojumprogrammu slānī"
       },
       "deviceToRouter": {
-        "link": "Pakete atstāj ierīci ar avota MAC uz maršrutētāja MAC kā galamērķi",
-        "network": "Pakete nes avota IP (ierīce) uz galamērķa IP (interneta serveris)",
-        "transport": "Dati nosūtīti no nejaušas augsta porta uz galamērķa portu (piem., 443 priekš HTTPS)",
-        "application": "Lietojumprogramma sūta HTTP/HTTPS pieprasījumu caur ligzdu"
+        "link": "Kadrs nosūtīts no ierīces MAC uz maršrutētāja MAC",
+        "network": "Pakete nes ierīces avota IP uz servera galamērķa IP",
+        "transport": "Klients sūta no īslaicīga porta uz servera portu (piem., 443)",
+        "application": "Lietojumprogramma izsūta HTTP/HTTPS pieprasījumu"
       },
       "routerProcessing": {
-        "link": "Maršrutētājs saņem kadru, noņem MAC galveni, nolasa IP galamērķi",
-        "network": "Maršrutētājs veic NAT: aizstāj privāto IP ar publisko IP internetam",
-        "transport": "Maršrutētājs izseko savienojuma stāvokli atgriešanās trafika kartēšanai",
-        "application": "Maršrutētājs var pārbaudīt lietojumprogrammu galvenes (ugunsmūris/filtrēšana)"
+        "link": "Maršrutētājs saņem kadru, noņem saites galveni, nolasa IP galamērķi",
+        "network": "NAT aizstāj privāto avota IP ar maršrutētāja publisko IP",
+        "transport": "Maršrutētājs seko savienojumam atgriezeniskās datplūsmas kartēšanai",
+        "application": "Ugunsmūra noteikumi var pārbaudīt lietojumprogrammas galvenes"
       },
       "routerToInternet": {
-        "link": "Izveidots jauns kadrs ar maršrutētāja WAN MAC uz ISP vārtejas MAC",
-        "network": "Paketei tagad ir publiskā IP kā avots, maršrutē caur internetu",
-        "transport": "Portu kartēšana saglabāta, lai atbilde varētu atrast sākotnējo ierīci",
-        "application": "Pieprasījums sasniedz galamērķa serveri (vietne, API utt.)"
+        "link": "Kadrs nosūtīts no maršrutētāja WAN MAC uz ISP vārtejas MAC",
+        "network": "Pakete maršrutējas internetā ar maršrutētāja publisko IP",
+        "transport": "Portu kartējums tiek saglabāts atgriešanās ceļam",
+        "application": "Pieprasījums sasniedz galamērķa serveri"
       },
       "internetResponse": {
-        "link": "Atbilde pienāk pie maršrutētāja WAN interfeisa no ISP",
-        "network": "Atbilde adresēta maršrutētāja publiskajai IP, ports identificē plūsmu",
-        "transport": "Serveris atbild uz izveidotā savienojuma (tas pats portu pāris)",
-        "application": "Serveris sūta atbildes datus (HTML, JSON, fails utt.)"
+        "link": "Atbilde ierodas maršrutētāja WAN interfeisā no ISP",
+        "network": "Atbilde adresēta maršrutētāja publiskajam IP; ports identificē plūsmu",
+        "transport": "Serveris atbild izveidotajā portu pārī",
+        "application": "Serveris nosūta atbildes datus (HTML, JSON, fails)"
       },
       "routerBack": {
-        "link": "Maršrutētājs pārraksta galamērķa MAC uz sākotnējās ierīces MAC",
-        "network": "NAT apgriešana: aizstāj publisko IP ar ierīces privāto IP",
-        "transport": "Sākotnējais avota ports izmantots, lai piegādātu pareizai lietojumprogrammai",
-        "application": "Atbilde piegādāta gaidošajai lietojumprogrammai ierīcē"
+        "link": "Maršrutētājs pārraksta galamērķa MAC uz ierīces MAC",
+        "network": "NAT atgriež kartējumu uz ierīces privāto IP",
+        "transport": "Sākotnējais avota ports piegādā pareizajai lietojumprogrammai",
+        "application": "Lietojumprogramma saņem atbildi"
       },
       "complete": {
-        "link": "Ceļojums pabeigts - ierīce saņēma atbildi caur MAC adresēšanu",
-        "network": "Ceļojums pabeigts - privātā IP veiksmīgi sazinājās ar internetu",
-        "transport": "Ceļojums pabeigts - pilns pieprasījuma/atbildes cikls caur portiem",
-        "application": "Ceļojums pabeigts - lietojumprogramma saņēma servera atbildi"
+        "link": "Ceļojums pabeigts. Ierīce saņēma atbildi, izmantojot saites slāņa piegādi.",
+        "network": "Ceļojums pabeigts. Privātais IP sazinājās caur maršrutētāja publisko IP.",
+        "transport": "Ceļojums pabeigts. Pilns pieprasījuma/atbildes cikls pabeigts caur portiem.",
+        "application": "Ceļojums pabeigts. Lietojumprogramma saņēma servera atbildi."
       }
     }
   },
@@ -376,6 +502,14 @@
     "chat": "Tērzēšana",
     "remote": "Attālinātā piekļuve",
     "file": "Faili"
+  },
+  "services": {
+    "ssh": "SSH",
+    "http": "HTTP",
+    "https": "HTTPS",
+    "smb": "SMB",
+    "rtsp": "RTSP",
+    "print": "Druka"
   },
   "zones": {
     "main": "Galvenais tīkls",
@@ -405,119 +539,172 @@
     "encryptedFlow": "Šifrēta plūsma",
     "unencryptedFlow": "Nešifrēta plūsma",
     "destination": "Galamērķis",
-    "streaming": "Straumēšana"
-  },
-  "common": {
-    "internet": "Internets",
-    "reset": "Atiestatīt",
-    "noData": "—",
-    "hasSecurityConcerns": "ir drošības problēmas"
+    "streaming": "Straumēšana",
+    "flowInfoTitle": "Plūsmas rāda aktīvos savienojumus",
+    "flowInfoBody": "Šīs plūsmas ir aktīva trafika piemēri, nevis atvērti pakalpojumi.",
+    "showSelectedFlows": "Tikai atlasītā ierīce"
   },
   "learningPrompts": {
     "privateIp": {
       "question": "Kura no šīm ir privāta IP adrese?",
       "answers": ["192.168.10.14", "8.8.8.8", "203.0.113.12"],
-      "explanation": "192.168.x.x adreses ir privātas - tās darbojas tikai jūsu mājas tīklā. 8.8.8.8 ir Google publiskais DNS, un 203.0.113.12 ir jūsu publiskā IP (kā internets jūs redz).",
-      "why": "Privāto diapazonu atpazīšana palīdz saprast, kuras ierīces ir lokālas un kuras — internetā.",
-      "nextStep": "Ja redzi 192.168.x.x, 10.x.x.x vai 172.16–31.x.x, uztver to kā lokālu adresi un atrodi publisko IP maršrutētājā."
+      "explanation": "192.168.x.x ir privāts diapazons, ko izmanto lokālos tīklos. 8.8.8.8 ir Google publiskais DNS. 203.0.113.12 ir publiskas IP adreses piemērs.",
+      "why": "Privātie diapazoni norāda lokālās ierīces; publiskās IP identificē sistēmas internetā.",
+      "nextStep": "Uzskatiet 192.168.x.x, 10.x.x.x un 172.16–31.x.x par iekšējiem; publiskā adrese ir maršrutētāja WAN IP."
     },
     "macPurpose": {
       "question": "Kam tiek izmantota MAC adrese (lokālais ID)?",
-      "answers": ["Pakešu maršrutēšanai internetā", "Ierīču identificēšanai lokālajā tīklā", "Jūsu datu šifrēšanai"],
-      "explanation": "MAC adreses ir unikāli aparatūras identifikatori, kas ieprogrammēti katrā tīkla ierīcē. Tās izmanto datu piegādei jūsu lokālajā tīkla segmentā - kā dzīvokļu numuri ēkā. Maršrutētāji noņem MAC adreses, pārsūtot uz internetu.",
-      "why": "MAC adreses identificē ierīces tikai lokālajā tīklā, nevis internetā.",
-      "nextStep": "Izmanto maršrutētāja ierīču sarakstu, lai sasaistītu MAC adreses ar reālām ierīcēm."
+      "answers": [
+        "Pakešu maršrutēšanai internetā",
+        "Ierīču identificēšanai lokālajā tīklā",
+        "Jūsu datu šifrēšanai"
+      ],
+      "explanation": "MAC adreses ir aparatūras identifikatori lokālajai piegādei. Maršrutētāji, pārsūtot trafiku uz internetu, nomaina saites slāņa galvenes.",
+      "why": "MAC identificē ierīces lokālajā segmentā, nevis internetā.",
+      "nextStep": "Izmantojiet maršrutētāja ierīču sarakstu, lai sasaistītu MAC adreses ar fiziskām ierīcēm."
     },
     "guestNetwork": {
       "question": "Kāpēc jūs ievietotu viesus atsevišķā tīklā?",
-      "answers": ["Lai viņiem būtu ātrāks internets", "Lai neļautu viņiem piekļūt jūsu personīgajām ierīcēm", "Jo vienā tīklā ir ierīču limits"],
-      "explanation": "Viesu tīkli rada izolāciju. Apmeklētāji var izmantot internetu, bet viņi nevar redzēt vai piekļūt jūsu personīgajiem datoriem, kamerām vai viedierīcēm.",
-      "why": "Segmentēšana neļauj viesu ierīcēm piekļūt tavām personīgajām, ja tās ir kompromitētas.",
-      "nextStep": "Ieslēdz viesu SSID un turi to izolētu no galvenā tīkla."
+      "answers": [
+        "Lai viņiem būtu ātrāks internets",
+        "Lai neļautu viņiem piekļūt jūsu personīgajām ierīcēm",
+        "Jo vienā tīklā ir ierīču limits"
+      ],
+      "explanation": "Viesu tīkls izolē apmeklētājus no galvenā LAN. Viesi var sasniegt internetu, bet ne jūsu personīgās ierīces.",
+      "why": "Izolācija ierobežo, kam var piekļūt kompromitēta viesu ierīce.",
+      "nextStep": "Ieslēdziet viesu SSID un atdaliet to ar ugunsmūri no galvenā tīkla."
     },
     "unknownDevice": {
       "question": "Jūs pamanāt nezināmu ierīci savā tīklā. Ko jums vajadzētu darīt?",
-      "answers": ["Ignorēt - droši vien viss kārtībā", "Izmeklēt un, iespējams, bloķēt", "Nekavējoties atvienot maršrutētāju"],
-      "explanation": "Nezināmas ierīces var būt aizmirstas ierīces, kaimiņi, kas izmanto jūsu Wi-Fi, vai pat ļaunprātīgi dalībnieki. Pārbaudiet maršrutētāja administrēšanas lapu, lai identificētu un noņemtu aizdomīgas ierīces.",
-      "why": "Nezināma ierīce var nozīmēt Wi‑Fi izmantošanu bez atļaujas vai reālu ielaušanos.",
-      "nextStep": "Identificē ierīci maršrutētājā un bloķē to vai nomaini Wi‑Fi paroli."
+      "answers": [
+        "Ignorēt - droši vien viss kārtībā",
+        "Izmeklēt un, iespējams, bloķēt",
+        "Nekavējoties atvienot maršrutētāju"
+      ],
+      "explanation": "Nezināmas ierīces var būt uzskaites trūkumi vai nesankcionēta piekļuve. Izmantojiet maršrutētāja klientu sarakstu, lai identificētu ierīci pēc MAC/ražotāja un noņemtu to, ja tā nav atpazīta.",
+      "why": "Neidentificētas ierīces var norādīt uz ļaunprātīgu izmantošanu vai iebrukumu.",
+      "nextStep": "Pārbaudiet ierīci, pēc tam bloķējiet to vai nomainiet Wi‑Fi paroli."
     },
     "iotIsolation": {
       "question": "Kāpēc IoT ierīces (kameras, termostati) bieži tiek ievietotas atsevišķā tīklā?",
-      "answers": ["Tām nepieciešami īpaši interneta iestatījumi", "Tās bieži ir nedrošas un var tikt izmantotas uzbrukumiem citām ierīcēm", "Tās izmanto pārāk daudz joslas platuma"],
-      "explanation": "Daudzām IoT ierīcēm ir vāja drošība, noklusējuma paroles vai tās nesaņem atjauninājumus. To izolēšana novērš kompromitētas kameras spiegošanu pēc jūsu portatīvā datora.",
-      "why": "IoT ierīces bieži ir ieejas punkts; izolēšana ierobežo uzbrukuma izplatīšanos.",
-      "nextStep": "Novieto IoT ierīces atsevišķā tīklā vai VLAN ar ierobežotu piekļuvi."
+      "answers": [
+        "Tām nepieciešami īpaši interneta iestatījumi",
+        "Tās bieži ir nedrošas un var tikt izmantotas uzbrukumiem citām ierīcēm",
+        "Tās izmanto pārāk daudz joslas platuma"
+      ],
+      "explanation": "Daudzas IoT ierīces tiek piegādātas ar vāju drošību un retiem atjauninājumiem. Izolācija neļauj kompromitētai ierīcei piekļūt personālajiem datoriem.",
+      "why": "IoT ierīces ir bieži ieejas punkti; segmentēšana ierobežo pārvietošanos tīklā.",
+      "nextStep": "Novietojiet IoT ierīces atsevišķā VLAN vai SSID ar ierobežotu piekļuvi."
     },
     "tenNetwork": {
       "question": "Kāda veida IP adrešu diapazons ir 10.0.x.x?",
-      "answers": ["Publisko IP diapazons", "Privāto IP diapazons iekšējiem tīkliem", "Rezervēts valdības lietošanai"],
-      "explanation": "10.0.0.0/8 ir viens no trim privāto IP diapazoniem (kopā ar 172.16.x.x un 192.168.x.x). Šīs adreses darbojas tikai jūsu tīklā un tām nevar tieši piekļūt no interneta.",
-      "why": "Privāto diapazonu atpazīšana neļauj kļūdaini uzskatīt ierīci par publiski sasniedzamu.",
-      "nextStep": "Uztver 10.x adreses kā iekšējas un meklē publisko IP maršrutētājā."
+      "answers": [
+        "Publisko IP diapazons",
+        "Privāto IP diapazons iekšējiem tīkliem",
+        "Rezervēts valdības lietošanai"
+      ],
+      "explanation": "10.0.0.0/8 ir viens no RFC1918 privātajiem diapazoniem kopā ar 172.16.0.0/12 un 192.168.0.0/16. Šīs adreses netiek maršrutētas publiskajā internetā.",
+      "why": "Privāto diapazonu atpazīšana neļauj pieņemt, ka ierīce ir publiski sasniedzama.",
+      "nextStep": "Uzskatiet 10.x adreses par iekšējām un publisko IP meklējiet maršrutētājā."
     },
     "wpa3": {
       "question": "Kāpēc darbinieku tīkls izmanto WPA3, bet viesu tīkls WPA2?",
-      "answers": ["WPA3 ir lēnāks, tikai darbinieki to var izmantot", "WPA3 nodrošina spēcīgāku šifrēšanu sensitīviem datiem", "Starp tiem nav nozīmīgas atšķirības"],
-      "explanation": "WPA3 piedāvā labāku aizsardzību pret paroļu uzminēšanas uzbrukumiem un izmanto jaunāku šifrēšanu. Korporatīvie dati ir pelnījuši visspēcīgāko pieejamo aizsardzību.",
-      "why": "Spēcīgāka Wi-Fi šifrēšana samazina paroļu uzminēšanas un datu noplūdes risku.",
-      "nextStep": "Izmanto WPA3, kad iespējams, un atstāj WPA2 tikai vecākām ierīcēm."
+      "answers": [
+        "WPA3 ir lēnāks, tikai darbinieki to var izmantot",
+        "WPA3 nodrošina spēcīgāku šifrēšanu sensitīviem datiem",
+        "Starp tiem nav nozīmīgas atšķirības"
+      ],
+      "explanation": "WPA3 pastiprina aizsardzību pret bezsaistes paroļu minēšanu un izmanto mūsdienīgu atslēgu apmaiņu. Darbinieku datplūsmai jāizmanto stiprākais pieejamais variants.",
+      "why": "Stiprāka Wi-Fi šifrēšana samazina akreditācijas datu atklāšanas risku.",
+      "nextStep": "Izmantojiet WPA3, kad tas ir pieejams, un WPA2 atstājiet tikai vecākām ierīcēm."
     },
     "printerRisk": {
       "question": "Kāpēc printeris ir atzīmēts kā drošības risks?",
-      "answers": ["Printerus nevar padarīt drošus", "Tam joprojām ir noklusējuma parole, kas padara to viegli uzlaužamu", "Tas ir savienots ar nepareizo tīklu"],
-      "explanation": "Printeri ar noklusējuma parolēm bieži ir uzbrucēju mērķis. Tos var izmantot dokumentu pārtveršanai, izplatīšanai uz citām ierīcēm vai pat kļūšanai par botnet daļu.",
-      "why": "Noklusējuma paroles ir izplatīts uzbrukuma ieejas punkts.",
-      "nextStep": "Nomaini noklusējuma paroles un pārvieto printerus uz ierobežotu tīklu."
+      "answers": [
+        "Printerus nevar padarīt drošus",
+        "Tam joprojām ir noklusējuma parole, kas padara to viegli uzlaužamu",
+        "Tas ir savienots ar nepareizo tīklu"
+      ],
+      "explanation": "Printerim joprojām ir noklusējuma akreditācijas dati. Tas ļauj nesankcionētu piekļuvi drukas uzdevumiem un var dot iespēju nostiprināties tīklā.",
+      "why": "Noklusējuma akreditācijas dati ir biežs uzbrucēju ieejas punkts.",
+      "nextStep": "Nomainiet printera paroli un turiet to ierobežotā tīklā."
     },
     "corpIsolation": {
       "question": "Kāpēc klienti viesu Wi-Fi nevar piekļūt failu serverim?",
-      "answers": ["Failu serveris ir izslēgts", "Viesu tīkls ir izolēts no korporatīvā tīkla", "Klientiem nav paroles"],
-      "explanation": "Tīkla segmentācija nozīmē, ka dažādi tīkli nevar sazināties. Viesi saņem interneta piekļuvi, bet ir pilnībā nodalīti no iekšējiem resursiem.",
-      "why": "Segmentēšana pasargā iekšējos datus pat tad, ja viesu Wi-Fi ir kompromitēts.",
-      "nextStep": "Pārliecinies, ka viesu Wi-Fi nevar sasniegt iekšējos serverus vai printerus."
+      "answers": [
+        "Failu serveris ir izslēgts",
+        "Viesu tīkls ir izolēts no korporatīvā tīkla",
+        "Klientiem nav paroles"
+      ],
+      "explanation": "Viesu un korporatīvais tīkls ir atdalīts ar ugunsmūra noteikumiem. Viesi var sasniegt internetu, bet ne iekšējos serverus.",
+      "why": "Segmentēšana aizsargā iekšējos datus pat tad, ja viesu Wi-Fi ir kompromitēts.",
+      "nextStep": "Pārbaudiet, ka viesu Wi-Fi nevar sasniegt iekšējos serverus vai printerus."
     },
     "openWifi": {
       "question": "Ko nozīmē 'Open' tīkla drošība?",
-      "answers": ["Ikviens var pievienoties bez paroles", "Tīklam nav ugunsmūra", "Wi-Fi signāls ir publiski redzams"],
-      "explanation": "Atvērtiem tīkliem nav šifrēšanas. Tas nozīmē, ka ikviens tuvumā var potenciāli redzēt jūsu datplūsmu - tas ir kā sūtīt pastkartes nevis aizzīmogotas vēstules.",
-      "why": "Atvērts Wi-Fi ļauj citiem novērot trafiku, kas palielina risku sensitīviem datiem.",
-      "nextStep": "Izvairies no sensitīvas pieslēgšanās atvērtā Wi-Fi vai izmanto VPN."
+      "answers": [
+        "Ikviens var pievienoties bez paroles",
+        "Tīklam nav ugunsmūra",
+        "Wi-Fi signāls ir publiski redzams"
+      ],
+      "explanation": "Atvērtā tīklā nav saites slāņa šifrēšanas. Ikviens tajā pašā Wi-Fi var novērot vai mainīt datplūsmu.",
+      "why": "Atvērts Wi-Fi palielina pārtveršanas risku.",
+      "nextStep": "Izvairieties no sensitīviem pieteikumiem atvērtā Wi-Fi vai izmantojiet VPN."
     },
     "evilTwin": {
       "question": "Kas ir 'ļaunā dvīņa' uzbrukums?",
-      "answers": ["Kad kāds klonē jūsu ierīci", "Viltus Wi-Fi tīkls, kas atdarina likumīgu", "Kad divi maršrutētāji traucē viens otram"],
-      "explanation": "Uzbrucēji izveido viltus piekļuves punktus ar nosaukumiem kā 'Hotel_Free_WiFi', lai pievilinātu upurus. Kad jūs pieslēdzaties, viņi var redzēt visu, ko jūs darāt.",
-      "why": "Viltots SSID var pārtvert trafiku un nozagt piekļuves datus.",
-      "nextStep": "Pārbaudi oficiālo SSID pie personāla un izslēdz automātisko pieslēgšanos publiskam Wi-Fi."
+      "answers": [
+        "Kad kāds klonē jūsu ierīci",
+        "Viltus Wi-Fi tīkls, kas atdarina likumīgu",
+        "Kad divi maršrutētāji traucē viens otram"
+      ],
+      "explanation": "Uzbrucējs izveido ļaunprātīgu piekļuves punktu, kas imitē likumīgu SSID, lai pārtvertu datplūsmu vai akreditācijas datus.",
+      "why": "Līdzīgi SSID var pārtvert datplūsmu un nozagt pieteikšanās datus.",
+      "nextStep": "Pārbaudiet oficiālo SSID pie personāla un izslēdziet automātisku pieslēgšanos publiskam Wi-Fi."
     },
     "publicPrivateIp": {
       "question": "Kāpēc publiskajā Wi-Fi jūsu IP joprojām var būt privāts (piem., 172.16.x.x)?",
-      "answers": ["Tāpēc ka piekļuves punkts izmanto NAT un privātās adreses", "Tāpēc ka publiskais Wi-Fi vienmēr piešķir publiskos IP", "Tāpēc ka privātie IP ir tikai mājas tīkliem"],
-      "explanation": "Publiskais Wi-Fi bieži izmanto privātos IP diapazonus un NAT. Jūsu ierīcei lokāli ir privāta adrese, bet piekļuves punkts izmanto vienu publisko IP, lai sasniegtu internetu.",
-      "why": "Privātās IP adreses ir arī publiskās vietās; NAT slēpj daudz ierīču aiz vienas publiskas IP.",
-      "nextStep": "Meklē NAT robežu: ierīcei ir privāta IP, bet piekļuves punktam — publiska IP."
+      "answers": [
+        "Tāpēc ka piekļuves punkts izmanto NAT un privātās adreses",
+        "Tāpēc ka publiskais Wi-Fi vienmēr piešķir publiskos IP",
+        "Tāpēc ka privātie IP ir tikai mājas tīkliem"
+      ],
+      "explanation": "Publiskie hotspoti bieži izmanto privātās adreses ar NAT. Jūsu ierīce saņem privātu IP; hotspota koplieto vienu publisko IP.",
+      "why": "Privātās IP var būt arī publiskās vietās; NAT slēpj daudzas ierīces aiz viena publiskā IP.",
+      "nextStep": "Meklējiet NAT robežu: jūsu ierīcei ir privāts IP, bet hotspotam — publiskais."
     },
     "httpsImportance": {
       "question": "Publiskajā Wi-Fi, kāpēc HTTPS ir īpaši svarīgs?",
-      "answers": ["HTTPS padara vietnes ātrākas", "HTTPS šifrē jūsu datus, lai citi tīklā tos nevarētu lasīt", "HTTPS novērš vīrusus"],
-      "explanation": "HTTPS izmanto TLS šifrēšanu, lai izveidotu drošu tuneli starp jums un vietni. Pat ja kāds pārtver jūsu datplūsmu, viņš redz šifrētus datus, nevis jūsu paroles un personīgo informāciju.",
-      "why": "HTTPS padara datus salasāmus tikai tev un vietnei, pat nedrošos tīklos.",
-      "nextStep": "Pirms paroļu vai persondatu ievades pārbaudi HTTPS (slēdzenes ikonu)."
+      "answers": [
+        "HTTPS padara vietnes ātrākas",
+        "HTTPS šifrē jūsu datus, lai citi tīklā tos nevarētu lasīt",
+        "HTTPS novērš vīrusus"
+      ],
+      "explanation": "HTTPS ar TLS šifrē HTTP sesiju starp pārlūku un serveri. Pārtvērēji redz metadatus, bet ne saturu.",
+      "why": "HTTPS aizsargā akreditācijas datus un saturu nedrošos tīklos.",
+      "nextStep": "Pirms paroles vai personīgo datu ievades pārbaudiet HTTPS (slēdzenes ikonu)."
     },
     "vpn": {
       "question": "Ko VPN dara publiskajā Wi-Fi?",
-      "answers": ["Padara internetu ātrāku", "Izveido šifrētu tuneli visai jūsu datplūsmai", "Bloķē citus lietotājus no pieslēgšanās"],
-      "explanation": "VPN šifrē visu, kas pameto jūsu ierīci, ne tikai web datplūsmu. Tas ir kā ielikt visas savas pastkartes slēgtā kastē pirms nosūtīšanas.",
-      "why": "VPN aizsargā visu lietotņu trafiku, ne tikai pārlūku.",
-      "nextStep": "Izmanto uzticamu VPN, strādājot vai veicot bankas darbības publiskā Wi-Fi."
+      "answers": [
+        "Padara internetu ātrāku",
+        "Izveido šifrētu tuneli visai jūsu datplūsmai",
+        "Bloķē citus lietotājus no pieslēgšanās"
+      ],
+      "explanation": "VPN šifrē un autentificē visu trafiku starp jūsu ierīci un VPN vārteju, ne tikai pārlūka trafiku.",
+      "why": "VPN aizsargā vairākas lietotnes nedrošos tīklos.",
+      "nextStep": "Izmantojiet uzticamu VPN, strādājot vai veicot bankas darbības publiskā Wi-Fi."
     },
     "safeBehavior": {
       "question": "No kā jums vajadzētu izvairīties publiskajā Wi-Fi?",
-      "answers": ["Ziņu vietņu pārlūkošanas", "Pieslēgšanās bankai bez VPN", "Laika apstākļu pārbaudīšanas"],
-      "explanation": "Sensitīvām darbībām kā banku operācijām jāgaida drošs tīkls vai jāizmanto VPN. Pat HTTPS nevar aizsargāt pret visiem uzbrukumiem kompromitētos tīklos.",
-      "why": "Dažas darbības publiskos tīklos ir riskantākas pat ar šifrēšanu.",
-      "nextStep": "Atliec bankas darbības vai paroļu maiņu līdz esi uzticamā tīklā."
+      "answers": [
+        "Ziņu vietņu pārlūkošanas",
+        "Pieslēgšanās bankai bez VPN",
+        "Laika apstākļu pārbaudīšanas"
+      ],
+      "explanation": "Izvairieties no finanšu vai konta darbībām publiskā Wi-Fi bez VPN. Pat HTTPS nevar novērst visus uzbrukumus kompromitētos tīklos.",
+      "why": "Augstas vērtības darbības publiskos tīklos ir riskantākas.",
+      "nextStep": "Atlieciet bankas darbības un paroļu maiņu līdz uzticamam tīklam."
     }
   },
   "actions": {
@@ -535,7 +722,10 @@
     "debriefIntro": "Šeit ir tas, ko jūs izdarījāt un kāpēc tas ir svarīgi.",
     "yourActions": "Jūsu darbības",
     "keyTakeaways": "Galvenie secinājumi",
-    "restart": "Sākt no jauna"
+    "restart": "Sākt no jauna",
+    "startHereTitle": "Sāciet šeit",
+    "startHereBody": "Pabeidziet šīs darbības, lai nodrošinātu scenāriju.",
+    "outcomeTitle": "Rezultāts"
   },
   "actionTypes": {
     "isolate_device": "Izolēt ierīci",
@@ -548,17 +738,17 @@
     "familyIoT": {
       "blockUnknown": {
         "title": "Bloķēt nezināmo ierīci",
-        "instruction": "Atlasiet \"Generic Smart Controller\" un bloķējiet to tīklā.",
-        "success": "Jūs bloķējāt nezināmo ierīci, samazinot tūlītējo risku.",
+        "instruction": "Atlasiet «Generic Smart Controller» un bloķējiet to.",
+        "success": "Nezināmā ierīce ir bloķēta. Tūlītējais risks samazināts.",
         "failure": "Tā nav nezināmā ierīce. Vispirms atrodiet nepazīstamo.",
-        "tip": "Nezināmas ierīces jāizmeklē un jābloķē, ja tās nepieder jums."
+        "tip": "Pārbaudiet nezināmas ierīces un bloķējiet tās, kuras nevarat identificēt."
       },
       "changeCameraPassword": {
         "title": "Mainīt kameras paroli",
         "instruction": "Atrodiet Indoor Camera un nomainiet noklusējuma paroli.",
         "success": "Noklusējuma parole nomainīta — izplatīta IoT vājā vieta ir novērsta.",
         "failure": "Atlasiet Indoor Camera ar noklusējuma paroli.",
-        "tip": "Noklusējuma paroles ir biežs IoT kompromitācijas iemesls."
+        "tip": "Noklusējuma paroles ir biežs kompromitācijas vektors."
       },
       "enableGuest": {
         "title": "Ieslēgt viesu tīklu",
@@ -578,7 +768,7 @@
       },
       "isolatePrinter": {
         "title": "Izolēt printeri",
-        "instruction": "Pārvietojiet biroja printeri uz ierīču tīklu vai turiet to izolētu.",
+        "instruction": "Atlasiet biroja printeri un izolējiet to no darbinieku ierīcēm.",
         "success": "Printeris ir izolēts no darbinieku ierīcēm, risks samazināts.",
         "failure": "Atlasiet biroja printeri, lai to izolētu.",
         "tip": "Printeriem bieži ir vāja drošība un tie jāsegmentē."
@@ -586,29 +776,31 @@
       "blockUnknown": {
         "title": "Bloķēt nereģistrētu ierīci",
         "instruction": "Identificējiet nereģistrēto ierīci un noņemiet to no tīkla.",
-        "success": "Nezināmā ierīce ir bloķēta un vairs nerada draudus.",
+        "success": "Nezināmā ierīce ir bloķēta un vairs nav drauds.",
         "failure": "Pirms bloķēšanas atlasiet nereģistrēto ierīci.",
-        "tip": "Nezināmas uzņēmuma ierīces jānoņem nekavējoties."
+        "tip": "Nereģistrētas uzņēmuma ierīces jānoņem nekavējoties."
       }
     },
     "hotelPublic": {
       "verifySsid": {
         "title": "Pārbaudīt oficiālo Wi-Fi",
-        "instruction": "Atlasiet īsto viesnīcas piekļuves punktu, nevis viltoto.",
+        "instruction": "Atlasiet oficiālo viesnīcas piekļuves punktu.",
         "success": "Jūs identificējāt oficiālo piekļuves punktu.",
-        "failure": "Tā nav oficiālā viesnīcas piekļuves punkts. Mēģiniet vēlreiz.",
-        "tip": "Uzbrucēji bieži izveido līdzīgus Wi-Fi nosaukumus, lai apmānītu viesus."
+        "failure": "Tā nav oficiālā viesnīcas piekļuves punkts.",
+        "tip": "Uzbrucēji bieži veido līdzīgus SSID, lai apmānītu viesus."
       },
       "blockFakeAp": {
         "title": "Ziņot par viltotu piekļuves punktu",
         "instruction": "Identificējiet aizdomīgo Wi-Fi ierīci un atzīmējiet to.",
         "success": "Viltotais piekļuves punkts ir atzīmēts un tiek izvairīts.",
         "failure": "Pirms ziņošanas atlasiet aizdomīgo piekļuves punktu.",
-        "tip": "Ja tīkla nosaukums šķiet aizdomīgs, izvairieties no tā un ziņojiet personālam."
+        "tip": "Izvairieties no aizdomīgiem SSID un ziņojiet personālam."
       }
     }
   },
   "onboarding": {
+    "replayTour": "Atkārtot ekskursiju",
+    "mapOnlyNotice": "Ekskursijas laikā ir pieejams tikai kartes skats.",
     "buttons": {
       "continue": "Turpināt",
       "next": "Tālāk",
@@ -628,77 +820,107 @@
     "steps": {
       "welcome_hook": {
         "title": "Jūsu tīkls vienmēr runā",
-        "content": "Katra jums piederoša ierīce pastāvīgi sazinās - jūsu viedais televizors, tālrunis, termostats. Bet vai jūs zināt, ar ko tās runā un vai šīs sarunas ir drošas?"
+        "content": "Ierīces jūsu tīklā nepārtraukti apmainās ar datplūsmu — tālruņi, TV un termostati. Šis kurss parāda, ar ko tās sazinās un kas ir atklāts."
       },
       "welcome_challenge": {
         "title": "Slēptie riski",
-        "content": "Hakeri vairs neuzbrūk tikai datoriem. Viņi izmanto aizmirstas ierīces, vājas paroles un nešifrētus savienojumus. Pirmais solis uz aizsardzību ir izprast, kas notiek jūsu tīklā."
+        "content": "Uzbrucēji izmanto aizmirstas ierīces, vājas paroles un nešifrētus savienojumus. Drošība sākas ar redzamību."
       },
       "welcome_mission": {
         "title": "Jūsu tīkla atklājumu misija",
-        "content": "Nākamo dažu minūšu laikā jūs iemācīsieties redzēt savu tīklu tā, kā to redz drošības profesionāļi - slāni pa slānim, ierīci pa ierīcei. Jūs pamanīsiet ievainojamības, kuras vairums cilvēku pilnībā neievēro."
+        "content": "Jūs iemācīsieties lasīt tīklu slāni pa slānim, atpazīt riskus un veikt koriģējošas darbības."
       },
       "map_solar_system": {
         "title": "Jūsu tīkls kā Saules sistēma",
-        "content": "Šis ir jūsu tīkls, vizualizēts kā Saules sistēma. Centrā ir jūsu maršrutētājs - 'saule', ap kuru viss riņķo. Katrs gredzens apzīmē citu uzticības zonu, un katrs punkts ir ierīce, kas sazinās caur jūsu tīklu."
+        "content": "Karte izmanto Saules sistēmas izkārtojumu: maršrutētājs centrā, gredzeni uzticības zonām, punkti ierīcēm."
       },
       "map_trust_zones": {
         "title": "Uzticības zonu izpratne",
-        "content": "Tīkli ir sadalīti zonās. Jūsu galvenajā tīklā ir uzticamas ierīces. Viesu tīkli ir apmeklētājiem. IoT zonas izolē viedās ierīces, kurām var būt vājāka drošība. Šo robežu izpratne ir jūsu pirmā aizsardzība."
+        "content": "Tīkli tiek segmentēti zonās: galvenā, viesu un IoT. Izolācija ierobežo, kam var piekļūt kompromitēta ierīce."
       },
       "map_device_indicators": {
         "title": "Ierīču signālu lasīšana",
-        "content": "Katra ierīce uzreiz parāda savu statusu. Pulsējošie gredzeni norāda uz iespējamām problēmām - aizmirstu ierīci, noklusējuma paroli vai novecojušu programmaparatūru. Iemācīties lasīt šos signālus ir kā iemācīties lasīt instrumentu paneli."
+        "content": "Pulsējošie gredzeni norāda riska karodziņus, piemēram, nezināma ierīce, noklusējuma parole vai novecojusi programmaparatūra."
       },
       "scenario_contexts": {
         "title": "Reāli tīklu scenāriji",
-        "content": "Tīkli ir dažādi. Ģimenes mājās ir viedie televizori un bērnu monitori. Mazos uzņēmumos ir serveri un klientu Wi-Fi. Viesnīcas vestibilos ir nezināmi viesi kopīgos tīklos. Katrs rada unikālas drošības problēmas."
+        "content": "Scenāriji atspoguļo tipiskas vides: mājas tīkli, mazi biroji un viesnīcu Wi-Fi. Katrā ir atšķirīgi riski un kontroles."
       },
       "scenario_select": {
         "title": "Izvēlieties savu vidi",
-        "content": "Izvēlieties scenāriju izpētei. Neuztraucieties - jūs jebkurā laikā varat pārslēgties, lai redzētu, kā drošības problēmas atšķiras starp vidēm."
+        "content": "Izvēlieties scenāriju. Jūs varat pārslēgties jebkurā laikā, lai salīdzinātu riskus un kontroles."
       },
       "layers_why": {
         "title": "Skatīšanās slāņos",
-        "content": "Tīkli darbojas slāņos - kā mizojot sīpolu. Katrs slānis atklāj atšķirīgu informāciju. Drošības profesionāļi pārslēdzas starp šiem skatiem, lai saprastu pilno ainu. Šis ir jūsu spēcīgākais rīks."
+        "content": "Tīkla slāņi rāda atšķirīgus identifikatorus un kontroles mehānismus. Pārslēdzoties, jūs varat izsekot trafiku no saites līdz lietojumprogrammai."
       },
       "layers_link": {
-        "title": "Link slānis: fiziskā identitāte",
-        "content": "Link slānis parāda fiziskos savienojumus - neapstrādātās adreses (MAC adreses), kas identificē katru aparatūras daļu. Šeit jūs pamanāt neatļautas ierīces, kurām vispār nevajadzētu būt jūsu tīklā."
+        "title": "Saites slānis: fiziskā identitāte",
+        "content": "Saites slānis parāda MAC adreses un lokālo piegādi. Šeit pamanāt neatļautas ierīces."
       },
       "layers_network": {
-        "title": "Network slānis: loģiskās adreses",
-        "content": "Network slānis atklāj IP adreses - loģiskās adreses, ko izmanto maršrutēšanai. Šeit jūs redzat, kuras ierīces ir lokālas (privātas IP) un kuras sazinās ar internetu. Negaidīti ārēji savienojumi ir brīdinājuma signāli."
+        "title": "Tīkla slānis: loģiskās adreses",
+        "content": "Tīkla slānis parāda IP adresāciju un maršrutēšanu. Tas atšķir lokālās privātās IP no internetam redzamām adresēm."
       },
       "layers_transport": {
-        "title": "Transport slānis: savienojumi un porti",
-        "content": "Transport slānis parāda, kā plūst dati - kuri portu numuri identificē pakalpojumus (443 HTTPS, 22 SSH) un vai savienojumi izmanto TCP (uzticami, sakārtoti) vai UDP (ātri, bez garantijām). Šeit jūs redzat tīkla komunikācijas 'cauruļvadus'."
+        "title": "Transporta slānis: savienojumi un porti",
+        "content": "Transporta slānis parāda aktīvos savienojumus, portu numurus un to, vai plūsma izmanto TCP vai UDP."
       },
       "layers_application": {
-        "title": "Application slānis: kas tiek komunikēts",
-        "content": "Application slānis parāda, kas faktiski tiek komunikēts - tīmekļa pārlūkošana, e-pasts, straumēšana. Slēdzenes ikonas atklāj šifrēšanas statusu: HTTPS šifrē jūsu datus, izmantojot TLS, bet vienkāršs HTTP atsedz visu. Nešifrētu datplūsmu var lasīt ikviens tīklā."
+        "title": "Lietojumprogrammu slānis: kas tiek pārsūtīts",
+        "content": "Lietojumprogrammu slānis parāda protokolus un šifrēšanas statusu. HTTPS izmanto TLS; HTTP nav šifrēts."
       },
       "device_inspection": {
         "title": "Ierīču izmeklēšana",
-        "content": "Noklikšķiniet uz jebkuras ierīces, lai to izmeklētu. Detaļu panelis atklāj visu: tās tīkla identitāti, aktīvos savienojumus un, pats svarīgākais - drošības problēmas. Sarkanie karodziņi šeit prasa uzmanību."
+        "content": "Atlasiet ierīci, lai redzētu tās identitāti, aktīvās plūsmas un riska karodziņus. Vispirms pievērsiet uzmanību augstiem riskiem."
       },
       "device_risk_flags": {
         "title": "Riska karodziņu izpratne",
-        "content": "Drošības problēmas ir klasificētas pēc nopietnības. 'Noklusējuma parole' nozīmē, ka ikviens var piekļūt. 'Novecojusi programmaparatūra' nozīmē, ka pastāv zināmas ievainojamības. 'Nezināma ierīce' nozīmē, ka tai tur vispār nevajadzētu būt."
+        "content": "Riska karodziņi norāda konkrētas problēmas: noklusējuma paroles, novecojusi programmaparatūra vai nezināmas ierīces."
       },
       "device_learn_tab": {
         "title": "Iebūvēta mācīšanās",
-        "content": "Katram ierīces tipam ir izglītojoša satura, kas paskaidro, kam pievērst uzmanību un kāpēc tas ir svarīgi. Izmantojiet cilni Mācīties, lai laika gaitā veidotu savu izpratni."
+        "content": "Cilnē Learn ir ierīcei specifiski riski un novēršanas soļi."
       },
       "quiz_intro": {
         "title": "Pārbaudiet savu izpratni",
-        "content": "Pētot, jūs sastapsiet jautājumus, kas pārbauda jūsu izpratni. Tie nav vērtēti testi - tās ir iespējas nostiprināt iemācīto. Kļūdīšanās māca tikpat daudz kā pareiza atbilde."
+        "content": "Īsas pārbaudes nostiprina galvenos jēdzienus. Izmantojiet tās, lai apstiprinātu izpratni."
       },
       "mission_complete": {
         "title": "Misija pabeigta",
-        "content": "Tagad jums ir pamatzināšanas jebkura tīkla analīzei. Turpiniet pētīt scenārijus, pārslēdzieties starp slāņiem un izmeklējiet ierīces. Jo vairāk praktizēsiet, jo dabiskāka kļūs tīkla drošības domāšana."
+        "content": "Tagad jūs protat kartēt ierīces, interpretēt slāņus un rīkoties pēc riskiem. Turpiniet scenārijus, lai nostiprinātu iemaņas."
       }
     }
+  },
+  "deviceDescriptions": {
+    "homeRouter": "Mājas tīkla centrālais mezgls; visa datplūsma iet caur šo ierīci.",
+    "workLaptop": "Darba klēpjdators attālinātam darbam, pieslēgts galvenajam tīklam ar pilnu piekļuvi.",
+    "momsIphone": "Personīgais viedtālrunis banku un sociālo tīklu lietošanai.",
+    "kidsIpad": "Planšetdators bērnu mācībām un izklaidei.",
+    "livingRoomTv": "Viedais televizors ar straumēšanas lietotnēm, ievietots IoT tīklā risku mazināšanai.",
+    "indoorCamera": "Iekštelpu drošības kamera. Joprojām izmanto noklusējuma paroli.",
+    "smartThermostat": "Regulē mājas temperatūru un atbalsta attālinātu piekļuvi.",
+    "voiceAssistant": "Viedā skaļruņa ierīce ar balss asistentu; klausās aktivizācijas frāzi.",
+    "guestsPhone": "Viesa tālrunis viesu tīklā; piekļuve galvenā tīkla ierīcēm nav iespējama.",
+    "genericSmartController": "Neidentificēta ierīce tīklā; tā nav ierīču sarakstā.",
+    "oldTablet": "Veca planšete bez atjauninājumiem jau divus gadus; joprojām pieslēgta, bet reti lietota.",
+    "officeRouter": "Biznesa klases maršrutētājs ar ugunsmūra funkcijām; pārvalda visas trīs tīkla zonas.",
+    "fileServer": "Centrālais failu glabātuves serveris uzņēmuma dokumentiem; piekļuve tikai darbinieku tīklā.",
+    "ceosLaptop": "Vadītāja klēpjdators ar piekļuvi sensitīviem uzņēmuma datiem.",
+    "salesLaptop": "Darba stacija pārdošanas komandas darbiniekam.",
+    "workPhone": "Uzņēmuma viedtālrunis mobilam darbam.",
+    "officePrinter": "Tīkla printeris; administratora parole nav mainīta no noklusējuma.",
+    "customerDevice": "Klienta tālrunis viesu Wi‑Fi gaidīšanas laikā.",
+    "entranceCamera": "Drošības kamera pie galvenās ieejas.",
+    "unregisteredDevice": "Ierīce korporatīvajā tīklā, kas nav reģistrēta IT sistēmā.",
+    "hotelAccessPoint": "Publiska piekļuves punkts. Atvērtā tīklā datplūsma var tikt pārtverta.",
+    "yourLaptop": "Jūsu personīgais klēpjdators viesnīcas Wi‑Fi; uzskatiet tīklu par neuzticamu.",
+    "unknownGuest": "Cita viesa klēpjdators atvērtā Wi‑Fi; tas var novērot datplūsmu tajā pašā tīklā.",
+    "guestPhone": "Viesa viedtālrunis, kas dalās tīklā ar jums.",
+    "suspiciousDevice": "Klēpjdators pieslēgts vairāk nekā 12 stundas un uzrāda datplūsmas pārtveršanas pazīmes.",
+    "businessTraveler": "Biznesa ceļotājs pārbauda e‑pastu. Ieteicams izmantot VPN.",
+    "frontDeskComputer": "Reģistratūras darbinieku dators atsevišķā drošā tīklā; viesiem nav piekļuves.",
+    "grandHotelFreeWifi": "SSID var būt likumīgs vai uzbrucēja izveidots ļaunais dvīnis."
   },
   "deviceLabels": {
     "homeRouter": "Mājas maršrutētājs",

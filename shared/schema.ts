@@ -59,14 +59,7 @@ export const scenarioTaskSchema = z.object({
 });
 export type ScenarioTask = z.infer<typeof scenarioTaskSchema>;
 
-export const flowCategorySchema = z.enum([
-  "web",
-  "video",
-  "email",
-  "chat",
-  "remote",
-  "file",
-]);
+export const flowCategorySchema = z.enum(["web", "video", "email", "chat", "remote", "file"]);
 export type FlowCategory = z.infer<typeof flowCategorySchema>;
 
 export const flowSchema = z.object({

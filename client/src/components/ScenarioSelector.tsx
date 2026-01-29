@@ -26,7 +26,7 @@ const scenarioIcons: Record<string, typeof Home> = {
 export function ScenarioSelector({ scenarios, selectedId, onSelect }: ScenarioSelectorProps) {
   const { t } = useTranslation();
   const onboarding = useOnboardingOptional();
-  
+
   const getLocalizedTitle = (scenario: Scenario): string => {
     const key = scenarioIdToKey[scenario.id];
     if (key) {
@@ -46,7 +46,7 @@ export function ScenarioSelector({ scenarios, selectedId, onSelect }: ScenarioSe
     <div data-testid="scenario-selector">
       <Select value={selectedId ?? ""} onValueChange={handleSelect}>
         <SelectTrigger className="w-full min-w-[200px] sm:w-[280px]" data-testid="select-scenario">
-          <SelectValue placeholder={t('scenarios.selectScenario')} />
+          <SelectValue placeholder={t("scenarios.selectScenario")} />
         </SelectTrigger>
         <SelectContent>
           {scenarios.map((scenario) => {

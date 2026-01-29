@@ -2,7 +2,23 @@ import { useMemo, useCallback, useState, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Device, LayerMode, Scenario, Flow, FlowCategory } from "@shared/schema";
-import { Router, Server, Laptop, Smartphone, Tablet, Camera, Tv, Speaker, Thermometer, Printer, Gamepad2, HelpCircle, Globe, Lock, Unlock } from "lucide-react";
+import {
+  Router,
+  Server,
+  Laptop,
+  Smartphone,
+  Tablet,
+  Camera,
+  Tv,
+  Speaker,
+  Thermometer,
+  Printer,
+  Gamepad2,
+  HelpCircle,
+  Globe,
+  Lock,
+  Unlock,
+} from "lucide-react";
 import { scenarioIdToKey, deviceLabelToKey } from "@/lib/scenarioUtils";
 import { formatMac } from "@/lib/macUtils";
 
@@ -13,6 +29,10 @@ interface NetworkCanvasProps {
   onDeviceSelect: (deviceId: string) => void;
   highlightedDeviceIds?: Set<string>;
   showFullMac?: boolean;
+  highlightZone?: string;
+  flashDeviceIds?: Set<string>;
+  dimmedDeviceIds?: Set<string>;
+  flowFilterDeviceId?: string | null;
 }
 
 const deviceIcons: Record<string, typeof Router> = {
@@ -58,13 +78,22 @@ const flowCategoryColors: Record<FlowCategory, string> = {
   file: "fill-chart-2/60",
 };
 
-const portToService: Record<number, string> = {
-  22: "SSH",
-  80: "HTTP",
-  443: "HTTPS",
-  445: "SMB",
-  554: "RTSP",
-  9100: "Print",
+const portToServiceKey: Record<number, string> = {
+  22: "ssh",
+  80: "http",
+  443: "https",
+  445: "smb",
+  554: "rtsp",
+  9100: "print",
+};
+
+const fallbackServiceLabel: Record<string, string> = {
+  ssh: "SSH",
+  http: "HTTP",
+  https: "HTTPS",
+  smb: "SMB",
+  rtsp: "RTSP",
+  print: "Print",
 };
 
 const protocolToFlow: Record<string, string> = {
@@ -101,40 +130,63 @@ const portToFlow: Record<number, string> = {
 };
 
 const encryptedProtocols = new Set([
-  "HTTPS", "SSH", "TLS", "SFTP", "WSS", "IMAPS", "SMTPS", "POP3S", 
-  "FTPS", "LDAPS", "DNSCrypt", "WireGuard", "OpenVPN", "IPSec",
-  "iMessage", "Signal", "WhatsApp"
+  "HTTPS",
+  "SSH",
+  "TLS",
+  "SFTP",
+  "WSS",
+  "IMAPS",
+  "SMTPS",
+  "POP3S",
+  "FTPS",
+  "LDAPS",
+  "DNSCrypt",
+  "WireGuard",
+  "OpenVPN",
+  "IPSec",
+  "iMessage",
+  "Signal",
+  "WhatsApp",
 ]);
 const unencryptedProtocols = new Set([
-  "HTTP", "FTP", "Telnet", "RTSP", "SMTP", "POP3", "IMAP", 
-  "DNS", "NTP", "SNMP", "TFTP", "Gopher"
+  "HTTP",
+  "FTP",
+  "Telnet",
+  "RTSP",
+  "SMTP",
+  "POP3",
+  "IMAP",
+  "DNS",
+  "NTP",
+  "SNMP",
+  "TFTP",
+  "Gopher",
 ]);
 
-function getEncryptionStatus(device: Device, flows: Flow[]): "encrypted" | "mixed" | "unencrypted" | "unknown" {
+function getEncryptionStatus(
+  device: Device,
+  flows: Flow[],
+): "encrypted" | "mixed" | "unencrypted" | "unknown" {
   if (device.riskFlags.includes("unencrypted_traffic")) return "unencrypted";
   if (flows.length > 0) {
-    const hasEncrypted = flows.some(flow => flow.encrypted);
-    const hasUnencrypted = flows.some(flow => !flow.encrypted);
+    const hasEncrypted = flows.some((flow) => flow.encrypted);
+    const hasUnencrypted = flows.some((flow) => !flow.encrypted);
     if (hasEncrypted && hasUnencrypted) return "mixed";
     if (hasEncrypted) return "encrypted";
     if (hasUnencrypted) return "unencrypted";
   }
   if (!device.protocols || device.protocols.length === 0) return "unknown";
-  const hasEncrypted = device.protocols.some(p => encryptedProtocols.has(p));
-  const hasUnencrypted = device.protocols.some(p => unencryptedProtocols.has(p));
+  const hasEncrypted = device.protocols.some((p) => encryptedProtocols.has(p));
+  const hasUnencrypted = device.protocols.some((p) => unencryptedProtocols.has(p));
   if (hasEncrypted && hasUnencrypted) return "mixed";
   if (hasEncrypted) return "encrypted";
   if (hasUnencrypted) return "unencrypted";
   return "unknown";
 }
 
-function getDeviceFlows(flows: Flow[], deviceId: string): Flow[] {
-  return flows.filter(flow => flow.srcDeviceId === deviceId);
-}
-
 function getFlowCategories(flows: Flow[]): FlowCategory[] {
   const categories = new Set<FlowCategory>();
-  flows.forEach(flow => categories.add(flow.category));
+  flows.forEach((flow) => categories.add(flow.category));
   return Array.from(categories);
 }
 
@@ -163,7 +215,8 @@ function getDeviceLabel(
   activeLayer: LayerMode,
   t?: (key: string, options?: { defaultValue?: string }) => string,
   flows: Flow[] = [],
-  showFullMac = true
+  showFullMac = true,
+  suppressFallback = false,
 ): string {
   switch (activeLayer) {
     case "link":
@@ -178,6 +231,7 @@ function getDeviceLabel(
           .map((flow) => (t ? t(`transportFlows.${flow}`, { defaultValue: flow }) : flow));
         return labels.join(", ");
       }
+      if (suppressFallback) return "—";
       const transportFlows = getTransportFlows(device);
       if (transportFlows.length > 0) {
         const labels = transportFlows
@@ -186,16 +240,22 @@ function getDeviceLabel(
         return labels.join(", ");
       }
       if (!device.openPorts || device.openPorts.length === 0) return "—";
-      const services = device.openPorts.slice(0, 2).map(p => portToService[p] || `:${p}`);
+      const services = device.openPorts.slice(0, 2).map((port) => {
+        const key = portToServiceKey[port];
+        if (!key) return `:${port}`;
+        const fallback = fallbackServiceLabel[key] || key;
+        return t ? t(`services.${key}`, { defaultValue: fallback }) : fallback;
+      });
       return services.join(", ");
     }
     case "application": {
       if (flows.length > 0) {
         return flows
           .slice(0, 2)
-          .map(flow => flow.dstLabel)
+          .map((flow) => flow.dstLabel)
           .join(", ");
       }
+      if (suppressFallback) return "—";
       if (!device.protocols || device.protocols.length === 0) return "—";
       return device.protocols.slice(0, 2).join(", ");
     }
@@ -204,22 +264,28 @@ function getDeviceLabel(
   }
 }
 
-function DeviceNode({ 
-  device, 
-  pos, 
-  activeLayer, 
+function DeviceNode({
+  device,
+  pos,
+  activeLayer,
   flows,
   showFullMac,
+  suppressFlowFallback,
+  isFlashing,
+  isDimmed,
   isSelected,
   isHighlighted = true,
-  onClick, 
-  onKeyDown 
-}: { 
-  device: Device; 
+  onClick,
+  onKeyDown,
+}: {
+  device: Device;
   pos: { x: number; y: number; zone: string };
   activeLayer: LayerMode;
   flows: Flow[];
   showFullMac: boolean;
+  suppressFlowFallback: boolean;
+  isFlashing: boolean;
+  isDimmed: boolean;
   isSelected: boolean;
   isHighlighted?: boolean;
   onClick: () => void;
@@ -230,15 +296,18 @@ function DeviceNode({
   const hasRisks = device.riskFlags.length > 0;
   const isUnknown = device.type === "unknown" || device.riskFlags.includes("unknown_device");
   const isRouter = device.type === "router";
-  const rawLabel = getDeviceLabel(device, activeLayer, t, flows, showFullMac);
-  const label = rawLabel === "—" ? t('common.noData') : rawLabel;
+  const rawLabel = getDeviceLabel(device, activeLayer, t, flows, showFullMac, suppressFlowFallback);
+  const label = rawLabel === "—" ? t("common.noData") : rawLabel;
   const labelColor = layerLabelColors[activeLayer];
-  const securityLabel = hasRisks ? `, ${t('common.hasSecurityConcerns')}` : "";
+  const securityLabel = hasRisks ? `, ${t("common.hasSecurityConcerns")}` : "";
+  const deviceName = deviceLabelToKey[device.label]
+    ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
+    : device.label;
   const encryptionStatus = getEncryptionStatus(device, flows);
 
   const nodeSize = isRouter ? 56 : 44;
   const iconSize = isRouter ? 28 : 20;
-  const dimmedOpacity = isHighlighted ? 1 : 0.25;
+  const dimmedOpacity = isDimmed ? 0.2 : isHighlighted ? 1 : 0.25;
 
   return (
     <g
@@ -247,11 +316,25 @@ function DeviceNode({
       onKeyDown={onKeyDown}
       tabIndex={0}
       role="button"
-      aria-label={`${device.label}${securityLabel}`}
+      aria-label={`${deviceName}${securityLabel}`}
       aria-pressed={isSelected}
       data-testid={`node-device-${device.id}`}
       style={{ opacity: dimmedOpacity }}
     >
+      {isFlashing && (
+        <motion.circle
+          cx={pos.x}
+          cy={pos.y}
+          r={nodeSize / 2 + 14}
+          className="stroke-primary/60"
+          fill="transparent"
+          strokeWidth={2}
+          initial={{ opacity: 0.3, scale: 0.9 }}
+          animate={{ opacity: [0.2, 0.6, 0.2], scale: [0.95, 1.1, 0.95] }}
+          transition={{ duration: 1.2, repeat: Infinity }}
+        />
+      )}
+
       <motion.circle
         cx={pos.x}
         cy={pos.y}
@@ -291,7 +374,7 @@ function DeviceNode({
         width={iconSize}
         height={iconSize}
       >
-        <motion.div 
+        <motion.div
           className="flex h-full w-full items-center justify-center"
           initial={false}
           animate={{ scale: isSelected ? 1.1 : 1 }}
@@ -317,13 +400,15 @@ function DeviceNode({
         className="fill-foreground text-[11px] font-medium"
       >
         {(() => {
-          const translatedLabel = deviceLabelToKey[device.label] 
+          const translatedLabel = deviceLabelToKey[device.label]
             ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
             : device.label;
-          return translatedLabel.length > 16 ? translatedLabel.slice(0, 14) + "..." : translatedLabel;
+          return translatedLabel.length > 16
+            ? translatedLabel.slice(0, 14) + "..."
+            : translatedLabel;
         })()}
       </text>
-      
+
       {activeLayer !== "link" || device.type !== "router" ? (
         <AnimatePresence mode="wait">
           <motion.text
@@ -356,20 +441,20 @@ function DeviceNode({
               width={18}
               height={18}
             >
-              <div 
+              <div
                 className={`flex items-center justify-center rounded-full w-4 h-4 ${
-                  encryptionStatus === "encrypted" 
-                    ? "bg-green-500/20 text-green-600 dark:text-green-400" 
+                  encryptionStatus === "encrypted"
+                    ? "bg-green-500/20 text-green-600 dark:text-green-400"
                     : encryptionStatus === "unencrypted"
                       ? "bg-destructive/20 text-destructive"
                       : "bg-yellow-500/20 text-yellow-600 dark:text-yellow-400"
                 }`}
                 title={
-                  encryptionStatus === "encrypted" 
-                    ? t('encryption.encrypted')
+                  encryptionStatus === "encrypted"
+                    ? t("encryption.encrypted")
                     : encryptionStatus === "unencrypted"
-                      ? t('encryption.unencrypted')
-                      : t('encryption.mixed')
+                      ? t("encryption.unencrypted")
+                      : t("encryption.mixed")
                 }
               >
                 {encryptionStatus === "encrypted" ? (
@@ -386,7 +471,18 @@ function DeviceNode({
   );
 }
 
-export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDeviceSelect, highlightedDeviceIds, showFullMac = true }: NetworkCanvasProps) {
+export function NetworkCanvas({
+  scenario,
+  activeLayer,
+  selectedDeviceId,
+  onDeviceSelect,
+  highlightedDeviceIds,
+  showFullMac = true,
+  highlightZone,
+  flashDeviceIds,
+  dimmedDeviceIds,
+  flowFilterDeviceId,
+}: NetworkCanvasProps) {
   const { t } = useTranslation();
   const centerX = 400;
   const centerY = 350;
@@ -404,14 +500,17 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
 
   const topFlowCategories = useMemo(() => {
     const counts = new Map<FlowCategory, number>();
-    (scenario.flows || []).forEach((flow) => {
+    const flows = flowFilterDeviceId
+      ? (scenario.flows || []).filter((flow) => flow.srcDeviceId === flowFilterDeviceId)
+      : scenario.flows || [];
+    flows.forEach((flow) => {
       counts.set(flow.category, (counts.get(flow.category) || 0) + 1);
     });
     return Array.from(counts.entries())
       .sort((a, b) => b[1] - a[1])
       .slice(0, 3)
       .map(([category]) => category);
-  }, [scenario]);
+  }, [scenario, flowFilterDeviceId]);
 
   useEffect(() => {
     setLayerPulse(true);
@@ -421,18 +520,18 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
 
   const devicePositions = useMemo(() => {
     const positions: Map<string, { x: number; y: number; zone: string }> = new Map();
-    
-    const router = scenario.devices.find(d => d.type === "router");
+
+    const router = scenario.devices.find((d) => d.type === "router");
     if (router) {
       positions.set(router.id, { x: centerX, y: centerY, zone: "main" });
     }
 
     const devicesByZone: Record<string, Device[]> = { main: [], guest: [], iot: [] };
-    
+
     scenario.devices
-      .filter(d => d.type !== "router")
-      .forEach(device => {
-        const network = scenario.networks.find(n => n.id === device.networkId);
+      .filter((d) => d.type !== "router")
+      .forEach((device) => {
+        const network = scenario.networks.find((n) => n.id === device.networkId);
         const zone = network?.zone || "main";
         devicesByZone[zone].push(device);
       });
@@ -453,27 +552,36 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
     return positions;
   }, [scenario]);
 
-  const handleDeviceClick = useCallback((deviceId: string) => {
-    onDeviceSelect(deviceId);
-  }, [onDeviceSelect]);
-
-  const handleKeyDown = useCallback((e: React.KeyboardEvent, deviceId: string) => {
-    if (e.key === "Enter" || e.key === " ") {
-      e.preventDefault();
+  const handleDeviceClick = useCallback(
+    (deviceId: string) => {
       onDeviceSelect(deviceId);
-    }
-  }, [onDeviceSelect]);
+    },
+    [onDeviceSelect],
+  );
 
-  const router = scenario.devices.find(d => d.type === "router");
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent, deviceId: string) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        onDeviceSelect(deviceId);
+      }
+    },
+    [onDeviceSelect],
+  );
+
+  const router = scenario.devices.find((d) => d.type === "router");
   const routerPos = router ? devicePositions.get(router.id) : null;
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-md bg-gradient-to-br from-background to-muted/30" data-testid="network-canvas">
+    <div
+      className="relative h-full w-full overflow-hidden rounded-md bg-gradient-to-br from-background to-muted/30"
+      data-testid="network-canvas"
+    >
       <svg
         viewBox="0 0 800 700"
         className="h-full w-full"
         role="img"
-        aria-label="Network visualization showing devices connected to router"
+        aria-label={t("accessibility.networkVisualization")}
       >
         <defs>
           <filter id="glow" x="-50%" y="-50%" width="200%" height="200%">
@@ -490,7 +598,14 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
               <feMergeNode in="SourceGraphic" />
             </feMerge>
           </filter>
-          <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+          <marker
+            id="arrowhead"
+            markerWidth="10"
+            markerHeight="7"
+            refX="9"
+            refY="3.5"
+            orient="auto"
+          >
             <polygon points="0 0, 10 3.5, 0 7" className="fill-muted-foreground/30" />
           </marker>
           <radialGradient id="pulseGradient" cx="50%" cy="50%" r="50%">
@@ -524,37 +639,47 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
           cy={centerY}
           r={80}
           fill="url(#routerGlow)"
-          animate={{ 
+          animate={{
             scale: [1, 1.1, 1],
-            opacity: [0.5, 0.7, 0.5]
+            opacity: [0.5, 0.7, 0.5],
           }}
-          transition={{ 
+          transition={{
             duration: 3,
             repeat: Infinity,
-            ease: "easeInOut"
+            ease: "easeInOut",
           }}
         />
 
         {Object.entries(zoneRadii).map(([zone, radius]) => {
           const zoneColor = zoneColors[zone];
-          const hasDevices = scenario.devices.some(d => {
-            const network = scenario.networks.find(n => n.id === d.networkId);
+          const isZoneHighlighted = highlightZone === zone;
+          const hasDevices = scenario.devices.some((d) => {
+            const network = scenario.networks.find((n) => n.id === d.networkId);
             return network?.zone === zone && d.type !== "router";
           });
-          
+
           if (!hasDevices && zone !== "main") return null;
-          
+
           return (
             <g key={zone}>
               <motion.circle
                 cx={centerX}
                 cy={centerY}
                 r={radius}
-                className={`${zoneColor.ring} ${zoneColor.fill} stroke-[1.5] stroke-dashed`}
+                className={`${zoneColor.ring} ${zoneColor.fill} stroke-[1.5] stroke-dashed ${
+                  isZoneHighlighted ? "stroke-primary/70 fill-primary/5" : ""
+                }`}
                 strokeDasharray="8 4"
                 initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.4, delay: 0.1 }}
+                animate={{
+                  opacity: isZoneHighlighted ? [0.7, 1, 0.7] : 1,
+                  scale: isZoneHighlighted ? [1, 1.02, 1] : 1,
+                }}
+                transition={{
+                  duration: isZoneHighlighted ? 1.2 : 0.4,
+                  delay: 0.1,
+                  repeat: isZoneHighlighted ? Infinity : 0,
+                }}
               />
               <text
                 x={centerX + radius - 10}
@@ -567,81 +692,91 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
           );
         })}
 
-        {routerPos && scenario.devices.filter(d => d.type !== "router").map((device, deviceIndex) => {
-          const pos = devicePositions.get(device.id);
-          if (!pos) return null;
+        {routerPos &&
+          scenario.devices
+            .filter((d) => d.type !== "router")
+            .map((device, deviceIndex) => {
+              const pos = devicePositions.get(device.id);
+              if (!pos) return null;
 
-          const isSelected = selectedDeviceId === device.id;
-          const hasRisks = device.riskFlags.length > 0;
-          const showDataFlow = activeLayer === "transport" || activeLayer === "application";
-          const deviceFlows = flowsByDevice.get(device.id) || [];
-          const flowCategories = getFlowCategories(deviceFlows);
-          const primaryFlowColor = flowCategories[0] ? flowCategoryColors[flowCategories[0]] : "fill-chart-1/60";
-          const secondaryFlowColor = flowCategories[1] ? flowCategoryColors[flowCategories[1]] : "fill-chart-3/60";
+              const isSelected = selectedDeviceId === device.id;
+              const hasRisks = device.riskFlags.length > 0;
+              const showFlowsForDevice = !flowFilterDeviceId || device.id === flowFilterDeviceId;
+              const showDataFlow =
+                (activeLayer === "transport" || activeLayer === "application") &&
+                showFlowsForDevice;
+              const deviceFlows = showFlowsForDevice ? flowsByDevice.get(device.id) || [] : [];
+              const flowCategories = getFlowCategories(deviceFlows);
+              const primaryFlowColor = flowCategories[0]
+                ? flowCategoryColors[flowCategories[0]]
+                : "fill-chart-1/60";
+              const secondaryFlowColor = flowCategories[1]
+                ? flowCategoryColors[flowCategories[1]]
+                : "fill-chart-3/60";
 
-          return (
-            <g key={`connection-${device.id}`}>
-              <motion.line
-                x1={routerPos.x}
-                y1={routerPos.y}
-                x2={pos.x}
-                y2={pos.y}
-                initial={{ pathLength: 0, opacity: 0, strokeWidth: 1 }}
-                animate={{ 
-                  pathLength: 1, 
-                  opacity: 1,
-                  strokeWidth: isSelected ? 2.5 : 1,
-                }}
-                transition={{ duration: 0.5, delay: 0.2 }}
-                className={`${
-                  isSelected 
-                    ? "stroke-primary" 
-                    : hasRisks 
-                      ? "stroke-destructive/30" 
-                      : "stroke-muted-foreground/20"
-                }`}
-              />
-              
-              {showDataFlow && !hasRisks && (
-                <motion.circle
-                  r={3}
-                  className={isSelected ? "fill-primary" : primaryFlowColor}
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: [0, 1, 1, 0],
-                    cx: [routerPos.x, pos.x],
-                    cy: [routerPos.y, pos.y],
-                  }}
-                  transition={{
-                    duration: 2 + deviceIndex * 0.3,
-                    repeat: Infinity,
-                    delay: deviceIndex * 0.4,
-                    ease: "linear",
-                  }}
-                />
-              )}
-              
-              {showDataFlow && !hasRisks && (
-                <motion.circle
-                  r={3}
-                  className={isSelected ? "fill-primary" : secondaryFlowColor}
-                  initial={{ opacity: 0 }}
-                  animate={{
-                    opacity: [0, 1, 1, 0],
-                    cx: [pos.x, routerPos.x],
-                    cy: [pos.y, routerPos.y],
-                  }}
-                  transition={{
-                    duration: 2.5 + deviceIndex * 0.2,
-                    repeat: Infinity,
-                    delay: deviceIndex * 0.6 + 1,
-                    ease: "linear",
-                  }}
-                />
-              )}
-            </g>
-          );
-        })}
+              return (
+                <g key={`connection-${device.id}`}>
+                  <motion.line
+                    x1={routerPos.x}
+                    y1={routerPos.y}
+                    x2={pos.x}
+                    y2={pos.y}
+                    initial={{ pathLength: 0, opacity: 0, strokeWidth: 1 }}
+                    animate={{
+                      pathLength: 1,
+                      opacity: 1,
+                      strokeWidth: isSelected ? 2.5 : 1,
+                    }}
+                    transition={{ duration: 0.5, delay: 0.2 }}
+                    className={`${
+                      isSelected
+                        ? "stroke-primary"
+                        : hasRisks
+                          ? "stroke-destructive/30"
+                          : "stroke-muted-foreground/20"
+                    }`}
+                  />
+
+                  {showDataFlow && !hasRisks && (
+                    <motion.circle
+                      r={3}
+                      className={isSelected ? "fill-primary" : primaryFlowColor}
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: [0, 1, 1, 0],
+                        cx: [routerPos.x, pos.x],
+                        cy: [routerPos.y, pos.y],
+                      }}
+                      transition={{
+                        duration: 2 + deviceIndex * 0.3,
+                        repeat: Infinity,
+                        delay: deviceIndex * 0.4,
+                        ease: "linear",
+                      }}
+                    />
+                  )}
+
+                  {showDataFlow && !hasRisks && (
+                    <motion.circle
+                      r={3}
+                      className={isSelected ? "fill-primary" : secondaryFlowColor}
+                      initial={{ opacity: 0 }}
+                      animate={{
+                        opacity: [0, 1, 1, 0],
+                        cx: [pos.x, routerPos.x],
+                        cy: [pos.y, routerPos.y],
+                      }}
+                      transition={{
+                        duration: 2.5 + deviceIndex * 0.2,
+                        repeat: Infinity,
+                        delay: deviceIndex * 0.6 + 1,
+                        ease: "linear",
+                      }}
+                    />
+                  )}
+                </g>
+              );
+            })}
 
         <AnimatePresence>
           {activeLayer === "network" && routerPos && (
@@ -663,7 +798,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
                 y={centerY - 10}
                 className="fill-muted-foreground text-[9px] uppercase tracking-wider"
               >
-                {t('legend.natBoundary')}
+                {t("legend.natBoundary")}
               </text>
               <line
                 x1={routerPos.x}
@@ -675,7 +810,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
                 markerEnd="url(#arrowhead)"
               />
               <foreignObject x={routerPos.x + 10} y={80} width={120} height={40}>
-                <motion.div 
+                <motion.div
                   className="flex items-center gap-1.5 rounded bg-chart-5/10 px-2 py-1 text-xs font-medium text-chart-5"
                   initial={{ scale: 0.9, opacity: 0 }}
                   animate={{ scale: 1, opacity: 1 }}
@@ -690,18 +825,22 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
                 y={65}
                 className="fill-muted-foreground text-[10px] uppercase tracking-wider"
               >
-                {t('common.internet')}
+                {t("common.internet")}
               </text>
             </motion.g>
           )}
         </AnimatePresence>
 
-        {scenario.devices.map(device => {
+        {scenario.devices.map((device) => {
           const pos = devicePositions.get(device.id);
           if (!pos) return null;
 
-          const isHighlighted = !hasFilter || highlightedDeviceIds.has(device.id) || device.type === "router";
-          const deviceFlows = flowsByDevice.get(device.id) || [];
+          const isHighlighted =
+            !hasFilter || highlightedDeviceIds.has(device.id) || device.type === "router";
+          const showFlowsForDevice = !flowFilterDeviceId || device.id === flowFilterDeviceId;
+          const deviceFlows = showFlowsForDevice ? flowsByDevice.get(device.id) || [] : [];
+          const isFlashing = flashDeviceIds ? flashDeviceIds.has(device.id) : false;
+          const isDimmed = dimmedDeviceIds ? dimmedDeviceIds.has(device.id) : false;
 
           return (
             <DeviceNode
@@ -711,6 +850,9 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
               activeLayer={activeLayer}
               flows={deviceFlows}
               showFullMac={showFullMac}
+              suppressFlowFallback={!!flowFilterDeviceId && !showFlowsForDevice}
+              isFlashing={isFlashing}
+              isDimmed={isDimmed}
               isSelected={selectedDeviceId === device.id}
               isHighlighted={isHighlighted}
               onClick={() => handleDeviceClick(device.id)}
@@ -721,7 +863,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
 
         <AnimatePresence>
           {activeLayer === "transport" && routerPos && topFlowCategories.length > 0 && (
-            <motion.g 
+            <motion.g
               className="pointer-events-none"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -743,7 +885,7 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
                             ? "text-chart-5"
                             : "text-chart-2";
                 return (
-                  <motion.g 
+                  <motion.g
                     key={category}
                     initial={{ opacity: 0, y: 10 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -773,20 +915,23 @@ export function NetworkCanvas({ scenario, activeLayer, selectedDeviceId, onDevic
         </AnimatePresence>
       </svg>
 
-      <motion.div 
-        className="absolute bottom-4 left-4 rounded-md bg-card/80 px-3 py-2 text-xs backdrop-blur-sm" 
+      <motion.div
+        className="absolute bottom-4 left-4 rounded-md bg-card/80 px-3 py-2 text-xs backdrop-blur-sm"
         data-testid="scenario-info"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.3 }}
       >
         <div className="font-medium">
-          {scenarioIdToKey[scenario.id] 
-            ? t(`scenarioContent.${scenarioIdToKey[scenario.id]}.title`, { defaultValue: scenario.title })
+          {scenarioIdToKey[scenario.id]
+            ? t(`scenarioContent.${scenarioIdToKey[scenario.id]}.title`, {
+                defaultValue: scenario.title,
+              })
             : scenario.title}
         </div>
         <div className="mt-1 text-muted-foreground">
-          {t('scenarios.deviceCount', { count: scenario.devices.length })} • {t('scenarios.networkCount', { count: scenario.networks.length })}
+          {t("scenarios.deviceCount", { count: scenario.devices.length })} •{" "}
+          {t("scenarios.networkCount", { count: scenario.networks.length })}
         </div>
       </motion.div>
     </div>

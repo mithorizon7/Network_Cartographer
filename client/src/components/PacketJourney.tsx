@@ -4,7 +4,17 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { Device, LayerMode, Flow } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Play, Pause, RotateCcw, Zap, Globe, Server, Wifi, ChevronLeft, ChevronRight } from "lucide-react";
+import {
+  Play,
+  Pause,
+  RotateCcw,
+  Zap,
+  Globe,
+  Server,
+  Wifi,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
 import { deviceLabelToKey } from "@/lib/scenarioUtils";
 import { formatMac } from "@/lib/macUtils";
 
@@ -18,7 +28,14 @@ interface PacketJourneyProps {
   onClose: () => void;
 }
 
-type JourneyStep = "idle" | "device-to-router" | "router-processing" | "router-to-internet" | "internet-response" | "router-back" | "complete";
+type JourneyStep =
+  | "idle"
+  | "device-to-router"
+  | "router-processing"
+  | "router-to-internet"
+  | "internet-response"
+  | "router-back"
+  | "complete";
 
 const stepToKey: Record<JourneyStep, string> = {
   idle: "idle",
@@ -30,31 +47,40 @@ const stepToKey: Record<JourneyStep, string> = {
   complete: "complete",
 };
 
-export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicIp, flows = [], showFullMac = true, onClose }: PacketJourneyProps) {
+const journeySteps: JourneyStep[] = [
+  "device-to-router",
+  "router-processing",
+  "router-to-internet",
+  "internet-response",
+  "router-back",
+  "complete",
+];
+
+export function PacketJourney({
+  sourceDevice,
+  routerDevice,
+  activeLayer,
+  publicIp,
+  flows = [],
+  showFullMac = true,
+  onClose,
+}: PacketJourneyProps) {
   const { t } = useTranslation();
   const [currentStep, setCurrentStep] = useState<JourneyStep>("idle");
   const [isPlaying, setIsPlaying] = useState(false);
   const [progress, setProgress] = useState(0);
   const [flowIndex, setFlowIndex] = useState(0);
-
-  const steps: JourneyStep[] = [
-    "device-to-router",
-    "router-processing", 
-    "router-to-internet",
-    "internet-response",
-    "router-back",
-    "complete"
-  ];
+  const sourceDeviceId = sourceDevice?.id;
 
   const deviceFlows = useMemo(
-    () => (sourceDevice ? flows.filter((flow) => flow.srcDeviceId === sourceDevice.id) : []),
-    [flows, sourceDevice?.id]
+    () => (sourceDeviceId ? flows.filter((flow) => flow.srcDeviceId === sourceDeviceId) : []),
+    [flows, sourceDeviceId],
   );
 
   useEffect(() => {
-    const stepIndex = steps.indexOf(currentStep);
+    const stepIndex = journeySteps.indexOf(currentStep);
     if (stepIndex >= 0) {
-      setProgress(((stepIndex + 1) / steps.length) * 100);
+      setProgress(((stepIndex + 1) / journeySteps.length) * 100);
     } else {
       setProgress(0);
     }
@@ -77,8 +103,8 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
     if (!isPlaying) return;
 
     const stepDuration = 2500;
-    const stepIndex = steps.indexOf(currentStep);
-    
+    const stepIndex = journeySteps.indexOf(currentStep);
+
     if (currentStep === "idle") {
       setCurrentStep("device-to-router");
       return;
@@ -91,8 +117,8 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
 
     const timer = setTimeout(() => {
       const nextIndex = stepIndex + 1;
-      if (nextIndex < steps.length) {
-        setCurrentStep(steps[nextIndex]);
+      if (nextIndex < journeySteps.length) {
+        setCurrentStep(journeySteps[nextIndex]);
       }
     }, stepDuration);
 
@@ -119,9 +145,12 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
 
   if (!sourceDevice || !routerDevice) {
     return (
-      <div className="rounded-md border bg-muted p-4 text-center text-sm text-muted-foreground" data-testid="packet-journey-empty">
+      <div
+        className="rounded-md border bg-muted p-4 text-center text-sm text-muted-foreground"
+        data-testid="packet-journey-empty"
+      >
         <Zap className="mx-auto mb-2 h-8 w-8 opacity-50" />
-        <p>{t('packetJourney.selectDevice')}</p>
+        <p>{t("packetJourney.selectDevice")}</p>
       </div>
     );
   }
@@ -148,18 +177,22 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
     }
   };
 
-  const sourceAddress = activeLayer === "link" ? formatMac(sourceDevice.localId, showFullMac) : sourceDevice.ip;
-  const routerAddress = activeLayer === "link" ? formatMac(routerDevice.localId, showFullMac) : routerDevice.ip;
-  const upstreamAddress = activeLayer === "link" ? t('packetJourney.ispGateway') : publicIp;
+  const sourceAddress =
+    activeLayer === "link" ? formatMac(sourceDevice.localId, showFullMac) : sourceDevice.ip;
+  const routerAddress =
+    activeLayer === "link" ? formatMac(routerDevice.localId, showFullMac) : routerDevice.ip;
+  const upstreamAddress = activeLayer === "link" ? t("packetJourney.ispGateway") : publicIp;
   const translatedSourceLabel = deviceLabelToKey[sourceDevice.label]
-    ? t(`deviceLabels.${deviceLabelToKey[sourceDevice.label]}`, { defaultValue: sourceDevice.label })
+    ? t(`deviceLabels.${deviceLabelToKey[sourceDevice.label]}`, {
+        defaultValue: sourceDevice.label,
+      })
     : sourceDevice.label;
   const safeFlowIndex = flowIndex < deviceFlows.length ? flowIndex : 0;
   const activeFlow = deviceFlows[safeFlowIndex];
   const encryptionLabel = activeFlow
     ? activeFlow.encrypted
-      ? t('encryption.encrypted')
-      : t('encryption.unencrypted')
+      ? t("encryption.encrypted")
+      : t("encryption.unencrypted")
     : null;
 
   return (
@@ -168,27 +201,27 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
         <div className="flex items-center gap-2">
           <Badge variant="outline" className={layerColors[activeLayer]}>
             <Zap className="mr-1 h-3 w-3" />
-            {t('packetJourney.title')}
+            {t("packetJourney.title")}
           </Badge>
           <span className="text-sm text-muted-foreground">
-            {translatedSourceLabel} → {t('common.internet')}
+            {translatedSourceLabel} → {t("common.internet")}
           </span>
         </div>
         <Button variant="ghost" size="sm" onClick={onClose} data-testid="button-close-journey">
-          {t('packetJourney.close')}
+          {t("packetJourney.close")}
         </Button>
       </div>
 
       <div className="text-xs text-muted-foreground">
         {activeFlow && encryptionLabel
-          ? t('packetJourney.activeFlow', {
+          ? t("packetJourney.activeFlow", {
               destination: activeFlow.dstLabel,
               protocol: activeFlow.protocol,
               transport: activeFlow.transport,
               port: activeFlow.port,
               encryption: encryptionLabel,
             })
-          : t('packetJourney.noFlow')}
+          : t("packetJourney.noFlow")}
       </div>
 
       {deviceFlows.length > 1 && (
@@ -197,14 +230,19 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
             variant="outline"
             size="sm"
             className="h-7 px-2"
-            onClick={() => setFlowIndex((prev) => (prev - 1 + deviceFlows.length) % deviceFlows.length)}
+            onClick={() =>
+              setFlowIndex((prev) => (prev - 1 + deviceFlows.length) % deviceFlows.length)
+            }
             data-testid="button-flow-prev"
           >
             <ChevronLeft className="h-3.5 w-3.5" />
-            <span className="sr-only">{t('packetJourney.prevFlow')}</span>
+            <span className="sr-only">{t("packetJourney.prevFlow")}</span>
           </Button>
           <span>
-            {t('packetJourney.flowIndex', { current: safeFlowIndex + 1, total: deviceFlows.length })}
+            {t("packetJourney.flowIndex", {
+              current: safeFlowIndex + 1,
+              total: deviceFlows.length,
+            })}
           </span>
           <Button
             variant="outline"
@@ -214,7 +252,7 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
             data-testid="button-flow-next"
           >
             <ChevronRight className="h-3.5 w-3.5" />
-            <span className="sr-only">{t('packetJourney.nextFlow')}</span>
+            <span className="sr-only">{t("packetJourney.nextFlow")}</span>
           </Button>
         </div>
       )}
@@ -222,10 +260,13 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
       <div className="relative h-2 overflow-hidden rounded-full bg-muted">
         <motion.div
           className={`absolute inset-y-0 left-0 ${
-            activeLayer === "link" ? "bg-chart-1" :
-            activeLayer === "network" ? "bg-chart-3" :
-            activeLayer === "transport" ? "bg-chart-4" :
-            "bg-green-500"
+            activeLayer === "link"
+              ? "bg-chart-1"
+              : activeLayer === "network"
+                ? "bg-chart-3"
+                : activeLayer === "transport"
+                  ? "bg-chart-4"
+                  : "bg-green-500"
           }`}
           initial={{ width: "0%" }}
           animate={{ width: `${progress}%` }}
@@ -235,19 +276,33 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
 
       <div className="flex items-center justify-center gap-2">
         {isPlaying ? (
-          <Button size="sm" variant="outline" onClick={handlePause} data-testid="button-pause-journey">
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handlePause}
+            data-testid="button-pause-journey"
+          >
             <Pause className="mr-1.5 h-4 w-4" />
-            {t('packetJourney.pause')}
+            {t("packetJourney.pause")}
           </Button>
         ) : (
           <Button size="sm" onClick={handlePlay} data-testid="button-play-journey">
             <Play className="mr-1.5 h-4 w-4" />
-            {currentStep === "complete" ? t('packetJourney.replay') : currentStep === "idle" ? t('packetJourney.startJourney') : t('packetJourney.resume')}
+            {currentStep === "complete"
+              ? t("packetJourney.replay")
+              : currentStep === "idle"
+                ? t("packetJourney.startJourney")
+                : t("packetJourney.resume")}
           </Button>
         )}
-        <Button size="sm" variant="outline" onClick={handleReset} data-testid="button-reset-journey">
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleReset}
+          data-testid="button-reset-journey"
+        >
           <RotateCcw className="mr-1.5 h-4 w-4" />
-          {t('packetJourney.reset')}
+          {t("packetJourney.reset")}
         </Button>
       </div>
 
@@ -262,13 +317,13 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
           data-testid="journey-step-display"
         >
           <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex-shrink-0">
-              {getStepIcon(currentStep)}
-            </div>
+            <div className="mt-0.5 flex-shrink-0">{getStepIcon(currentStep)}</div>
             <div className="min-w-0 flex-1">
               <div className="mb-1 flex items-center gap-2">
                 <span className="text-sm font-medium capitalize">
-                  {currentStep === "idle" ? t('packetJourney.ready') : currentStep.replace(/-/g, " ")}
+                  {currentStep === "idle"
+                    ? t("packetJourney.ready")
+                    : currentStep.replace(/-/g, " ")}
                 </span>
                 {isPlaying && currentStep !== "complete" && currentStep !== "idle" && (
                   <span className="h-2 w-2 animate-pulse rounded-full bg-current" />
@@ -283,19 +338,22 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
       </AnimatePresence>
 
       <div className="relative flex items-center justify-center gap-2 text-xs text-muted-foreground py-2">
-        <motion.div 
+        <motion.div
           className={`flex items-center gap-1 rounded-md border px-2 py-1.5 transition-colors ${
-            currentStep === "device-to-router" || currentStep === "complete" 
-              ? "border-primary bg-primary/10" 
+            currentStep === "device-to-router" || currentStep === "complete"
+              ? "border-primary bg-primary/10"
               : "bg-muted"
           }`}
           animate={{ scale: currentStep === "device-to-router" ? [1, 1.05, 1] : 1 }}
-          transition={{ duration: 0.5, repeat: currentStep === "device-to-router" && isPlaying ? Infinity : 0 }}
+          transition={{
+            duration: 0.5,
+            repeat: currentStep === "device-to-router" && isPlaying ? Infinity : 0,
+          }}
         >
           <Wifi className="h-3 w-3" />
           <span className="font-mono text-[10px]">{sourceAddress}</span>
         </motion.div>
-        
+
         <div className="relative flex items-center">
           <div className="h-px w-6 bg-muted-foreground/30" />
           <AnimatePresence>
@@ -310,43 +368,57 @@ export function PacketJourney({ sourceDevice, routerDevice, activeLayer, publicI
             )}
           </AnimatePresence>
         </div>
-        
-        <motion.div 
+
+        <motion.div
           className={`flex items-center gap-1 rounded-md border px-2 py-1.5 transition-colors ${
-            currentStep === "router-processing" 
-              ? "border-primary bg-primary/10" 
-              : "bg-muted"
+            currentStep === "router-processing" ? "border-primary bg-primary/10" : "bg-muted"
           }`}
           animate={{ scale: currentStep === "router-processing" ? [1, 1.05, 1] : 1 }}
-          transition={{ duration: 0.5, repeat: currentStep === "router-processing" && isPlaying ? Infinity : 0 }}
+          transition={{
+            duration: 0.5,
+            repeat: currentStep === "router-processing" && isPlaying ? Infinity : 0,
+          }}
         >
           <Server className="h-3 w-3" />
           <span className="font-mono text-[10px]">{routerAddress}</span>
         </motion.div>
-        
+
         <div className="relative flex items-center">
           <div className="h-px w-6 bg-muted-foreground/30" />
           <AnimatePresence>
-            {(currentStep === "router-to-internet" || currentStep === "internet-response") && isPlaying && (
-              <motion.div
-                className="absolute left-0 h-2 w-2 rounded-full bg-chart-5"
-                animate={{
-                  x: currentStep === "router-to-internet" ? [0, 24] : [24, 0],
-                }}
-                transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
-              />
-            )}
+            {(currentStep === "router-to-internet" || currentStep === "internet-response") &&
+              isPlaying && (
+                <motion.div
+                  className="absolute left-0 h-2 w-2 rounded-full bg-chart-5"
+                  animate={{
+                    x: currentStep === "router-to-internet" ? [0, 24] : [24, 0],
+                  }}
+                  transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                />
+              )}
           </AnimatePresence>
         </div>
-        
-        <motion.div 
+
+        <motion.div
           className={`flex items-center gap-1 rounded-md border px-2 py-1.5 transition-colors ${
-            (currentStep === "router-to-internet" || currentStep === "internet-response") 
-              ? "border-chart-5 bg-chart-5/10" 
+            currentStep === "router-to-internet" || currentStep === "internet-response"
+              ? "border-chart-5 bg-chart-5/10"
               : "bg-muted"
           }`}
-          animate={{ scale: (currentStep === "router-to-internet" || currentStep === "internet-response") ? [1, 1.05, 1] : 1 }}
-          transition={{ duration: 0.5, repeat: (currentStep === "router-to-internet" || currentStep === "internet-response") && isPlaying ? Infinity : 0 }}
+          animate={{
+            scale:
+              currentStep === "router-to-internet" || currentStep === "internet-response"
+                ? [1, 1.05, 1]
+                : 1,
+          }}
+          transition={{
+            duration: 0.5,
+            repeat:
+              (currentStep === "router-to-internet" || currentStep === "internet-response") &&
+              isPlaying
+                ? Infinity
+                : 0,
+          }}
         >
           <Globe className="h-3 w-3" />
           <span className="font-mono text-[10px]">{upstreamAddress}</span>

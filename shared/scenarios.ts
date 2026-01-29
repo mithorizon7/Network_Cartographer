@@ -3,15 +3,28 @@ import type { Scenario } from "./schema";
 export const familyIoTScenario: Scenario = {
   id: "family_iot_sprawl_v1",
   title: "Family Home with IoT Sprawl",
-  description: "A typical suburban home with multiple family members and various smart devices. Notice how IoT devices are isolated on their own network for security.",
+  description:
+    "A typical suburban home with multiple family members and various smart devices. Notice how IoT devices are isolated on their own network for security.",
   environment: {
     type: "home",
     isp: "FictionalNet",
     publicIp: "203.0.113.12",
   },
   networks: [
-    { id: "main", ssid: "MapleHouse_Main", security: "WPA2", subnet: "192.168.10.0/24", zone: "main" },
-    { id: "guest", ssid: "MapleHouse_Guest", security: "WPA2", subnet: "192.168.20.0/24", zone: "guest" },
+    {
+      id: "main",
+      ssid: "MapleHouse_Main",
+      security: "WPA2",
+      subnet: "192.168.10.0/24",
+      zone: "main",
+    },
+    {
+      id: "guest",
+      ssid: "MapleHouse_Guest",
+      security: "WPA2",
+      subnet: "192.168.20.0/24",
+      zone: "guest",
+    },
     { id: "iot", ssid: "MapleHouse_IoT", security: "WPA2", subnet: "192.168.30.0/24", zone: "iot" },
   ],
   devices: [
@@ -35,7 +48,8 @@ export const familyIoTScenario: Scenario = {
       ip: "192.168.10.14",
       localId: "AA:BB:CC:11:22:33",
       riskFlags: [],
-      description: "A work-issued laptop used for remote work. Connected to the main network for full access.",
+      description:
+        "A work-issued laptop used for remote work. Connected to the main network for full access.",
       manufacturer: "Dell",
       protocols: ["HTTPS", "SSH", "RDP"],
     },
@@ -71,7 +85,8 @@ export const familyIoTScenario: Scenario = {
       ip: "192.168.30.10",
       localId: "77:88:99:AA:BB:CC",
       riskFlags: ["iot_device"],
-      description: "Smart TV with streaming apps. Isolated on IoT network to limit potential vulnerabilities.",
+      description:
+        "Smart TV with streaming apps. Isolated on IoT network to limit potential vulnerabilities.",
       manufacturer: "Samsung",
       protocols: ["HTTPS", "Netflix", "Disney+"],
     },
@@ -83,7 +98,8 @@ export const familyIoTScenario: Scenario = {
       ip: "192.168.30.21",
       localId: "EE:FF:00:11:22:33",
       riskFlags: ["iot_device", "default_password"],
-      description: "Security camera monitoring the living room. Warning: Still using default password!",
+      description:
+        "Security camera monitoring the living room. Warning: Still using default password!",
       manufacturer: "Wyze",
       openPorts: [80, 554],
     },
@@ -119,7 +135,8 @@ export const familyIoTScenario: Scenario = {
       ip: "192.168.20.5",
       localId: "12:34:56:78:9A:BC",
       riskFlags: [],
-      description: "A visitor's phone connected to the guest network. Cannot access main network devices.",
+      description:
+        "A visitor's phone connected to the guest network. Cannot access main network devices.",
       manufacturer: "Samsung",
     },
     {
@@ -140,7 +157,8 @@ export const familyIoTScenario: Scenario = {
       ip: "192.168.10.50",
       localId: "99:AA:BB:CC:DD:EE",
       riskFlags: ["forgotten_device", "outdated_firmware"],
-      description: "An old tablet that hasn't been updated in 2 years. Still connected but rarely used.",
+      description:
+        "An old tablet that hasn't been updated in 2 years. Still connected but rarely used.",
       manufacturer: "Samsung",
     },
   ],
@@ -149,7 +167,8 @@ export const familyIoTScenario: Scenario = {
       id: "unknown_device_reveal",
       trigger: "onEnter",
       deviceId: "mystery_device",
-      message: "An unfamiliar device appears on your IoT network. You don't remember adding this...",
+      message:
+        "An unfamiliar device appears on your IoT network. You don't remember adding this...",
     },
   ],
   learningPrompts: [
@@ -161,9 +180,11 @@ export const familyIoTScenario: Scenario = {
         { text: "8.8.8.8", isCorrect: false },
         { text: "203.0.113.12", isCorrect: false },
       ],
-      explanation: "192.168.x.x addresses are private - they only work inside your home network. 8.8.8.8 is Google's public DNS, and 203.0.113.12 is your public IP (how the internet sees you).",
+      explanation:
+        "192.168.x.x addresses are private - they only work inside your home network. 8.8.8.8 is Google's public DNS, and 203.0.113.12 is your public IP (how the internet sees you).",
       why: "Knowing private ranges helps you spot which devices are local and which are on the internet.",
-      nextStep: "When you see 192.168.x.x, 10.x.x.x, or 172.16-31.x.x, treat it as local and find the public IP on your router.",
+      nextStep:
+        "When you see 192.168.x.x, 10.x.x.x, or 172.16-31.x.x, treat it as local and find the public IP on your router.",
       relatedLayer: "network",
     },
     {
@@ -174,9 +195,11 @@ export const familyIoTScenario: Scenario = {
         { text: "Identifying devices on the local network", isCorrect: true },
         { text: "Encrypting your data", isCorrect: false },
       ],
-      explanation: "MAC addresses are unique hardware identifiers burned into each network device. They're used for delivering data on your local network segment - like apartment numbers within a building. Routers strip MAC addresses when forwarding to the internet.",
+      explanation:
+        "MAC addresses are unique hardware identifiers burned into each network device. They're used for delivering data on your local network segment - like apartment numbers within a building. Routers strip MAC addresses when forwarding to the internet.",
       why: "MACs identify devices only on your local network, not across the internet.",
-      nextStep: "Use your router's device list to match MAC addresses to real devices when troubleshooting.",
+      nextStep:
+        "Use your router's device list to match MAC addresses to real devices when troubleshooting.",
       relatedLayer: "link",
     },
     {
@@ -187,7 +210,8 @@ export const familyIoTScenario: Scenario = {
         { text: "To prevent them from accessing your personal devices", isCorrect: true },
         { text: "Because there's a limit to devices on one network", isCorrect: false },
       ],
-      explanation: "Guest networks create isolation. Visitors can use the internet, but they can't see or access your personal computers, cameras, or smart devices.",
+      explanation:
+        "Guest networks create isolation. Visitors can use the internet, but they can't see or access your personal computers, cameras, or smart devices.",
       why: "Segmentation keeps guest devices from reaching your personal devices if they are compromised.",
       nextStep: "Enable a guest SSID and keep it isolated from your main network.",
       relatedLayer: "network",
@@ -200,7 +224,8 @@ export const familyIoTScenario: Scenario = {
         { text: "Investigate and possibly block it", isCorrect: true },
         { text: "Unplug your router immediately", isCorrect: false },
       ],
-      explanation: "Unknown devices could be forgotten gadgets, neighbors leeching Wi-Fi, or even malicious actors. Check your router's admin page to identify and remove suspicious devices.",
+      explanation:
+        "Unknown devices could be forgotten gadgets, neighbors leeching Wi-Fi, or even malicious actors. Check your router's admin page to identify and remove suspicious devices.",
       why: "Unknown devices can indicate shared Wi-Fi abuse or a real intrusion.",
       nextStep: "Identify it in your router and block it or change your Wi-Fi password.",
     },
@@ -209,10 +234,14 @@ export const familyIoTScenario: Scenario = {
       question: "Why are IoT devices (cameras, thermostats) often put on a separate network?",
       answers: [
         { text: "They need special internet settings", isCorrect: false },
-        { text: "They're often insecure and could be used to attack other devices", isCorrect: true },
+        {
+          text: "They're often insecure and could be used to attack other devices",
+          isCorrect: true,
+        },
         { text: "They use too much bandwidth", isCorrect: false },
       ],
-      explanation: "Many IoT devices have weak security, use default passwords, or don't get updates. Isolating them prevents a compromised camera from spying on your laptop.",
+      explanation:
+        "Many IoT devices have weak security, use default passwords, or don't get updates. Isolating them prevents a compromised camera from spying on your laptop.",
       why: "IoT devices are common entry points; isolation limits how far an attacker can move.",
       nextStep: "Put IoT devices on a separate network or VLAN with limited access.",
       relatedLayer: "network",
@@ -284,7 +313,7 @@ export const familyIoTScenario: Scenario = {
     {
       id: "family_block_unknown",
       title: "Block the unknown device",
-      instruction: "Select the \"Generic Smart Controller\" and block it from your network.",
+      instruction: 'Select the "Generic Smart Controller" and block it from your network.',
       actionType: "block_unknown",
       target: { type: "device", id: "mystery_device" },
       successCopy: "You blocked the unknown device, reducing immediate risk.",
@@ -317,7 +346,8 @@ export const familyIoTScenario: Scenario = {
 export const smallBusinessScenario: Scenario = {
   id: "small_business_v1",
   title: "Small Business Office",
-  description: "A small business with employees, a server, and customer-facing Wi-Fi. Notice the separation between staff and customer networks.",
+  description:
+    "A small business with employees, a server, and customer-facing Wi-Fi. Notice the separation between staff and customer networks.",
   environment: {
     type: "business",
     isp: "BusinessFiber",
@@ -349,7 +379,8 @@ export const smallBusinessScenario: Scenario = {
       ip: "10.0.1.10",
       localId: "66:77:88:99:AA:BB",
       riskFlags: [],
-      description: "Central file storage for company documents. Access restricted to staff network.",
+      description:
+        "Central file storage for company documents. Access restricted to staff network.",
       manufacturer: "Dell",
       openPorts: [22, 443, 445],
       protocols: ["SMB", "HTTPS", "SSH"],
@@ -432,7 +463,8 @@ export const smallBusinessScenario: Scenario = {
       ip: "10.0.1.99",
       localId: "FF:EE:DD:CC:BB:AA",
       riskFlags: ["unknown_device"],
-      description: "This device appeared on the corporate network but isn't registered with IT. Investigate immediately!",
+      description:
+        "This device appeared on the corporate network but isn't registered with IT. Investigate immediately!",
     },
   ],
   events: [
@@ -452,7 +484,8 @@ export const smallBusinessScenario: Scenario = {
         { text: "Private IP range for internal networks", isCorrect: true },
         { text: "Reserved for government use", isCorrect: false },
       ],
-      explanation: "10.0.0.0/8 is one of three private IP ranges (along with 172.16.x.x and 192.168.x.x). These addresses work only inside your network and can't be reached directly from the internet.",
+      explanation:
+        "10.0.0.0/8 is one of three private IP ranges (along with 172.16.x.x and 192.168.x.x). These addresses work only inside your network and can't be reached directly from the internet.",
       why: "Recognizing private ranges prevents you from assuming a device is publicly reachable.",
       nextStep: "Treat 10.x addresses as internal and look for the public IP on the router.",
       relatedLayer: "network",
@@ -465,7 +498,8 @@ export const smallBusinessScenario: Scenario = {
         { text: "WPA3 provides stronger encryption for sensitive data", isCorrect: true },
         { text: "There's no meaningful difference", isCorrect: false },
       ],
-      explanation: "WPA3 offers better protection against password guessing attacks and uses newer encryption. Corporate data deserves the strongest protection available.",
+      explanation:
+        "WPA3 offers better protection against password guessing attacks and uses newer encryption. Corporate data deserves the strongest protection available.",
       why: "Stronger Wi-Fi encryption reduces the risk of password guessing and data exposure.",
       nextStep: "Use WPA3 when available and keep WPA2 only for legacy devices.",
     },
@@ -477,7 +511,8 @@ export const smallBusinessScenario: Scenario = {
         { text: "It still has the default password, making it easy to hack", isCorrect: true },
         { text: "It's connected to the wrong network", isCorrect: false },
       ],
-      explanation: "Printers with default passwords are often targeted by attackers. They can be used to intercept documents, spread to other devices, or even become part of botnets.",
+      explanation:
+        "Printers with default passwords are often targeted by attackers. They can be used to intercept documents, spread to other devices, or even become part of botnets.",
       why: "Default credentials are a common entry point for attackers.",
       nextStep: "Change default passwords and move printers to a restricted network.",
     },
@@ -489,7 +524,8 @@ export const smallBusinessScenario: Scenario = {
         { text: "Guest network is isolated from corporate network", isCorrect: true },
         { text: "Customers don't have the password", isCorrect: false },
       ],
-      explanation: "Network segmentation means different networks can't communicate. Guests get internet access but are completely walled off from internal resources.",
+      explanation:
+        "Network segmentation means different networks can't communicate. Guests get internet access but are completely walled off from internal resources.",
       why: "Segmentation protects internal data even if guest Wi-Fi is compromised.",
       nextStep: "Verify guest Wi-Fi cannot reach internal servers or printers.",
       relatedLayer: "network",
@@ -584,15 +620,28 @@ export const smallBusinessScenario: Scenario = {
 export const hotelPublicScenario: Scenario = {
   id: "hotel_public_v1",
   title: "Hotel / Public Wi-Fi",
-  description: "A hotel lobby with public Wi-Fi. Notice: All guests share the same network, and you can't trust who else is connected.",
+  description:
+    "A hotel lobby with public Wi-Fi. Notice: All guests share the same network, and you can't trust who else is connected.",
   environment: {
     type: "public",
     isp: "HotelISP",
     publicIp: "192.0.2.100",
   },
   networks: [
-    { id: "public", ssid: "GrandHotel_Lobby", security: "Open", subnet: "172.16.0.0/16", zone: "guest" },
-    { id: "staff", ssid: "GrandHotel_Staff", security: "WPA3", subnet: "172.17.0.0/16", zone: "main" },
+    {
+      id: "public",
+      ssid: "GrandHotel_Lobby",
+      security: "Open",
+      subnet: "172.16.0.0/16",
+      zone: "guest",
+    },
+    {
+      id: "staff",
+      ssid: "GrandHotel_Staff",
+      security: "WPA3",
+      subnet: "172.17.0.0/16",
+      zone: "main",
+    },
   ],
   devices: [
     {
@@ -626,7 +675,8 @@ export const hotelPublicScenario: Scenario = {
       ip: "172.16.45.55",
       localId: "77:88:99:AA:BB:CC",
       riskFlags: [],
-      description: "Another guest's laptop. On open Wi-Fi, they could potentially see your traffic...",
+      description:
+        "Another guest's laptop. On open Wi-Fi, they could potentially see your traffic...",
     },
     {
       id: "stranger_phone",
@@ -646,7 +696,8 @@ export const hotelPublicScenario: Scenario = {
       ip: "172.16.0.50",
       localId: "33:44:55:66:77:88",
       riskFlags: ["unencrypted_traffic"],
-      description: "This laptop has been connected for 12+ hours and seems to be capturing network traffic...",
+      description:
+        "This laptop has been connected for 12+ hours and seems to be capturing network traffic...",
     },
     {
       id: "business_phone",
@@ -678,7 +729,8 @@ export const hotelPublicScenario: Scenario = {
       ip: "172.16.0.99",
       localId: "00:00:00:00:00:01",
       riskFlags: ["unknown_device"],
-      description: "Wait... is this a legitimate hotel access point, or an 'evil twin' set up by an attacker?",
+      description:
+        "Wait... is this a legitimate hotel access point, or an 'evil twin' set up by an attacker?",
     },
   ],
   events: [
@@ -686,7 +738,8 @@ export const hotelPublicScenario: Scenario = {
       id: "evil_twin_warning",
       trigger: "onDeviceClick",
       deviceId: "fake_ap",
-      message: "Warning: This might be an 'evil twin' attack! Attackers create fake networks with similar names to intercept your data.",
+      message:
+        "Warning: This might be an 'evil twin' attack! Attackers create fake networks with similar names to intercept your data.",
     },
   ],
   learningPrompts: [
@@ -698,7 +751,8 @@ export const hotelPublicScenario: Scenario = {
         { text: "The network has no firewall", isCorrect: false },
         { text: "The Wi-Fi signal is publicly visible", isCorrect: false },
       ],
-      explanation: "Open networks have no encryption. This means anyone nearby can potentially see your traffic - it's like sending postcards instead of sealed letters.",
+      explanation:
+        "Open networks have no encryption. This means anyone nearby can potentially see your traffic - it's like sending postcards instead of sealed letters.",
       why: "Open Wi-Fi lets nearby users observe traffic, which increases risk for sensitive data.",
       nextStep: "Avoid sensitive logins on open Wi-Fi or use a VPN.",
     },
@@ -710,7 +764,8 @@ export const hotelPublicScenario: Scenario = {
         { text: "A fake Wi-Fi network that mimics a legitimate one", isCorrect: true },
         { text: "When two routers interfere with each other", isCorrect: false },
       ],
-      explanation: "Attackers set up fake access points with names like 'Hotel_Free_WiFi' to lure victims. When you connect, they can see everything you do.",
+      explanation:
+        "Attackers set up fake access points with names like 'Hotel_Free_WiFi' to lure victims. When you connect, they can see everything you do.",
       why: "Fake SSIDs can capture your traffic and steal credentials.",
       nextStep: "Verify the official SSID with staff and turn off auto-join for public Wi-Fi.",
     },
@@ -722,9 +777,11 @@ export const hotelPublicScenario: Scenario = {
         { text: "Because public Wi-Fi always gives out public IPs", isCorrect: false },
         { text: "Because private IPs are only for home networks", isCorrect: false },
       ],
-      explanation: "Public Wi-Fi often uses private IP ranges and NAT. Your device has a private address locally, while the hotspot uses one public IP to reach the internet.",
+      explanation:
+        "Public Wi-Fi often uses private IP ranges and NAT. Your device has a private address locally, while the hotspot uses one public IP to reach the internet.",
       why: "Private IPs can exist in public places too; NAT hides many devices behind one public IP.",
-      nextStep: "Look for the NAT boundary: your device has a private IP and the hotspot has the public IP.",
+      nextStep:
+        "Look for the NAT boundary: your device has a private IP and the hotspot has the public IP.",
       relatedLayer: "network",
     },
     {
@@ -732,10 +789,14 @@ export const hotelPublicScenario: Scenario = {
       question: "On public Wi-Fi, why is HTTPS especially important?",
       answers: [
         { text: "HTTPS makes websites load faster", isCorrect: false },
-        { text: "HTTPS encrypts your data so others on the network can't read it", isCorrect: true },
+        {
+          text: "HTTPS encrypts your data so others on the network can't read it",
+          isCorrect: true,
+        },
         { text: "HTTPS prevents viruses", isCorrect: false },
       ],
-      explanation: "HTTPS uses TLS encryption to create a secure tunnel between you and the website. Even if someone captures your traffic, they see encrypted data instead of your passwords and personal information.",
+      explanation:
+        "HTTPS uses TLS encryption to create a secure tunnel between you and the website. Even if someone captures your traffic, they see encrypted data instead of your passwords and personal information.",
       why: "HTTPS keeps your data readable only to you and the website, even on untrusted networks.",
       nextStep: "Check for HTTPS (lock icon) before entering passwords or personal data.",
       relatedLayer: "application",
@@ -748,7 +809,8 @@ export const hotelPublicScenario: Scenario = {
         { text: "Creates an encrypted tunnel for all your traffic", isCorrect: true },
         { text: "Blocks other users from connecting", isCorrect: false },
       ],
-      explanation: "A VPN encrypts everything leaving your device, not just web traffic. It's like putting all your postcards in a locked box before sending them.",
+      explanation:
+        "A VPN encrypts everything leaving your device, not just web traffic. It's like putting all your postcards in a locked box before sending them.",
       why: "A VPN protects all apps, not just browsers, on untrusted networks.",
       nextStep: "Use a reputable VPN when working or banking on public Wi-Fi.",
       relatedLayer: "network",
@@ -761,7 +823,8 @@ export const hotelPublicScenario: Scenario = {
         { text: "Logging into your bank without a VPN", isCorrect: true },
         { text: "Checking the weather", isCorrect: false },
       ],
-      explanation: "Sensitive activities like banking should wait for a secure network or require a VPN. Even HTTPS can't protect against all attacks on compromised networks.",
+      explanation:
+        "Sensitive activities like banking should wait for a secure network or require a VPN. Even HTTPS can't protect against all attacks on compromised networks.",
       why: "Some actions are higher-risk on public networks, even with encryption.",
       nextStep: "Delay banking or change passwords until you're on a trusted network.",
     },
@@ -832,4 +895,8 @@ export const hotelPublicScenario: Scenario = {
   ],
 };
 
-export const allScenarios: Scenario[] = [familyIoTScenario, smallBusinessScenario, hotelPublicScenario];
+export const allScenarios: Scenario[] = [
+  familyIoTScenario,
+  smallBusinessScenario,
+  hotelPublicScenario,
+];

@@ -1,17 +1,29 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import type { Device, Scenario, ScenarioActionType, ScenarioTask } from "@shared/schema";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { CheckCircle2, XCircle, ShieldCheck, KeyRound, Wifi, Users, Ban, ChevronRight, RotateCcw } from "lucide-react";
+import {
+  CheckCircle2,
+  XCircle,
+  ShieldCheck,
+  KeyRound,
+  Wifi,
+  Users,
+  Ban,
+  ChevronRight,
+  RotateCcw,
+} from "lucide-react";
 import { deviceLabelToKey, taskIdToKey } from "@/lib/scenarioUtils";
 
 interface ScenarioActionsProps {
   scenario: Scenario;
   selectedDevice: Device | null;
   resetKey?: number;
+  onTaskChange?: (task: ScenarioTask | null, isComplete: boolean) => void;
+  onActionComplete?: (outcome: ActionOutcome) => void;
 }
 
 const actionIcons: Record<ScenarioActionType, typeof ShieldCheck> = {
@@ -22,7 +34,20 @@ const actionIcons: Record<ScenarioActionType, typeof ShieldCheck> = {
   block_unknown: Ban,
 };
 
-export function ScenarioActions({ scenario, selectedDevice, resetKey = 0 }: ScenarioActionsProps) {
+export interface ActionOutcome {
+  taskId: string;
+  actionType: ScenarioActionType;
+  target: ScenarioTask["target"];
+  message: string;
+}
+
+export function ScenarioActions({
+  scenario,
+  selectedDevice,
+  resetKey = 0,
+  onTaskChange,
+  onActionComplete,
+}: ScenarioActionsProps) {
   const { t } = useTranslation();
   const tasks = scenario.scenarioTasks ?? [];
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -43,9 +68,17 @@ export function ScenarioActions({ scenario, selectedDevice, resetKey = 0 }: Scen
   const currentTask = tasks[safeIndex];
   const isComplete = completedIds.size === tasks.length && tasks.length > 0;
   const isLastTask = safeIndex === tasks.length - 1;
-  const progress = tasks.length > 0 ? ((safeIndex + (status === "success" ? 1 : 0)) / tasks.length) * 100 : 0;
+  const progress =
+    tasks.length > 0 ? ((safeIndex + (status === "success" ? 1 : 0)) / tasks.length) * 100 : 0;
 
-  const getTaskText = (task: ScenarioTask, field: "title" | "instruction" | "success" | "failure" | "tip") => {
+  useEffect(() => {
+    onTaskChange?.(currentTask ?? null, isComplete);
+  }, [currentTask, isComplete, onTaskChange]);
+
+  const getTaskText = (
+    task: ScenarioTask,
+    field: "title" | "instruction" | "success" | "failure" | "tip",
+  ) => {
     const taskKey = taskIdToKey[task.id];
     const fallbackValue =
       field === "title"
@@ -65,31 +98,37 @@ export function ScenarioActions({ scenario, selectedDevice, resetKey = 0 }: Scen
     });
   };
 
-  const getDeviceLabel = (deviceId?: string) => {
-    if (!deviceId) return t('common.noData');
-    const device = scenario.devices.find((d) => d.id === deviceId);
-    if (!device) return t('common.noData');
-    return deviceLabelToKey[device.label]
-      ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
-      : device.label;
-  };
+  const getDeviceLabel = useCallback(
+    (deviceId?: string) => {
+      if (!deviceId) return t("common.noData");
+      const device = scenario.devices.find((d) => d.id === deviceId);
+      if (!device) return t("common.noData");
+      return deviceLabelToKey[device.label]
+        ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, { defaultValue: device.label })
+        : device.label;
+    },
+    [scenario.devices, t],
+  );
 
-  const getNetworkLabel = (networkId?: string) => {
-    if (!networkId) return t('common.noData');
-    const network = scenario.networks.find((n) => n.id === networkId);
-    return network?.ssid || networkId;
-  };
+  const getNetworkLabel = useCallback(
+    (networkId?: string) => {
+      if (!networkId) return t("common.noData");
+      const network = scenario.networks.find((n) => n.id === networkId);
+      return network?.ssid || networkId;
+    },
+    [scenario.networks, t],
+  );
 
   const requirementText = useMemo(() => {
     if (!currentTask) return null;
     if (currentTask.target.type === "device") {
-      return t('actions.requireDevice', { device: getDeviceLabel(currentTask.target.id) });
+      return t("actions.requireDevice", { device: getDeviceLabel(currentTask.target.id) });
     }
     if (currentTask.target.type === "network") {
-      return t('actions.requireNetwork', { network: getNetworkLabel(currentTask.target.id) });
+      return t("actions.requireNetwork", { network: getNetworkLabel(currentTask.target.id) });
     }
-    return t('actions.requireNone');
-  }, [currentTask, t]);
+    return t("actions.requireNone");
+  }, [currentTask, t, getDeviceLabel, getNetworkLabel]);
 
   const isTargetMatch = useMemo(() => {
     if (!currentTask) return false;
@@ -104,10 +143,16 @@ export function ScenarioActions({ scenario, selectedDevice, resetKey = 0 }: Scen
     return false;
   }, [currentTask, selectedDevice]);
 
+  const selectedDeviceId = selectedDevice?.id;
+  const selectedNetworkId = selectedDevice?.networkId;
+  const selectionKey = useMemo(() => {
+    if (!selectedDeviceId) return "none";
+    return `${selectedDeviceId}:${selectedNetworkId}`;
+  }, [selectedDeviceId, selectedNetworkId]);
+
   const selectionKeyRef = useRef<string>("none");
 
   useEffect(() => {
-    const selectionKey = selectedDevice ? `${selectedDevice.id}:${selectedDevice.networkId}` : "none";
     if (selectionKeyRef.current !== selectionKey) {
       if (status === "failure") {
         setStatus("idle");
@@ -115,14 +160,21 @@ export function ScenarioActions({ scenario, selectedDevice, resetKey = 0 }: Scen
       }
       selectionKeyRef.current = selectionKey;
     }
-  }, [selectedDevice?.id, selectedDevice?.networkId, status]);
+  }, [selectionKey, status]);
 
   const handleComplete = () => {
     if (!currentTask) return;
     if (isTargetMatch) {
       setCompletedIds((prev) => new Set(prev).add(currentTask.id));
       setStatus("success");
-      setFeedback(getTaskText(currentTask, "success"));
+      const successMessage = getTaskText(currentTask, "success");
+      setFeedback(successMessage);
+      onActionComplete?.({
+        taskId: currentTask.id,
+        actionType: currentTask.actionType,
+        target: currentTask.target,
+        message: successMessage,
+      });
     } else {
       setStatus("failure");
       setFeedback(getTaskText(currentTask, "failure"));
@@ -156,15 +208,15 @@ export function ScenarioActions({ scenario, selectedDevice, resetKey = 0 }: Scen
       <Card data-testid="scenario-debrief">
         <CardHeader className="pb-2">
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-semibold">{t('actions.debriefTitle')}</h3>
-            <Badge variant="secondary">{t('actions.complete')}</Badge>
+            <h3 className="text-sm font-semibold">{t("actions.debriefTitle")}</h3>
+            <Badge variant="secondary">{t("actions.complete")}</Badge>
           </div>
-          <p className="text-xs text-muted-foreground">{t('actions.debriefIntro')}</p>
+          <p className="text-xs text-muted-foreground">{t("actions.debriefIntro")}</p>
         </CardHeader>
         <CardContent className="space-y-4">
           <div>
             <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              {t('actions.yourActions')}
+              {t("actions.yourActions")}
             </p>
             <div className="space-y-2">
               {tasks.map((task) => (
@@ -177,11 +229,14 @@ export function ScenarioActions({ scenario, selectedDevice, resetKey = 0 }: Scen
           </div>
           <div>
             <p className="mb-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
-              {t('actions.keyTakeaways')}
+              {t("actions.keyTakeaways")}
             </p>
             <div className="space-y-2">
               {tasks.map((task) => (
-                <div key={`${task.id}-tip`} className="rounded-md border border-primary/10 bg-primary/5 p-2 text-xs">
+                <div
+                  key={`${task.id}-tip`}
+                  className="rounded-md border border-primary/10 bg-primary/5 p-2 text-xs"
+                >
                   {getTaskText(task, "tip")}
                 </div>
               ))}
@@ -189,7 +244,7 @@ export function ScenarioActions({ scenario, selectedDevice, resetKey = 0 }: Scen
           </div>
           <Button variant="outline" onClick={handleRestart} data-testid="button-restart-actions">
             <RotateCcw className="mr-2 h-4 w-4" />
-            {t('actions.restart')}
+            {t("actions.restart")}
           </Button>
         </CardContent>
       </Card>
@@ -204,10 +259,10 @@ export function ScenarioActions({ scenario, selectedDevice, resetKey = 0 }: Scen
         <div className="flex items-center justify-between gap-2">
           <div className="flex items-center gap-2">
             <ActionIcon className="h-4 w-4 text-primary" />
-            <span className="text-sm font-medium">{t('actions.title')}</span>
+            <span className="text-sm font-medium">{t("actions.title")}</span>
           </div>
           <span className="text-xs text-muted-foreground">
-            {t('actions.progress', { current: safeIndex + 1, total: tasks.length })}
+            {t("actions.progress", { current: safeIndex + 1, total: tasks.length })}
           </span>
         </div>
         <Progress value={progress} className="mt-2 h-1.5" />
@@ -249,18 +304,25 @@ export function ScenarioActions({ scenario, selectedDevice, resetKey = 0 }: Scen
         <div className="flex flex-col gap-2">
           {status !== "success" && (
             <Button onClick={handleComplete} data-testid="button-complete-action">
-              {t('actions.completeAction')}
+              {t("actions.completeAction")}
             </Button>
           )}
           {status === "success" && (
             <Button onClick={handleNext} data-testid="button-next-action">
-              {isLastTask ? t('actions.viewDebrief') : t('actions.nextAction')}
+              {isLastTask ? t("actions.viewDebrief") : t("actions.nextAction")}
               <ChevronRight className="ml-2 h-4 w-4" />
             </Button>
           )}
           {status === "failure" && (
-            <Button variant="outline" onClick={() => setStatus("idle")} data-testid="button-try-again">
-              {t('actions.tryAgain')}
+            <Button
+              variant="outline"
+              onClick={() => {
+                setStatus("idle");
+                setFeedback(null);
+              }}
+              data-testid="button-try-again"
+            >
+              {t("actions.tryAgain")}
             </Button>
           )}
         </div>

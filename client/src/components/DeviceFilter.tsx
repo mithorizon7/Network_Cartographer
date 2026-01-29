@@ -5,11 +5,7 @@ import type { Device, Network } from "@shared/schema";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Label } from "@/components/ui/label";
 import { Search, Filter, X, AlertTriangle, Wifi } from "lucide-react";
@@ -34,30 +30,31 @@ export function useDeviceFilter(devices: Device[], networks: Network[], filters:
 
     if (filters.searchQuery.trim()) {
       const query = filters.searchQuery.toLowerCase();
-      filtered = filtered.filter(device => 
-        device.label.toLowerCase().includes(query) ||
-        device.ip.toLowerCase().includes(query) ||
-        device.localId.toLowerCase().includes(query) ||
-        device.type.toLowerCase().includes(query) ||
-        device.manufacturer?.toLowerCase().includes(query) ||
-        device.protocols?.some(p => p.toLowerCase().includes(query)) ||
-        device.description?.toLowerCase().includes(query)
+      filtered = filtered.filter(
+        (device) =>
+          device.label.toLowerCase().includes(query) ||
+          device.ip.toLowerCase().includes(query) ||
+          device.localId.toLowerCase().includes(query) ||
+          device.type.toLowerCase().includes(query) ||
+          device.manufacturer?.toLowerCase().includes(query) ||
+          device.protocols?.some((p) => p.toLowerCase().includes(query)) ||
+          device.description?.toLowerCase().includes(query),
       );
     }
 
     if (filters.deviceTypes.length > 0) {
-      filtered = filtered.filter(device => filters.deviceTypes.includes(device.type));
+      filtered = filtered.filter((device) => filters.deviceTypes.includes(device.type));
     }
 
     if (filters.networkZones.length > 0) {
-      filtered = filtered.filter(device => {
-        const network = networks.find(n => n.id === device.networkId);
+      filtered = filtered.filter((device) => {
+        const network = networks.find((n) => n.id === device.networkId);
         return network && filters.networkZones.includes(network.zone);
       });
     }
 
     if (filters.showRisksOnly) {
-      filtered = filtered.filter(device => device.riskFlags.length > 0);
+      filtered = filtered.filter((device) => device.riskFlags.length > 0);
     }
 
     return filtered;
@@ -69,16 +66,16 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
   const [isFilterOpen, setIsFilterOpen] = useState(false);
 
   const availableTypes = useMemo(() => {
-    const types = new Set(devices.map(d => d.type));
+    const types = new Set(devices.map((d) => d.type));
     return Array.from(types).sort();
   }, [devices]);
 
   const availableZones = useMemo(() => {
-    const zones = new Set(networks.map(n => n.zone));
+    const zones = new Set(networks.map((n) => n.zone));
     return Array.from(zones).sort();
   }, [networks]);
 
-  const activeFilterCount = 
+  const activeFilterCount =
     (filters.deviceTypes.length > 0 ? 1 : 0) +
     (filters.networkZones.length > 0 ? 1 : 0) +
     (filters.showRisksOnly ? 1 : 0);
@@ -91,14 +88,14 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
 
   const handleTypeToggle = (type: string) => {
     const newTypes = filters.deviceTypes.includes(type)
-      ? filters.deviceTypes.filter(t => t !== type)
+      ? filters.deviceTypes.filter((t) => t !== type)
       : [...filters.deviceTypes, type];
     onFiltersChange({ ...filters, deviceTypes: newTypes });
   };
 
   const handleZoneToggle = (zone: string) => {
     const newZones = filters.networkZones.includes(zone)
-      ? filters.networkZones.filter(z => z !== zone)
+      ? filters.networkZones.filter((z) => z !== zone)
       : [...filters.networkZones, zone];
     onFiltersChange({ ...filters, networkZones: newZones });
   };
@@ -124,7 +121,7 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
         <Search className="absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
         <Input
           type="text"
-          placeholder={t('filter.searchPlaceholder')}
+          placeholder={t("filter.searchPlaceholder")}
           value={filters.searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="pl-9 pr-8"
@@ -148,14 +145,14 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
 
       <Popover open={isFilterOpen} onOpenChange={setIsFilterOpen}>
         <PopoverTrigger asChild>
-          <Button 
-            variant="outline" 
-            size="sm" 
+          <Button
+            variant="outline"
+            size="sm"
             className="gap-1.5"
             data-testid="button-filter-toggle"
           >
             <Filter className="h-4 w-4" />
-            {t('controls.filter')}
+            {t("controls.filter")}
             {activeFilterCount > 0 && (
               <Badge variant="secondary" className="ml-1 px-1.5 py-0">
                 {activeFilterCount}
@@ -166,24 +163,26 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
         <PopoverContent className="w-72" align="end">
           <div className="space-y-4">
             <div className="flex items-center justify-between">
-              <h4 className="font-medium">{t('filter.filterDevices')}</h4>
+              <h4 className="font-medium">{t("filter.filterDevices")}</h4>
               {hasActiveFilters && (
-                <Button 
-                  variant="ghost" 
-                  size="sm" 
+                <Button
+                  variant="ghost"
+                  size="sm"
                   onClick={clearAllFilters}
                   className="h-auto px-2 py-1 text-xs"
                   data-testid="button-clear-filters"
                 >
-                  {t('filter.clearAll')}
+                  {t("filter.clearAll")}
                 </Button>
               )}
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground">{t('filter.deviceType')}</Label>
+              <Label className="text-xs font-medium text-muted-foreground">
+                {t("filter.deviceType")}
+              </Label>
               <div className="flex flex-wrap gap-1.5">
-                {availableTypes.map(type => (
+                {availableTypes.map((type) => (
                   <Badge
                     key={type}
                     variant={filters.deviceTypes.includes(type) ? "default" : "outline"}
@@ -198,9 +197,11 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
             </div>
 
             <div className="space-y-2">
-              <Label className="text-xs font-medium text-muted-foreground">{t('filter.networkZone')}</Label>
+              <Label className="text-xs font-medium text-muted-foreground">
+                {t("filter.networkZone")}
+              </Label>
               <div className="flex flex-wrap gap-1.5">
-                {availableZones.map(zone => (
+                {availableZones.map((zone) => (
                   <Badge
                     key={zone}
                     variant={filters.networkZones.includes(zone) ? "default" : "outline"}
@@ -222,12 +223,12 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
                 onCheckedChange={handleRisksToggle}
                 data-testid="filter-risks-only"
               />
-              <Label 
-                htmlFor="risks-only" 
+              <Label
+                htmlFor="risks-only"
                 className="flex cursor-pointer items-center gap-1.5 text-sm"
               >
                 <AlertTriangle className="h-4 w-4 text-destructive" />
-                {t('filter.showRisksOnly')}
+                {t("filter.showRisksOnly")}
               </Label>
             </div>
           </div>
@@ -243,7 +244,7 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
             className="text-xs text-muted-foreground"
             data-testid="filter-results-count"
           >
-            {t('filter.resultsCount', { filtered: filteredCount, total: devices.length })}
+            {t("filter.resultsCount", { filtered: filteredCount, total: devices.length })}
           </motion.div>
         )}
       </AnimatePresence>

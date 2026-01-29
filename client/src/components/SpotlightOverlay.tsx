@@ -51,22 +51,26 @@ export function SpotlightOverlay({
   isGatingSatisfied = true,
 }: SpotlightOverlayProps) {
   const [position, setPosition] = useState<SpotlightPosition | null>(null);
-  const [tooltipPosition, setTooltipPosition] = useState<{ top: number; left: number; placement: 'top' | 'bottom' | 'left' | 'right' }>({ top: 0, left: 0, placement: 'bottom' });
+  const [tooltipPosition, setTooltipPosition] = useState<{
+    top: number;
+    left: number;
+    placement: "top" | "bottom" | "left" | "right";
+  }>({ top: 0, left: 0, placement: "bottom" });
   const tooltipRef = useRef<HTMLDivElement>(null);
   const prefersReducedMotion = useRef(
-    typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
 
   useEffect(() => {
     const updatePosition = () => {
       let element: HTMLElement | null = null;
-      
+
       if (targetRef?.current) {
         element = targetRef.current;
       } else if (targetSelector) {
         element = document.querySelector(targetSelector);
       }
-      
+
       if (element && !isModal) {
         const rect = element.getBoundingClientRect();
         const padding = 8;
@@ -82,17 +86,17 @@ export function SpotlightOverlay({
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
 
-        let placement: 'top' | 'bottom' | 'left' | 'right' = 'bottom';
+        let placement: "top" | "bottom" | "left" | "right" = "bottom";
         let top = rect.bottom + padding + 16;
         let left = rect.left + rect.width / 2 - tooltipWidth / 2;
 
         if (top + tooltipHeight > viewportHeight - 20) {
-          placement = 'top';
+          placement = "top";
           top = rect.top - padding - tooltipHeight - 16;
         }
 
         if (top < 20) {
-          placement = 'right';
+          placement = "right";
           top = rect.top + rect.height / 2 - tooltipHeight / 2;
           left = rect.right + padding + 16;
         }
@@ -110,21 +114,21 @@ export function SpotlightOverlay({
         setTooltipPosition({
           top: window.innerHeight / 2 - 150,
           left: window.innerWidth / 2 - 180,
-          placement: 'bottom',
+          placement: "bottom",
         });
       }
     };
 
     updatePosition();
-    window.addEventListener('resize', updatePosition);
-    window.addEventListener('scroll', updatePosition, true);
+    window.addEventListener("resize", updatePosition);
+    window.addEventListener("scroll", updatePosition, true);
 
     const observer = new MutationObserver(updatePosition);
     observer.observe(document.body, { childList: true, subtree: true, attributes: true });
 
     return () => {
-      window.removeEventListener('resize', updatePosition);
-      window.removeEventListener('scroll', updatePosition, true);
+      window.removeEventListener("resize", updatePosition);
+      window.removeEventListener("scroll", updatePosition, true);
       observer.disconnect();
     };
   }, [targetSelector, targetRef, isModal]);
@@ -140,16 +144,14 @@ export function SpotlightOverlay({
 
   const overlayContent = (
     <AnimatePresence>
-      <div 
-        className="pointer-events-none fixed inset-0 z-[9999]" 
-        aria-modal="true" 
+      <div
+        className="pointer-events-none fixed inset-0 z-[9999]"
+        aria-modal="true"
         role="dialog"
         aria-labelledby="spotlight-title"
         aria-describedby="spotlight-content"
       >
-        <svg 
-          className="pointer-events-none absolute inset-0 h-full w-full"
-        >
+        <svg className="pointer-events-none absolute inset-0 h-full w-full">
           <defs>
             <mask id="spotlight-mask">
               <rect x="0" y="0" width="100%" height="100%" fill="white" />
@@ -215,24 +217,16 @@ export function SpotlightOverlay({
             )}
           </div>
 
-          <h3 
-            id="spotlight-title" 
-            className="mb-2 text-lg font-semibold leading-tight"
-          >
+          <h3 id="spotlight-title" className="mb-2 text-lg font-semibold leading-tight">
             {title}
           </h3>
-          
-          <p 
-            id="spotlight-content" 
-            className="mb-4 text-sm leading-relaxed text-muted-foreground"
-          >
+
+          <p id="spotlight-content" className="mb-4 text-sm leading-relaxed text-muted-foreground">
             {content}
           </p>
 
           {gatingAction && !isGatingSatisfied && (
-            <p className="mb-4 text-xs font-medium text-primary">
-              {gatingAction}
-            </p>
+            <p className="mb-4 text-xs font-medium text-primary">{gatingAction}</p>
           )}
 
           <div className="flex items-center justify-between gap-2">
@@ -249,7 +243,7 @@ export function SpotlightOverlay({
             ) : (
               <div />
             )}
-            
+
             <Button
               size="sm"
               onClick={onNext}

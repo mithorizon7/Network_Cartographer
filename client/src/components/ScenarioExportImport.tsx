@@ -1,9 +1,9 @@
 import { useState, useRef, useCallback, useEffect } from "react";
+import { useTranslation } from "react-i18next";
+import type { TFunction } from "i18next";
 import { scenarioSchema, type Scenario } from "@shared/schema";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
@@ -15,51 +15,54 @@ import {
   DialogTrigger,
   DialogFooter,
 } from "@/components/ui/dialog";
-import {
-  Tabs,
-  TabsContent,
-  TabsList,
-  TabsTrigger,
-} from "@/components/ui/tabs";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { useToast } from "@/hooks/use-toast";
 import { Download, Upload, FileJson, Check, AlertCircle, Copy, FileUp } from "lucide-react";
+import { scenarioIdToKey } from "@/lib/scenarioUtils";
 
 interface ScenarioExportImportProps {
   scenario: Scenario | null;
   onImport: (scenario: Scenario) => void;
 }
 
-function validateScenario(data: unknown): { valid: boolean; error?: string; scenario?: Scenario } {
+function validateScenario(
+  data: unknown,
+  t: TFunction,
+): { valid: boolean; error?: string; scenario?: Scenario } {
   const result = scenarioSchema.safeParse(data);
-  
+
   if (!result.success) {
     const firstError = result.error.errors[0];
-    const path = firstError.path.length > 0 ? firstError.path.join('.') : 'root';
-    return { 
-      valid: false, 
-      error: `Validation error at '${path}': ${firstError.message}` 
+    const path =
+      firstError.path.length > 0
+        ? firstError.path.join(".")
+        : t("scenarioExportImport.validationRoot");
+    return {
+      valid: false,
+      error: t("scenarioExportImport.validationError", { path }),
     };
   }
 
   const scenario = result.data;
 
   if (scenario.devices.length === 0) {
-    return { valid: false, error: "Scenario must have at least one device" };
+    return { valid: false, error: t("scenarioExportImport.requiresDevice") };
   }
 
   if (scenario.networks.length === 0) {
-    return { valid: false, error: "Scenario must have at least one network" };
+    return { valid: false, error: t("scenarioExportImport.requiresNetwork") };
   }
 
-  const hasRouter = scenario.devices.some(d => d.type === "router");
+  const hasRouter = scenario.devices.some((d) => d.type === "router");
   if (!hasRouter) {
-    return { valid: false, error: "Scenario must have a router device" };
+    return { valid: false, error: t("scenarioExportImport.requiresRouter") };
   }
 
   return { valid: true, scenario };
 }
 
 export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImportProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const [importText, setImportText] = useState("");
   const [importError, setImportError] = useState<string | null>(null);
@@ -70,23 +73,30 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
   const { toast } = useToast();
 
   useEffect(() => {
+    const timeouts = timeoutRefs.current;
     return () => {
-      timeoutRefs.current.forEach(clearTimeout);
-      timeoutRefs.current.clear();
+      timeouts.forEach(clearTimeout);
+      timeouts.clear();
     };
   }, []);
 
   const exportJson = scenario ? JSON.stringify(scenario, null, 2) : "";
+  const scenarioKey = scenario ? scenarioIdToKey[scenario.id] : null;
+  const scenarioTitle = scenario
+    ? scenarioKey
+      ? t(`scenarioContent.${scenarioKey}.title`, { defaultValue: scenario.title })
+      : scenario.title
+    : "";
 
   const handleCopy = useCallback(async () => {
     if (!exportJson) return;
-    
+
     try {
       await navigator.clipboard.writeText(exportJson);
       setCopied(true);
       toast({
-        title: "Copied to clipboard",
-        description: "Scenario JSON has been copied to your clipboard.",
+        title: t("scenarioExportImport.copyToastTitle"),
+        description: t("scenarioExportImport.copyToastDescription"),
       });
       const timeout = setTimeout(() => {
         setCopied(false);
@@ -95,12 +105,12 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
       timeoutRefs.current.add(timeout);
     } catch {
       toast({
-        title: "Copy failed",
-        description: "Could not copy to clipboard. Please select and copy manually.",
+        title: t("scenarioExportImport.copyFailedTitle"),
+        description: t("scenarioExportImport.copyFailedDescription"),
         variant: "destructive",
       });
     }
-  }, [exportJson, toast]);
+  }, [exportJson, toast, t]);
 
   const handleDownload = useCallback(() => {
     if (!scenario) return;
@@ -116,35 +126,39 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
     URL.revokeObjectURL(url);
 
     toast({
-      title: "Scenario exported",
-      description: `${scenario.title} has been downloaded as JSON.`,
+      title: t("scenarioExportImport.exportToastTitle"),
+      description: t("scenarioExportImport.exportToastDescription", { title: scenarioTitle }),
     });
-  }, [scenario, exportJson, toast]);
+  }, [scenario, exportJson, toast, t, scenarioTitle]);
 
   const handleImportText = useCallback(() => {
     setImportError(null);
     setImportSuccess(false);
 
     if (!importText.trim()) {
-      setImportError("Please paste scenario JSON");
+      setImportError(t("scenarioExportImport.pasteJsonError"));
       return;
     }
 
     try {
       const parsed = JSON.parse(importText);
-      const validation = validateScenario(parsed);
+      const validation = validateScenario(parsed, t);
 
       if (!validation.valid) {
-        setImportError(validation.error || "Invalid scenario format");
+        setImportError(validation.error || t("scenarioExportImport.invalidFormatError"));
         return;
       }
 
       if (validation.scenario) {
+        const importedKey = scenarioIdToKey[validation.scenario.id];
+        const importedTitle = importedKey
+          ? t(`scenarioContent.${importedKey}.title`, { defaultValue: validation.scenario.title })
+          : validation.scenario.title;
         onImport(validation.scenario);
         setImportSuccess(true);
         toast({
-          title: "Scenario imported",
-          description: `${validation.scenario.title} has been loaded.`,
+          title: t("scenarioExportImport.importToastTitle"),
+          description: t("scenarioExportImport.importToastDescription", { title: importedTitle }),
         });
         const timeout = setTimeout(() => {
           setIsOpen(false);
@@ -155,90 +169,99 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
         timeoutRefs.current.add(timeout);
       }
     } catch {
-      setImportError("Invalid JSON format. Please check your input.");
+      setImportError(t("scenarioExportImport.invalidJsonError"));
     }
-  }, [importText, onImport, toast]);
+  }, [importText, onImport, toast, t]);
 
-  const handleFileUpload = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
+  const handleFileUpload = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const file = e.target.files?.[0];
+      if (!file) return;
 
-    setImportError(null);
-    setImportSuccess(false);
+      setImportError(null);
+      setImportSuccess(false);
 
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const content = event.target?.result as string;
-      if (!content) {
-        setImportError("Could not read file");
-        return;
-      }
-
-      try {
-        const parsed = JSON.parse(content);
-        const validation = validateScenario(parsed);
-
-        if (!validation.valid) {
-          setImportError(validation.error || "Invalid scenario format");
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const content = event.target?.result as string;
+        if (!content) {
+          setImportError(t("scenarioExportImport.readFileError"));
           return;
         }
 
-        if (validation.scenario) {
-          onImport(validation.scenario);
-          setImportSuccess(true);
-          toast({
-            title: "Scenario imported",
-            description: `${validation.scenario.title} has been loaded from file.`,
-          });
-          const timeout = setTimeout(() => {
-            setIsOpen(false);
-            setImportText("");
-            setImportSuccess(false);
-            timeoutRefs.current.delete(timeout);
-          }, 1500);
-          timeoutRefs.current.add(timeout);
+        try {
+          const parsed = JSON.parse(content);
+          const validation = validateScenario(parsed, t);
+
+          if (!validation.valid) {
+            setImportError(validation.error || t("scenarioExportImport.invalidFormatError"));
+            return;
+          }
+
+          if (validation.scenario) {
+            const importedKey = scenarioIdToKey[validation.scenario.id];
+            const importedTitle = importedKey
+              ? t(`scenarioContent.${importedKey}.title`, {
+                  defaultValue: validation.scenario.title,
+                })
+              : validation.scenario.title;
+            onImport(validation.scenario);
+            setImportSuccess(true);
+            toast({
+              title: t("scenarioExportImport.importToastTitle"),
+              description: t("scenarioExportImport.importToastDescriptionFile", {
+                title: importedTitle,
+              }),
+            });
+            const timeout = setTimeout(() => {
+              setIsOpen(false);
+              setImportText("");
+              setImportSuccess(false);
+              timeoutRefs.current.delete(timeout);
+            }, 1500);
+            timeoutRefs.current.add(timeout);
+          }
+        } catch {
+          setImportError(t("scenarioExportImport.invalidJsonFileError"));
         }
-      } catch {
-        setImportError("Invalid JSON file. Please check the file format.");
+      };
+
+      reader.onerror = () => {
+        setImportError(t("scenarioExportImport.failedReadFileError"));
+      };
+
+      reader.readAsText(file);
+
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
       }
-    };
-
-    reader.onerror = () => {
-      setImportError("Failed to read file");
-    };
-
-    reader.readAsText(file);
-    
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
-  }, [onImport, toast]);
+    },
+    [onImport, toast, t],
+  );
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
       <DialogTrigger asChild>
         <Button variant="outline" size="sm" data-testid="button-export-import">
           <FileJson className="mr-1.5 h-4 w-4" />
-          Export / Import
+          {t("scenarioExportImport.trigger")}
         </Button>
       </DialogTrigger>
       <DialogContent className="max-w-2xl">
         <DialogHeader>
-          <DialogTitle>Scenario Export / Import</DialogTitle>
-          <DialogDescription>
-            Export scenarios to share with others or import custom network configurations
-          </DialogDescription>
+          <DialogTitle>{t("scenarioExportImport.title")}</DialogTitle>
+          <DialogDescription>{t("scenarioExportImport.description")}</DialogDescription>
         </DialogHeader>
 
         <Tabs defaultValue="export" className="mt-4">
           <TabsList className="grid w-full grid-cols-2">
             <TabsTrigger value="export" data-testid="tab-export">
               <Download className="mr-1.5 h-4 w-4" />
-              Export
+              {t("scenarioExportImport.exportTab")}
             </TabsTrigger>
             <TabsTrigger value="import" data-testid="tab-import">
               <Upload className="mr-1.5 h-4 w-4" />
-              Import
+              {t("scenarioExportImport.importTab")}
             </TabsTrigger>
           </TabsList>
 
@@ -248,10 +271,11 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
                 <div className="flex items-center gap-2">
                   <Badge variant="outline">
                     <FileJson className="mr-1 h-3 w-3" />
-                    {scenario.title}
+                    {scenarioTitle}
                   </Badge>
                   <span className="text-sm text-muted-foreground">
-                    {scenario.devices.length} devices, {scenario.networks.length} networks
+                    {t("scenarioExportImport.deviceCount", { count: scenario.devices.length })},{" "}
+                    {t("scenarioExportImport.networkCount", { count: scenario.networks.length })}
                   </span>
                 </div>
 
@@ -269,18 +293,18 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
                     {copied ? (
                       <>
                         <Check className="mr-1.5 h-4 w-4" />
-                        Copied
+                        {t("scenarioExportImport.copied")}
                       </>
                     ) : (
                       <>
                         <Copy className="mr-1.5 h-4 w-4" />
-                        Copy JSON
+                        {t("scenarioExportImport.copyJson")}
                       </>
                     )}
                   </Button>
                   <Button onClick={handleDownload} data-testid="button-download-json">
                     <Download className="mr-1.5 h-4 w-4" />
-                    Download File
+                    {t("scenarioExportImport.downloadFile")}
                   </Button>
                 </div>
               </>
@@ -288,7 +312,7 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
               <div className="flex h-40 items-center justify-center text-muted-foreground">
                 <div className="text-center">
                   <FileJson className="mx-auto mb-2 h-12 w-12 opacity-30" />
-                  <p>Select a scenario to export</p>
+                  <p>{t("common.selectScenarioToExport")}</p>
                 </div>
               </div>
             )}
@@ -311,16 +335,18 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
                   data-testid="button-upload-file"
                 >
                   <FileUp className="mr-1.5 h-4 w-4" />
-                  Upload JSON File
+                  {t("scenarioExportImport.uploadJsonFile")}
                 </Button>
-                <span className="text-sm text-muted-foreground">or paste JSON below</span>
+                <span className="text-sm text-muted-foreground">
+                  {t("scenarioExportImport.orPaste")}
+                </span>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="import-json">Scenario JSON</Label>
+                <Label htmlFor="import-json">{t("scenarioExportImport.scenarioJsonLabel")}</Label>
                 <Textarea
                   id="import-json"
-                  placeholder='{"id": "custom", "title": "My Network", ...}'
+                  placeholder={t("scenarioExportImport.placeholder")}
                   value={importText}
                   onChange={(e) => {
                     setImportText(e.target.value);
@@ -333,16 +359,22 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
               </div>
 
               {importError && (
-                <div className="flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive" data-testid="import-error">
+                <div
+                  className="flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive"
+                  data-testid="import-error"
+                >
                   <AlertCircle className="h-4 w-4 flex-shrink-0" />
                   {importError}
                 </div>
               )}
 
               {importSuccess && (
-                <div className="flex items-center gap-2 rounded-md border border-green-500/50 bg-green-500/10 px-3 py-2 text-sm text-green-600 dark:text-green-400" data-testid="import-success">
+                <div
+                  className="flex items-center gap-2 rounded-md border border-green-500/50 bg-green-500/10 px-3 py-2 text-sm text-green-600 dark:text-green-400"
+                  data-testid="import-success"
+                >
                   <Check className="h-4 w-4 flex-shrink-0" />
-                  Scenario imported successfully
+                  {t("scenarioExportImport.importSuccess")}
                 </div>
               )}
             </div>
@@ -354,7 +386,7 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
                 data-testid="button-import-json"
               >
                 <Upload className="mr-1.5 h-4 w-4" />
-                Import Scenario
+                {t("scenarioExportImport.importButton")}
               </Button>
             </DialogFooter>
           </TabsContent>

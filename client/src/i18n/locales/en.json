@@ -21,7 +21,105 @@
     "save": "Save",
     "cancel": "Cancel",
     "confirm": "Confirm",
-    "dismiss": "Dismiss"
+    "dismiss": "Dismiss",
+    "internet": "Internet",
+    "noData": "—",
+    "hasSecurityConcerns": "has security concerns",
+    "failedToLoadScenario": "Failed to load scenario",
+    "tryRefresh": "Please try refreshing the page",
+    "loadingNetwork": "Loading network visualization...",
+    "selectScenarioToBegin": "Select a scenario to begin exploring",
+    "tracePacketJourney": "Trace Packet Journey",
+    "tracePacketJourneyDescription": "Trace how data travels from this device through the network",
+    "selectScenarioToExport": "Select a scenario to export"
+  },
+  "errorBoundary": {
+    "title": "Something went wrong",
+    "description": "An unexpected error occurred. Please try again.",
+    "tryAgain": "Try Again",
+    "reload": "Reload Page"
+  },
+  "notFound": {
+    "title": "404 Page Not Found",
+    "description": "Did you forget to add the page to the router?"
+  },
+  "theme": {
+    "switchToLight": "Switch to light mode",
+    "switchToDark": "Switch to dark mode"
+  },
+  "languages": {
+    "en": "English",
+    "lv": "Latvian",
+    "ru": "Russian"
+  },
+  "pagination": {
+    "ariaLabel": "Pagination",
+    "previous": "Previous",
+    "next": "Next",
+    "goToPrevious": "Go to previous page",
+    "goToNext": "Go to next page",
+    "morePages": "More pages"
+  },
+  "breadcrumb": {
+    "ariaLabel": "Breadcrumb",
+    "more": "More"
+  },
+  "sidebar": {
+    "title": "Sidebar",
+    "description": "Displays the mobile sidebar.",
+    "toggle": "Toggle Sidebar"
+  },
+  "carousel": {
+    "carousel": "carousel",
+    "slide": "slide",
+    "previousSlide": "Previous slide",
+    "nextSlide": "Next slide"
+  },
+  "scenarioExportImport": {
+    "trigger": "Export / Import",
+    "title": "Scenario Export / Import",
+    "description": "Export scenarios to share with others or import custom network configurations.",
+    "exportTab": "Export",
+    "importTab": "Import",
+    "deviceCount": "{{count}} devices",
+    "deviceCount_one": "{{count}} device",
+    "deviceCount_few": "{{count}} devices",
+    "deviceCount_many": "{{count}} devices",
+    "deviceCount_other": "{{count}} devices",
+    "networkCount": "{{count}} networks",
+    "networkCount_one": "{{count}} network",
+    "networkCount_few": "{{count}} networks",
+    "networkCount_many": "{{count}} networks",
+    "networkCount_other": "{{count}} networks",
+    "copied": "Copied",
+    "copyJson": "Copy JSON",
+    "downloadFile": "Download File",
+    "uploadJsonFile": "Upload JSON File",
+    "orPaste": "or paste JSON below",
+    "scenarioJsonLabel": "Scenario JSON",
+    "placeholder": "{\"id\": \"custom\", \"title\": \"My Network\", ...}",
+    "importSuccess": "Scenario imported successfully",
+    "importButton": "Import Scenario",
+    "copyToastTitle": "Copied to clipboard",
+    "copyToastDescription": "Scenario JSON has been copied to your clipboard.",
+    "copyFailedTitle": "Copy failed",
+    "copyFailedDescription": "Could not copy to clipboard. Please select and copy manually.",
+    "exportToastTitle": "Scenario exported",
+    "exportToastDescription": "{{title}} has been downloaded as JSON.",
+    "importToastTitle": "Scenario imported",
+    "importToastDescription": "{{title}} has been loaded.",
+    "importToastDescriptionFile": "{{title}} has been loaded from file.",
+    "pasteJsonError": "Please paste scenario JSON",
+    "invalidFormatError": "Invalid scenario format",
+    "invalidJsonError": "Invalid JSON format. Please check your input.",
+    "invalidJsonFileError": "Invalid JSON file. Please check the file format.",
+    "readFileError": "Could not read file",
+    "failedReadFileError": "Failed to read file",
+    "validationError": "Validation error at \"{{path}}\".",
+    "validationRoot": "root",
+    "requiresDevice": "Scenario must have at least one device",
+    "requiresNetwork": "Scenario must have at least one network",
+    "requiresRouter": "Scenario must have a router device"
   },
   "network": {
     "network": "Network",
@@ -41,6 +139,11 @@
     "port": "Port",
     "request": "Request",
     "response": "Response"
+  },
+  "environmentTypes": {
+    "home": "Home",
+    "business": "Business",
+    "public": "Public Wi-Fi"
   },
   "layers": {
     "title": "Layer Goggles",
@@ -97,9 +200,15 @@
     "familyHome": "Family Home with IoT Sprawl",
     "smallBusiness": "Small Business Office",
     "hotelPublic": "Hotel / Public Wi-Fi",
+    "deviceCount": "{{count}} devices",
     "deviceCount_one": "{{count}} device",
+    "deviceCount_few": "{{count}} devices",
+    "deviceCount_many": "{{count}} devices",
     "deviceCount_other": "{{count}} devices",
+    "networkCount": "{{count}} networks",
     "networkCount_one": "{{count}} network",
+    "networkCount_few": "{{count}} networks",
+    "networkCount_many": "{{count}} networks",
     "networkCount_other": "{{count}} networks"
   },
   "devicePanel": {
@@ -133,39 +242,26 @@
       "learn": "Learn"
     },
     "learnContent": {
-      "router": "The router is the central hub of any network. All devices connect through it, and it manages the boundary between your private network and the public internet.",
-      "unknown": "Unknown devices should always be investigated. This could be a forgotten gadget, a neighbor using your Wi-Fi, or potentially something malicious.",
-      "defaultPassword": "Devices with default passwords are low-hanging fruit for attackers. Always change default credentials immediately after setup.",
-      "iotDevice": "IoT devices often have limited security features. Isolating them on a separate network prevents a compromised device from accessing your personal data.",
-      "forgottenDevice": "Forgotten devices are security risks - they may have outdated software, weak passwords, or be targets for attacks while you're not monitoring them.",
-      "safeDevice": "This device appears to be properly configured. Regular devices on your main network should be kept updated and monitored for unusual activity."
+      "router": "The router is the gateway between your local network and the internet. It assigns addresses, routes traffic, and enforces the boundary.",
+      "unknown": "Unknown devices should be verified. Compare the MAC/IP to your device list and remove anything you don’t recognize.",
+      "defaultPassword": "Default credentials are widely known and often published. Change them during setup.",
+      "iotDevice": "IoT devices often ship with limited security controls and infrequent updates. Isolate them to limit lateral movement.",
+      "forgottenDevice": "Unused devices accumulate risk: outdated firmware, weak passwords, and no monitoring.",
+      "safeDevice": "This device appears healthy. Keep it updated and review its connections periodically."
     }
   },
-  "packetJourney": {
-    "title": "Packet Journey",
-    "description": "Watch how data travels from this device to the internet",
-    "startJourney": "Start Journey",
-    "pause": "Pause",
-    "replay": "Replay",
-    "deviceToRouter": "Device sends packet to router",
-    "routerProcessing": "Router processes and applies NAT",
-    "routerToInternet": "Router forwards to internet",
-    "internetResponse": "Response returns from internet",
-    "routerBack": "Router delivers to device",
-    "complete": "Journey complete"
-  },
   "unknownDeviceModal": {
-    "title": "What Would You Do?",
-    "subtitle": "You've discovered an unknown device on your network",
+    "title": "Choose a response",
+    "subtitle": "An unknown device is on your network",
     "investigate": "Investigate",
     "investigateDesc": "Check router logs and identify the device",
     "block": "Block",
     "blockDesc": "Remove the device from the network",
     "ignore": "Ignore",
     "ignoreDesc": "Leave it alone for now",
-    "investigateFeedback": "Good choice! Investigating helps you understand if this device belongs on your network before taking action.",
-    "blockFeedback": "This is a safe choice, but you might accidentally block a legitimate device. Consider investigating first.",
-    "ignoreFeedback": "Risky! Unknown devices could be security threats. Always investigate unfamiliar devices on your network."
+    "investigateFeedback": "Investigating confirms whether the device belongs on the network before you act.",
+    "blockFeedback": "Blocking removes the device, but you may disconnect a legitimate one. Verify identity when possible.",
+    "ignoreFeedback": "Ignoring an unknown device leaves a potential intrusion unaddressed."
   },
   "quiz": {
     "title": "Test Your Knowledge",
@@ -187,8 +283,13 @@
     "macAddressFull": "MAC (full)",
     "macAddressShort": "MAC (last 3 bytes)",
     "status": "Status",
+    "filtersHideTarget": "Filters are hiding the device needed for the current action.",
+    "clearFilters": "Clear filters",
     "ok": "OK",
+    "issue": "{{count}} issues",
     "issue_one": "{{count}} issue",
+    "issue_few": "{{count}} issues",
+    "issue_many": "{{count}} issues",
     "issue_other": "{{count}} issues",
     "noDevices": "No devices found"
   },
@@ -200,7 +301,7 @@
     "networkVisualization": "Network visualization showing devices connected to router"
   },
   "info": {
-    "about": "This sandbox helps you understand what a network really is: a router connected to many devices, each with their own identities and addresses.",
+    "about": "This sandbox models a local network: a router, several devices, and the identifiers and addresses used at each layer.",
     "keyboardShortcuts": "Keyboard Shortcuts",
     "switchLayers": "Switch layer views",
     "deselectDevice": "Deselect device",
@@ -214,6 +315,10 @@
     "import": "Import",
     "export": "Export",
     "filter": "Filter",
+    "focusMode": "Focus mode",
+    "focusModeOn": "Focus mode on",
+    "focusModeDescription": "Hide advanced tools to focus on tasks",
+    "focusModeLocked": "Disable Focus Mode to use this",
     "showAll": "Show All",
     "showMain": "Main Only",
     "showGuest": "Guest Only",
@@ -263,48 +368,69 @@
   "scenarioContent": {
     "familyIoT": {
       "title": "Family Home with IoT Sprawl",
-      "description": "A typical suburban home with multiple family members and various smart devices. Notice how IoT devices are isolated on their own network for security.",
+      "description": "A home network with family devices and a growing set of IoT devices. IoT traffic is isolated on its own network for security.",
       "events": {
-        "unknownDeviceReveal": "An unfamiliar device appears on your IoT network. You don't remember adding this..."
+        "unknownDeviceReveal": "An unfamiliar device has appeared on the IoT network. It is not on your device list."
       }
     },
     "smallBusiness": {
       "title": "Small Business Office",
-      "description": "A small business with employees, a server, and customer-facing Wi-Fi. Notice the separation between staff and customer networks.",
+      "description": "A small office network with staff devices, a file server, and customer Wi-Fi. Staff and guest traffic are separated.",
       "events": {
-        "unknownDeviceAlert": "IT Alert: An unregistered device has connected to the corporate network!"
+        "unknownDeviceAlert": "IT Alert: An unregistered device has connected to the corporate network."
       }
     },
     "hotelPublic": {
       "title": "Hotel / Public Wi-Fi",
-      "description": "A hotel lobby with public Wi-Fi. Notice: All guests share the same network, and you can't trust who else is connected.",
+      "description": "A hotel public Wi-Fi network where many guests share the same LAN. Treat other connected devices as untrusted.",
       "events": {
-        "evilTwinWarning": "Warning: This might be an 'evil twin' attack! Attackers create fake networks with similar names to intercept your data."
+        "evilTwinWarning": "Warning: Possible evil‑twin access point detected. Attackers create look‑alike SSIDs to intercept traffic."
       }
+    }
+  },
+  "scenarioBrief": {
+    "title": "Scenario brief",
+    "watchForLabel": "What to watch for",
+    "familyIoT": {
+      "body": "Your home network includes IoT devices and guests. Identify weak devices and keep them isolated from personal systems.",
+      "watchFor": "Default passwords on IoT devices and any unknown device on the network."
+    },
+    "smallBusiness": {
+      "body": "Protect internal systems while keeping customers online. Confirm network separation and remove weak points.",
+      "watchFor": "Guest isolation, default passwords, and unencrypted traffic."
+    },
+    "hotelPublic": {
+      "body": "Public Wi‑Fi is high‑risk. Verify the real access point and avoid unencrypted traffic.",
+      "watchFor": "NAT boundaries, fake access points, and unencrypted traffic."
     }
   },
   "unknownDevice": {
     "title": "Unknown Device Detected",
-    "description": "You've discovered an unidentified device on your network. This could be a forgotten gadget, a guest's device, or something suspicious.",
+    "description": "An unidentified device is present on your network. Verify it before allowing continued access.",
     "macFull": "MAC (full)",
     "macShort": "MAC (last 3 bytes)",
-    "whatWouldYouDo": "What would you do?",
+    "inlineTitle": "Unknown device detected",
+    "inlineBody": "Investigate now, or continue the current task and return later.",
+    "dismissForScenario": "Don't show again in this scenario",
+    "viewDetails": "View details",
+    "whatWouldYouDo": "Select a response",
     "gotIt": "Got it",
     "investigate": {
       "label": "Investigate further",
-      "feedback": "Good choice! Before taking action, it's wise to gather more information. Check your router's admin page to see when this device connected and look for patterns in its behavior."
+      "feedback": "Investigate first to confirm ownership. Check the router’s device list, connection time, and vendor ID before taking action."
     },
     "block": {
       "label": "Block it immediately",
-      "feedback": "Blocking unknown devices can be appropriate, but doing so without investigation might disconnect a legitimate device you forgot about (like a smart plug or guest's phone). Consider investigating first."
+      "feedback": "Blocking may be appropriate, but you can disconnect a legitimate device. Verify the device identity first when possible."
     },
     "ignore": {
       "label": "Ignore it",
-      "feedback": "Ignoring unknown devices is risky. It could be a neighbor stealing your Wi-Fi, an attacker, or forgotten smart device with security vulnerabilities. Always investigate unfamiliar devices."
+      "feedback": "Ignoring unknown devices leaves risk unaddressed. Treat any unidentified device as a potential intrusion until verified."
     }
   },
   "packetJourney": {
     "title": "Packet Journey",
+    "description": "Trace how a packet moves from a device through the router to the internet and back.",
     "close": "Close",
     "pause": "Pause",
     "replay": "Replay",
@@ -321,46 +447,46 @@
     "ispGateway": "ISP Gateway",
     "steps": {
       "idle": {
-        "link": "Ready to trace packet journey using MAC addresses",
-        "network": "Ready to trace packet journey using IP addresses",
-        "transport": "Ready to trace packet journey through ports",
-        "application": "Ready to trace packet journey at application level"
+        "link": "Ready to trace using MAC addresses",
+        "network": "Ready to trace using IP addresses",
+        "transport": "Ready to trace through ports",
+        "application": "Ready to trace at the application layer"
       },
       "deviceToRouter": {
-        "link": "Packet leaves device with source MAC to Router MAC as destination",
-        "network": "Packet carries source IP (device) to destination IP (internet server)",
-        "transport": "Data sent from random high port to destination port (e.g., 443 for HTTPS)",
-        "application": "Application sends HTTP/HTTPS request through socket"
+        "link": "Frame sent from device MAC to router MAC",
+        "network": "Packet carries device source IP to server destination IP",
+        "transport": "Client sends from an ephemeral port to the server port (e.g., 443)",
+        "application": "Application issues an HTTP/HTTPS request"
       },
       "routerProcessing": {
-        "link": "Router receives frame, strips MAC header, reads IP destination",
-        "network": "Router performs NAT: replaces private IP with public IP for internet",
-        "transport": "Router tracks connection state for return traffic mapping",
-        "application": "Router may inspect application headers (firewall/filtering)"
+        "link": "Router receives frame, strips link header, reads IP destination",
+        "network": "NAT rewrites the private source IP to the router’s public IP",
+        "transport": "Router tracks the connection for return traffic mapping",
+        "application": "Firewall rules may inspect application headers"
       },
       "routerToInternet": {
-        "link": "New frame created with Router WAN MAC to ISP Gateway MAC",
-        "network": "Packet now has public IP as source, routes through internet",
-        "transport": "Port mapping stored so response can find original device",
-        "application": "Request reaches destination server (website, API, etc.)"
+        "link": "Frame sent from router WAN MAC to ISP gateway MAC",
+        "network": "Packet routes across the internet with the router’s public IP",
+        "transport": "Port mapping is stored for the return path",
+        "application": "Request reaches the destination server"
       },
       "internetResponse": {
-        "link": "Response arrives at router's WAN interface from ISP",
-        "network": "Response addressed to router's public IP, port identifies flow",
-        "transport": "Server responds on established connection (same port pair)",
-        "application": "Server sends response data (HTML, JSON, file, etc.)"
+        "link": "Response arrives at the router’s WAN interface from the ISP",
+        "network": "Response targets the router’s public IP; the port identifies the flow",
+        "transport": "Server responds on the established port pair",
+        "application": "Server sends response data (HTML, JSON, file)"
       },
       "routerBack": {
-        "link": "Router rewrites destination MAC to original device's MAC",
-        "network": "NAT reversal: replaces public IP with device's private IP",
-        "transport": "Original source port used to deliver to correct application",
-        "application": "Response delivered to waiting application on device"
+        "link": "Router rewrites destination MAC to the device MAC",
+        "network": "NAT reverses the mapping back to the device’s private IP",
+        "transport": "Original source port delivers to the correct application",
+        "application": "Application receives the response"
       },
       "complete": {
-        "link": "Journey complete - device received response via MAC addressing",
-        "network": "Journey complete - private IP successfully communicated with internet",
-        "transport": "Journey complete - full request/response cycle through ports",
-        "application": "Journey complete - application received server response"
+        "link": "Journey complete. The device received the response via link‑layer delivery.",
+        "network": "Journey complete. The private IP communicated through the router’s public IP.",
+        "transport": "Journey complete. The full request/response cycle completed through ports.",
+        "application": "Journey complete. The application received the server response."
       }
     }
   },
@@ -376,6 +502,14 @@
     "chat": "Chat",
     "remote": "Remote",
     "file": "File"
+  },
+  "services": {
+    "ssh": "SSH",
+    "http": "HTTP",
+    "https": "HTTPS",
+    "smb": "SMB",
+    "rtsp": "RTSP",
+    "print": "Print"
   },
   "zones": {
     "main": "Main Network",
@@ -405,119 +539,172 @@
     "encryptedFlow": "Encrypted flow",
     "unencryptedFlow": "Unencrypted flow",
     "destination": "Destination",
-    "streaming": "Streaming"
-  },
-  "common": {
-    "internet": "Internet",
-    "reset": "Reset",
-    "noData": "—",
-    "hasSecurityConcerns": "has security concerns"
+    "streaming": "Streaming",
+    "flowInfoTitle": "Flows show active connections",
+    "flowInfoBody": "These flows are examples of active traffic, not open services.",
+    "showSelectedFlows": "Selected device only"
   },
   "learningPrompts": {
     "privateIp": {
       "question": "Which of these is a private IP address?",
       "answers": ["192.168.10.14", "8.8.8.8", "203.0.113.12"],
-      "explanation": "192.168.x.x addresses are private - they only work inside your home network. 8.8.8.8 is Google's public DNS, and 203.0.113.12 is your public IP (how the internet sees you).",
-      "why": "Knowing private ranges helps you spot which devices are local and which are on the internet.",
-      "nextStep": "When you see 192.168.x.x, 10.x.x.x, or 172.16-31.x.x, treat it as local and find the public IP on your router."
+      "explanation": "192.168.x.x is a private range used inside local networks. 8.8.8.8 is Google's public DNS. 203.0.113.12 is an example public IP address.",
+      "why": "Private ranges indicate local devices; public IPs identify systems on the internet.",
+      "nextStep": "Treat 192.168.x.x, 10.x.x.x, and 172.16–31.x.x as internal; the router’s WAN IP is the public address."
     },
     "macPurpose": {
       "question": "What is a MAC address (Local ID) used for?",
-      "answers": ["Routing packets across the internet", "Identifying devices on the local network", "Encrypting your data"],
-      "explanation": "MAC addresses are unique hardware identifiers burned into each network device. They're used for delivering data on your local network segment - like apartment numbers within a building. Routers strip MAC addresses when forwarding to the internet.",
-      "why": "MACs identify devices only on your local network, not across the internet.",
-      "nextStep": "Use your router's device list to match MAC addresses to real devices when troubleshooting."
+      "answers": [
+        "Routing packets across the internet",
+        "Identifying devices on the local network",
+        "Encrypting your data"
+      ],
+      "explanation": "MAC addresses are hardware identifiers used for delivery on a local link. Routers replace link‑layer headers when forwarding traffic to the internet.",
+      "why": "MACs identify devices on a local segment, not across the internet.",
+      "nextStep": "Use the router’s device list to map MAC addresses to physical devices."
     },
     "guestNetwork": {
       "question": "Why would you put guests on a separate network?",
-      "answers": ["To give them faster internet speed", "To prevent them from accessing your personal devices", "Because there's a limit to devices on one network"],
-      "explanation": "Guest networks create isolation. Visitors can use the internet, but they can't see or access your personal computers, cameras, or smart devices.",
-      "why": "Segmentation keeps guest devices from reaching your personal devices if they are compromised.",
-      "nextStep": "Enable a guest SSID and keep it isolated from your main network."
+      "answers": [
+        "To give them faster internet speed",
+        "To prevent them from accessing your personal devices",
+        "Because there's a limit to devices on one network"
+      ],
+      "explanation": "A guest network isolates visitors from your main LAN. Guests can reach the internet but not your personal devices.",
+      "why": "Isolation limits what a compromised guest device can access.",
+      "nextStep": "Enable a guest SSID and keep it firewalled from the main network."
     },
     "unknownDevice": {
       "question": "You notice an unknown device on your network. What should you do?",
-      "answers": ["Ignore it - it's probably fine", "Investigate and possibly block it", "Unplug your router immediately"],
-      "explanation": "Unknown devices could be forgotten gadgets, neighbors leeching Wi-Fi, or even malicious actors. Check your router's admin page to identify and remove suspicious devices.",
-      "why": "Unknown devices can indicate shared Wi-Fi abuse or a real intrusion.",
-      "nextStep": "Identify it in your router and block it or change your Wi-Fi password."
+      "answers": [
+        "Ignore it - it's probably fine",
+        "Investigate and possibly block it",
+        "Unplug your router immediately"
+      ],
+      "explanation": "Unknown devices may be inventory gaps or unauthorized access. Use the router’s client list to identify the device by MAC/vendor and remove it if unrecognized.",
+      "why": "Unidentified devices can indicate misuse or intrusion.",
+      "nextStep": "Verify the device, then block it or rotate the Wi‑Fi password."
     },
     "iotIsolation": {
       "question": "Why are IoT devices (cameras, thermostats) often put on a separate network?",
-      "answers": ["They need special internet settings", "They're often insecure and could be used to attack other devices", "They use too much bandwidth"],
-      "explanation": "Many IoT devices have weak security, use default passwords, or don't get updates. Isolating them prevents a compromised camera from spying on your laptop.",
-      "why": "IoT devices are common entry points; isolation limits how far an attacker can move.",
-      "nextStep": "Put IoT devices on a separate network or VLAN with limited access."
+      "answers": [
+        "They need special internet settings",
+        "They're often insecure and could be used to attack other devices",
+        "They use too much bandwidth"
+      ],
+      "explanation": "Many IoT devices ship with weak security and infrequent updates. Isolation prevents a compromised device from reaching personal computers.",
+      "why": "IoT devices are common entry points; segmentation limits lateral movement.",
+      "nextStep": "Place IoT devices on a separate VLAN or SSID with restricted access."
     },
     "tenNetwork": {
       "question": "What type of IP address range is 10.0.x.x?",
-      "answers": ["Public IP range", "Private IP range for internal networks", "Reserved for government use"],
-      "explanation": "10.0.0.0/8 is one of three private IP ranges (along with 172.16.x.x and 192.168.x.x). These addresses work only inside your network and can't be reached directly from the internet.",
+      "answers": [
+        "Public IP range",
+        "Private IP range for internal networks",
+        "Reserved for government use"
+      ],
+      "explanation": "10.0.0.0/8 is one of the RFC1918 private ranges, along with 172.16.0.0/12 and 192.168.0.0/16. These addresses are not routed on the public internet.",
       "why": "Recognizing private ranges prevents you from assuming a device is publicly reachable.",
-      "nextStep": "Treat 10.x addresses as internal and look for the public IP on the router."
+      "nextStep": "Treat 10.x addresses as internal and check the router for the public IP."
     },
     "wpa3": {
       "question": "Why does the staff network use WPA3 while guest uses WPA2?",
-      "answers": ["WPA3 is slower, only staff can handle it", "WPA3 provides stronger encryption for sensitive data", "There's no meaningful difference"],
-      "explanation": "WPA3 offers better protection against password guessing attacks and uses newer encryption. Corporate data deserves the strongest protection available.",
-      "why": "Stronger Wi-Fi encryption reduces the risk of password guessing and data exposure.",
+      "answers": [
+        "WPA3 is slower, only staff can handle it",
+        "WPA3 provides stronger encryption for sensitive data",
+        "There's no meaningful difference"
+      ],
+      "explanation": "WPA3 strengthens protection against offline password guessing and uses modern key exchange. Staff traffic should use the strongest available option.",
+      "why": "Stronger Wi‑Fi encryption reduces the risk of credential exposure.",
       "nextStep": "Use WPA3 when available and keep WPA2 only for legacy devices."
     },
     "printerRisk": {
       "question": "Why is the printer flagged as a security risk?",
-      "answers": ["Printers can't be secure", "It still has the default password, making it easy to hack", "It's connected to the wrong network"],
-      "explanation": "Printers with default passwords are often targeted by attackers. They can be used to intercept documents, spread to other devices, or even become part of botnets.",
+      "answers": [
+        "Printers can't be secure",
+        "It still has the default password, making it easy to hack",
+        "It's connected to the wrong network"
+      ],
+      "explanation": "The printer still has default credentials. That allows unauthorized access to print jobs and can provide a foothold in the network.",
       "why": "Default credentials are a common entry point for attackers.",
-      "nextStep": "Change default passwords and move printers to a restricted network."
+      "nextStep": "Change the printer password and keep it on a restricted network."
     },
     "corpIsolation": {
       "question": "Why can't customers on guest Wi-Fi access the file server?",
-      "answers": ["The file server is turned off", "Guest network is isolated from corporate network", "Customers don't have the password"],
-      "explanation": "Network segmentation means different networks can't communicate. Guests get internet access but are completely walled off from internal resources.",
+      "answers": [
+        "The file server is turned off",
+        "Guest network is isolated from corporate network",
+        "Customers don't have the password"
+      ],
+      "explanation": "Guest and corporate networks are separated by firewall rules. Guests can reach the internet but not internal servers.",
       "why": "Segmentation protects internal data even if guest Wi-Fi is compromised.",
       "nextStep": "Verify guest Wi-Fi cannot reach internal servers or printers."
     },
     "openWifi": {
       "question": "What does 'Open' network security mean?",
-      "answers": ["Anyone can join without a password", "The network has no firewall", "The Wi-Fi signal is publicly visible"],
-      "explanation": "Open networks have no encryption. This means anyone nearby can potentially see your traffic - it's like sending postcards instead of sealed letters.",
-      "why": "Open Wi-Fi lets nearby users observe traffic, which increases risk for sensitive data.",
+      "answers": [
+        "Anyone can join without a password",
+        "The network has no firewall",
+        "The Wi-Fi signal is publicly visible"
+      ],
+      "explanation": "An open network has no link‑layer encryption. Anyone on the same Wi‑Fi can observe or modify traffic.",
+      "why": "Open Wi‑Fi increases the risk of interception.",
       "nextStep": "Avoid sensitive logins on open Wi-Fi or use a VPN."
     },
     "evilTwin": {
       "question": "What is an 'evil twin' attack?",
-      "answers": ["When someone clones your device", "A fake Wi-Fi network that mimics a legitimate one", "When two routers interfere with each other"],
-      "explanation": "Attackers set up fake access points with names like 'Hotel_Free_WiFi' to lure victims. When you connect, they can see everything you do.",
-      "why": "Fake SSIDs can capture your traffic and steal credentials.",
+      "answers": [
+        "When someone clones your device",
+        "A fake Wi-Fi network that mimics a legitimate one",
+        "When two routers interfere with each other"
+      ],
+      "explanation": "An attacker creates a rogue access point that mimics a legitimate SSID to capture traffic or credentials.",
+      "why": "Look‑alike SSIDs can intercept traffic and steal logins.",
       "nextStep": "Verify the official SSID with staff and turn off auto-join for public Wi-Fi."
     },
     "publicPrivateIp": {
       "question": "On public Wi-Fi, why might your IP still be private (e.g., 172.16.x.x)?",
-      "answers": ["Because the hotspot uses NAT and private addressing", "Because public Wi-Fi always gives out public IPs", "Because private IPs are only for home networks"],
-      "explanation": "Public Wi-Fi often uses private IP ranges and NAT. Your device has a private address locally, while the hotspot uses one public IP to reach the internet.",
+      "answers": [
+        "Because the hotspot uses NAT and private addressing",
+        "Because public Wi-Fi always gives out public IPs",
+        "Because private IPs are only for home networks"
+      ],
+      "explanation": "Public hotspots often use private addressing with NAT. Your device gets a private IP; the hotspot shares one public IP.",
       "why": "Private IPs can exist in public places too; NAT hides many devices behind one public IP.",
       "nextStep": "Look for the NAT boundary: your device has a private IP and the hotspot has the public IP."
     },
     "httpsImportance": {
       "question": "On public Wi-Fi, why is HTTPS especially important?",
-      "answers": ["HTTPS makes websites load faster", "HTTPS encrypts your data so others on the network can't read it", "HTTPS prevents viruses"],
-      "explanation": "HTTPS uses TLS encryption to create a secure tunnel between you and the website. Even if someone captures your traffic, they see encrypted data instead of your passwords and personal information.",
-      "why": "HTTPS keeps your data readable only to you and the website, even on untrusted networks.",
+      "answers": [
+        "HTTPS makes websites load faster",
+        "HTTPS encrypts your data so others on the network can't read it",
+        "HTTPS prevents viruses"
+      ],
+      "explanation": "HTTPS encrypts the HTTP session between your browser and the server using TLS. Interceptors can see metadata but not the content.",
+      "why": "HTTPS protects credentials and content on untrusted networks.",
       "nextStep": "Check for HTTPS (lock icon) before entering passwords or personal data."
     },
     "vpn": {
       "question": "What does a VPN do on public Wi-Fi?",
-      "answers": ["Makes your internet faster", "Creates an encrypted tunnel for all your traffic", "Blocks other users from connecting"],
-      "explanation": "A VPN encrypts everything leaving your device, not just web traffic. It's like putting all your postcards in a locked box before sending them.",
-      "why": "A VPN protects all apps, not just browsers, on untrusted networks.",
+      "answers": [
+        "Makes your internet faster",
+        "Creates an encrypted tunnel for all your traffic",
+        "Blocks other users from connecting"
+      ],
+      "explanation": "A VPN encrypts and authenticates all traffic between your device and a VPN gateway, not just browser traffic.",
+      "why": "A VPN protects multiple apps on untrusted networks.",
       "nextStep": "Use a reputable VPN when working or banking on public Wi-Fi."
     },
     "safeBehavior": {
       "question": "What should you avoid doing on public Wi-Fi?",
-      "answers": ["Browsing news websites", "Logging into your bank without a VPN", "Checking the weather"],
-      "explanation": "Sensitive activities like banking should wait for a secure network or require a VPN. Even HTTPS can't protect against all attacks on compromised networks.",
-      "why": "Some actions are higher-risk on public networks, even with encryption.",
-      "nextStep": "Delay banking or change passwords until you're on a trusted network."
+      "answers": [
+        "Browsing news websites",
+        "Logging into your bank without a VPN",
+        "Checking the weather"
+      ],
+      "explanation": "Avoid financial or account actions on public Wi‑Fi without a VPN. Even HTTPS cannot prevent all attacks on compromised networks.",
+      "why": "High‑value actions carry higher risk on public networks.",
+      "nextStep": "Delay banking and password changes until you are on a trusted network."
     }
   },
   "actions": {
@@ -535,7 +722,10 @@
     "debriefIntro": "Here's what you did and why it matters.",
     "yourActions": "Your actions",
     "keyTakeaways": "Key takeaways",
-    "restart": "Restart actions"
+    "restart": "Restart actions",
+    "startHereTitle": "Start here",
+    "startHereBody": "Complete these actions to secure the scenario.",
+    "outcomeTitle": "Outcome"
   },
   "actionTypes": {
     "isolate_device": "Isolate device",
@@ -548,22 +738,22 @@
     "familyIoT": {
       "blockUnknown": {
         "title": "Block the unknown device",
-        "instruction": "Select the \"Generic Smart Controller\" and block it from your network.",
-        "success": "You blocked the unknown device, reducing immediate risk.",
-        "failure": "That isn't the unknown device. Identify the unfamiliar one first.",
-        "tip": "Unknown devices should be investigated and blocked if they don't belong."
+        "instruction": "Select the \"Generic Smart Controller\" and block it.",
+        "success": "Unknown device blocked. Immediate risk reduced.",
+        "failure": "That device is not the unknown device. Identify the unfamiliar one first.",
+        "tip": "Verify unknown devices and block those you cannot identify."
       },
       "changeCameraPassword": {
         "title": "Change the camera password",
         "instruction": "Find the Indoor Camera and change its default password.",
-        "success": "Default password changed - a common IoT weakness is now removed.",
+        "success": "Default password changed. A common IoT entry point is removed.",
         "failure": "Select the Indoor Camera that still has a default password.",
-        "tip": "Default credentials are one of the most common IoT compromises."
+        "tip": "Default credentials are a common compromise vector."
       },
       "enableGuest": {
         "title": "Enable the guest network",
         "instruction": "Confirm the guest network is enabled for visitors.",
-        "success": "Guest access is separated, protecting your personal devices.",
+        "success": "Guest access is separated from your personal devices.",
         "failure": "Select a device on the guest network to confirm it's enabled.",
         "tip": "Guest networks keep visitors from reaching your main devices."
       }
@@ -578,9 +768,9 @@
       },
       "isolatePrinter": {
         "title": "Isolate the printer",
-        "instruction": "Move the office printer to the device network or keep it isolated.",
-        "success": "The printer is isolated from staff devices, reducing risk.",
-        "failure": "Select the office printer to isolate it.",
+        "instruction": "Select the office printer and isolate it from staff devices.",
+        "success": "Printer isolated from staff devices, reducing exposure.",
+        "failure": "Select the office printer before isolating it.",
         "tip": "Printers often have weak security and should be segmented."
       },
       "blockUnknown": {
@@ -588,27 +778,29 @@
         "instruction": "Identify the unregistered device and remove it from the network.",
         "success": "The unknown device is blocked and no longer a threat.",
         "failure": "Select the unregistered device before blocking it.",
-        "tip": "Unknown corporate devices should be removed immediately."
+        "tip": "Unregistered corporate devices should be removed immediately."
       }
     },
     "hotelPublic": {
       "verifySsid": {
         "title": "Verify the official Wi-Fi",
-        "instruction": "Select the real hotel access point, not the fake one.",
+        "instruction": "Select the official hotel access point.",
         "success": "You identified the official access point.",
-        "failure": "That isn't the official hotel access point. Try again.",
-        "tip": "Attackers often create look-alike Wi-Fi names to trick guests."
+        "failure": "That is not the official hotel access point.",
+        "tip": "Attackers often create look‑alike SSIDs to trick guests."
       },
       "blockFakeAp": {
         "title": "Report the fake access point",
         "instruction": "Identify the suspicious Wi-Fi device and flag it.",
         "success": "The fake access point is flagged and avoided.",
         "failure": "Select the suspicious access point before reporting it.",
-        "tip": "If a network name looks off, avoid it and alert staff."
+        "tip": "Avoid suspicious SSIDs and alert staff."
       }
     }
   },
   "onboarding": {
+    "replayTour": "Replay tour",
+    "mapOnlyNotice": "Map view is locked during the tour.",
     "buttons": {
       "continue": "Continue",
       "next": "Next",
@@ -628,77 +820,107 @@
     "steps": {
       "welcome_hook": {
         "title": "Your Network is Always Talking",
-        "content": "Every device you own is constantly communicating - your smart TV, your phone, your thermostat. But do you know who they're talking to, and whether those conversations are safe?"
+        "content": "Devices on your network exchange traffic continuously—phones, TVs, and thermostats. This course shows who they talk to and what is exposed."
       },
       "welcome_challenge": {
         "title": "The Hidden Risks",
-        "content": "Hackers don't just attack computers anymore. They exploit forgotten devices, weak passwords, and unencrypted connections. The first step to protection is understanding what's happening on your network."
+        "content": "Attackers exploit forgotten devices, weak passwords, and unencrypted connections. Security starts with visibility."
       },
       "welcome_mission": {
         "title": "Your Network Discovery Mission",
-        "content": "In the next few minutes, you'll learn to see your network the way security professionals do - layer by layer, device by device. You'll spot vulnerabilities that most people miss entirely."
+        "content": "You will learn to read the network layer by layer, identify risks, and take corrective actions."
       },
       "map_solar_system": {
         "title": "Your Network as a Solar System",
-        "content": "This is your network, visualized like a solar system. At the center is your router - the 'sun' that everything orbits around. Every ring represents a different trust zone, and every dot is a device communicating through your network."
+        "content": "The map uses a solar‑system layout: the router at the center, rings for trust zones, and dots for devices."
       },
       "map_trust_zones": {
         "title": "Understanding Trust Zones",
-        "content": "Networks are divided into zones. Your main network holds trusted devices. Guest networks are for visitors. IoT zones isolate smart devices that may have weaker security. Understanding these boundaries is your first defense."
+        "content": "Networks are segmented into zones: main, guest, and IoT. Isolation limits what a compromised device can reach."
       },
       "map_device_indicators": {
         "title": "Reading Device Signals",
-        "content": "Each device shows its status at a glance. Pulsing rings indicate potential concerns - a forgotten device, default password, or outdated firmware. Learning to read these signals is like learning to read a dashboard."
+        "content": "Pulsing rings mark risk flags such as unknown device, default password, or outdated firmware."
       },
       "scenario_contexts": {
         "title": "Real-World Network Scenarios",
-        "content": "Networks come in many forms. A family home has smart TVs and baby monitors. A small business has servers and customer Wi-Fi. A hotel lobby has unknown guests on shared networks. Each presents unique security challenges."
+        "content": "Scenarios reflect common environments: home networks, small offices, and hotel Wi‑Fi. Each has different risks and controls."
       },
       "scenario_select": {
         "title": "Choose Your Environment",
-        "content": "Select a scenario to explore. Don't worry - you can switch anytime to see how security concerns differ between environments."
+        "content": "Select a scenario. You can switch anytime to compare how risks and controls differ."
       },
       "layers_why": {
         "title": "Seeing in Layers",
-        "content": "Networks operate in layers - like peeling an onion. Each layer reveals different information. Security professionals switch between these views to understand the complete picture. This is your most powerful tool."
+        "content": "Network layers expose different identifiers and controls. Switching layers lets you trace traffic from link to application."
       },
       "layers_link": {
         "title": "Link Layer: Physical Identity",
-        "content": "The Link layer shows physical connections - the raw addresses (MAC addresses) that identify each piece of hardware. This is where you spot unauthorized devices that shouldn't be on your network at all."
+        "content": "The Link layer shows MAC addresses and local delivery. It is where you spot unauthorized devices."
       },
       "layers_network": {
         "title": "Network Layer: Logical Addresses",
-        "content": "The Network layer reveals IP addresses - the logical addresses used for routing. Here you see which devices are local (private IPs) versus which are reaching out to the internet. Unexpected external connections are red flags."
+        "content": "The Network layer shows IP addressing and routing. It distinguishes local private IPs from internet‑facing addresses."
       },
       "layers_transport": {
         "title": "Transport Layer: Connections & Ports",
-        "content": "The Transport layer shows how data flows - which port numbers identify services (443 for HTTPS, 22 for SSH) and whether connections use TCP (reliable, ordered) or UDP (fast, no guarantees). This is where you see the 'plumbing' of network communication."
+        "content": "The Transport layer shows active connections, port numbers, and whether a flow uses TCP or UDP."
       },
       "layers_application": {
         "title": "Application Layer: What's Being Communicated",
-        "content": "The Application layer shows what's actually being communicated - web browsing, email, streaming. The lock icons reveal encryption status: HTTPS encrypts your data using TLS, while plain HTTP exposes everything. Unencrypted traffic can be read by anyone on the network."
+        "content": "The Application layer shows protocols and encryption status. HTTPS uses TLS; HTTP is unencrypted."
       },
       "device_inspection": {
         "title": "Investigating Devices",
-        "content": "Click any device to investigate. The details panel reveals everything: its network identity, active connections, and most importantly - security concerns. Red flags here demand attention."
+        "content": "Select a device to view its identity, active flows, and risk flags. Prioritize high‑risk flags."
       },
       "device_risk_flags": {
         "title": "Understanding Risk Flags",
-        "content": "Security concerns are categorized by severity. 'Default Password' means anyone can access it. 'Outdated Firmware' means known vulnerabilities exist. 'Unknown Device' means it shouldn't be there at all."
+        "content": "Risk flags indicate concrete issues such as default passwords, outdated firmware, or unknown devices."
       },
       "device_learn_tab": {
         "title": "Built-in Learning",
-        "content": "Every device type has educational content explaining what to notice and why it matters. Use the Learn tab to build your understanding over time."
+        "content": "Use the Learn tab for device‑specific risks and mitigations."
       },
       "quiz_intro": {
         "title": "Test Your Understanding",
-        "content": "As you explore, you'll encounter questions that test your understanding. These aren't graded tests - they're opportunities to reinforce what you've learned. Getting one wrong teaches just as much as getting it right."
+        "content": "Short checks reinforce key concepts. Use them to confirm understanding."
       },
       "mission_complete": {
         "title": "Mission Complete",
-        "content": "You now have the foundational skills to analyze any network. Continue exploring the scenarios, switch between layers, and investigate devices. The more you practice, the more natural network security thinking becomes."
+        "content": "You can now map devices, interpret layers, and act on risks. Continue with scenarios to build fluency."
       }
     }
+  },
+  "deviceDescriptions": {
+    "homeRouter": "Central hub of the home network; all traffic transits this device.",
+    "workLaptop": "Work‑issued laptop for remote work, connected to the main network for full access.",
+    "momsIphone": "Personal smartphone used for banking and social media.",
+    "kidsIpad": "Tablet used by children for schoolwork and entertainment.",
+    "livingRoomTv": "Smart TV with streaming apps, placed on the IoT network to limit exposure.",
+    "indoorCamera": "Indoor security camera. It still uses a default password.",
+    "smartThermostat": "Controls home temperature and supports remote access.",
+    "voiceAssistant": "Smart speaker with a voice assistant; listens for a wake word.",
+    "guestsPhone": "Visitor phone on the guest network; it cannot reach main‑network devices.",
+    "genericSmartController": "Unidentified device on the network; it is not on the known device list.",
+    "oldTablet": "Old tablet with no updates for two years; still connected but rarely used.",
+    "officeRouter": "Business‑grade router with firewall controls; manages all three networks.",
+    "fileServer": "Central file storage for company documents, restricted to the staff network.",
+    "ceosLaptop": "Executive laptop with access to sensitive company data.",
+    "salesLaptop": "Workstation used by a sales team member.",
+    "workPhone": "Company‑issued smartphone for mobile work.",
+    "officePrinter": "Network printer with the admin password still set to default.",
+    "customerDevice": "Customer phone on guest Wi‑Fi while waiting.",
+    "entranceCamera": "Security camera monitoring the main entrance.",
+    "unregisteredDevice": "Device on the corporate network that is not registered with IT.",
+    "hotelAccessPoint": "Public access point. Open‑network traffic can be intercepted.",
+    "yourLaptop": "Personal laptop on hotel Wi‑Fi; treat access as untrusted.",
+    "unknownGuest": "Another guest's laptop on open Wi‑Fi; it can observe traffic on the same network.",
+    "guestPhone": "Guest smartphone sharing the network with you.",
+    "suspiciousDevice": "Laptop connected for 12+ hours and exhibiting traffic capture behavior.",
+    "businessTraveler": "Business traveler checking email. VPN use is recommended.",
+    "frontDeskComputer": "Hotel staff computer on a separate secure network; guests cannot reach it.",
+    "grandHotelFreeWifi": "SSID that could be legitimate or an attacker‑controlled evil twin."
   },
   "deviceLabels": {
     "homeRouter": "Home Router",

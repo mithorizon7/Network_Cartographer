@@ -13,6 +13,7 @@ Preferred communication style: Simple, everyday language.
 ## System Architecture
 
 ### Frontend Architecture
+
 - **Framework**: React 18 with TypeScript
 - **Routing**: Wouter (lightweight React router)
 - **State Management**: TanStack React Query for server state, React useState for local UI state
@@ -20,12 +21,14 @@ Preferred communication style: Simple, everyday language.
 - **Build Tool**: Vite with path aliases (@/ for client/src, @shared for shared)
 
 ### Backend Architecture
+
 - **Framework**: Express.js with TypeScript
 - **Server**: HTTP server with support for Vite dev middleware in development
-- **API Pattern**: RESTful JSON API at /api/* endpoints
+- **API Pattern**: RESTful JSON API at /api/\* endpoints
 - **Data Storage**: In-memory storage using predefined scenario objects (MemStorage class)
 
 ### Data Flow
+
 - Scenarios are defined in shared/scenarios.ts and stored in memory on server startup
 - Frontend fetches scenario list via /api/scenarios, then individual scenarios via /api/scenarios/:id
 - No database persistence currently - all data is static/predefined
@@ -43,25 +46,30 @@ Preferred communication style: Simple, everyday language.
 ## External Dependencies
 
 ### Database
+
 - **Drizzle ORM**: Configured for PostgreSQL (drizzle.config.ts points to DATABASE_URL)
 - **Current State**: Database schema exists but application uses in-memory storage; Postgres can be provisioned later
 
 ### UI Components
+
 - **shadcn/ui**: Full component library installed (Radix UI primitives + Tailwind)
 - **Lucide React**: Icon library for device and UI icons
 
 ### Build & Development
+
 - **Vite**: Frontend bundler with React plugin and Replit-specific plugins
 - **esbuild**: Server bundling for production builds
 - **tsx**: TypeScript execution for development
 
 ### Fonts
+
 - System fonts only (no external dependencies): sans-serif, serif, monospace system stack
 - CSP-compliant: No external font calls per strict privacy requirements
 
 ## Recent Changes (December 2024)
 
 ### Internationalization (i18n) - December 16, 2024
+
 - **Production-ready i18n for Latvia market launch**
 - Languages: English (default), Latvian (LV), Russian (RU)
 - **366 translation keys** validated across all locales
@@ -81,7 +89,7 @@ Preferred communication style: Simple, everyday language.
   - Networking terminology (IP, MAC, TCP, UDP, etc.) remains untranslated per i18n best practices
   - Browser language detection with localStorage persistence
   - Nested translation keys (app.title, layers.network, filter.searchPlaceholder, etc.)
-  - i18next native pluralization syntax for Russian's 4 forms (_one, _few, _many, _other)
+  - i18next native pluralization syntax for Russian's 4 forms (\_one, \_few, \_many, \_other)
   - Scenario content (titles, descriptions, event messages) fully translated in all 3 languages
 - **Dev-mode features**:
   - Missing translation highlighting: shows [MISSING: key] in UI
@@ -93,7 +101,7 @@ Preferred communication style: Simple, everyday language.
     - Key parity across all locales (EN, LV, RU) - fails CI on missing keys
     - No empty translation values - fails CI on empty values
     - Placeholder consistency ({{var}}) between languages - fails CI on mismatch
-    - Proper handling of plural suffixes (_one, _few, _many, _other)
+    - Proper handling of plural suffixes (\_one, \_few, \_many, \_other)
   - **i18n Commands** (run from project root):
     - `i18n:extract`: `npx i18next-scanner --config i18next-scanner.config.cjs`
     - `i18n:validate`: `node scripts/i18n-validate.js`
@@ -102,24 +110,29 @@ Preferred communication style: Simple, everyday language.
 - **Fallback Chain**: localStorage → navigator → lv → en (Latvia market default)
 
 ### Events System
+
 - Added EventNotifications component that triggers on scenario load (onEnter) and device clicks (onDeviceClick)
 - Events display as dismissible toast notifications at top of screen
 
 ### Unknown Device Modal
+
 - Added "What Would You Do?" interactive modal when clicking unknown/suspicious devices
 - Three response options (Investigate, Block, Ignore) with educational feedback
 
 ### CSP Compliance
+
 - Removed Google Fonts, using system fonts only
 - Updated CSP headers to block all external calls
 - Strict privacy compliance: no analytics, no third-party scripts
 
 ### Layer Visualization Improvements
+
 - Transport layer: Shows service names (HTTP, HTTPS, SSH) instead of raw port numbers
 - Application layer: Added encryption status indicators (lock/unlock icons)
 - Visual legend showing encryption status on canvas
 
 ### Code Quality Improvements - December 16, 2024
+
 - **Memory leak fix**: ScenarioExportImport.tsx now properly cleans up setTimeout references
 - **DRY improvement**: scenarioIdToKey mapping extracted to `client/src/lib/scenarioUtils.ts` - all components now import from shared utility
 - **Dead code removal**: Removed unused user authentication types from shared/schema.ts
@@ -129,6 +142,7 @@ Preferred communication style: Simple, everyday language.
 - **Localization**: Reset button, footer descriptions now use translation keys
 
 ### Translation Mapping Utilities - December 16, 2024
+
 - **Centralized utilities in `client/src/lib/scenarioUtils.ts`**:
   - `scenarioIdToKey`: Maps scenario IDs to translation keys (familyIoT, smallBusiness, hotelPublic)
   - `deviceLabelToKey`: Maps 28 device labels to translation keys (e.g., "Home Router" → "homeRouter")
@@ -142,16 +156,19 @@ Preferred communication style: Simple, everyday language.
 - **299 translation keys** validated across all locales (up from 271)
 
 ### Security Hardening - December 16, 2024
+
 - **CSP Security**: Content-Security-Policy now uses strict policy in production (no 'unsafe-inline' or 'unsafe-eval'); development mode allows these for Vite HMR/dev tools
 - **Production Logging**: ErrorBoundary console.error now gated behind development mode check to prevent stack trace leakage
 - **Pattern**: All environment-specific behavior uses `import.meta.env.DEV` (frontend) or `process.env.NODE_ENV` (backend)
 
 ### Visual UI Fixes - December 16, 2024
+
 - **Encryption Icon Positioning**: Fixed Application layer encryption icons overlapping device nodes; icons now positioned clearly outside node bounds
 - **Mobile Layout**: Fixed 1px horizontal overflow on mobile viewports (375px) by adding overflow-x-hidden to root container
 - **Verified**: Device panel risk badges properly spaced, Learning prompts layout correct, Filter popover displays properly
 
 ### Educational Onboarding System - December 17, 2024
+
 - **Network Discovery Mission**: Spotlight-based guided tutorial system that teaches (not just shows) each part of the application
 - **6 Chapters, 18 Steps**:
   1. Mission Briefing: Welcome and educational overview
