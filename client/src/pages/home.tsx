@@ -762,7 +762,7 @@ export default function Home() {
                     </Card>
                   )}
 
-                  {activeScenario && activeScenario.scenarioTasks.length > 0 && (
+                  {activeScenario && (activeScenario.scenarioTasks?.length ?? 0) > 0 && (
                     <Card
                       className="border-dashed border-chart-4/40 bg-chart-4/5"
                       data-testid="actions-start-here"
@@ -818,7 +818,7 @@ export default function Home() {
                     </Card>
                   )}
 
-                  {activeScenario && activeScenario.scenarioTasks.length > 0 && (
+                  {activeScenario && (activeScenario.scenarioTasks?.length ?? 0) > 0 && (
                     <ScenarioActions
                       scenario={activeScenario}
                       selectedDevice={selectedDevice}
@@ -873,7 +873,7 @@ export default function Home() {
                     </Card>
                   )}
 
-                  {activeScenario && activeScenario.scenarioTasks.length > 0 && (
+                  {activeScenario && (activeScenario.scenarioTasks?.length ?? 0) > 0 && (
                     <Card
                       className="border-dashed border-chart-4/40 bg-chart-4/5"
                       data-testid="actions-start-here"
@@ -929,7 +929,7 @@ export default function Home() {
                     </Card>
                   )}
 
-                  {activeScenario && activeScenario.scenarioTasks.length > 0 && (
+                  {activeScenario && (activeScenario.scenarioTasks?.length ?? 0) > 0 && (
                     <ScenarioActions
                       scenario={activeScenario}
                       selectedDevice={selectedDevice}
