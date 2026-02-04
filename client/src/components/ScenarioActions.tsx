@@ -267,7 +267,15 @@ export function ScenarioActions({
         </div>
         <Progress value={progress} className="mt-2 h-1.5" />
         {safeIndex === 0 && completedIds.size === 0 && (
-          <p className="mt-2 text-xs text-muted-foreground">{t("actions.startHereBody")}</p>
+          <div
+            className="mt-2 flex flex-wrap items-center gap-2 rounded-md border border-dashed border-chart-4/40 bg-chart-4/5 px-3 py-2 text-xs text-muted-foreground"
+            data-testid="actions-start-here"
+          >
+            <span className="font-semibold uppercase tracking-wide text-chart-4">
+              {t("actions.startHereTitle")}
+            </span>
+            <span>{t("actions.startHereBody")}</span>
+          </div>
         )}
       </CardHeader>
       <CardContent className="space-y-3">

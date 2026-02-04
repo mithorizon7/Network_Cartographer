@@ -152,7 +152,7 @@
     "transport": "Transports",
     "application": "Lietojumprogramma",
     "linkDescription": "Fiziskās ierīces identifikatori (MAC adreses)",
-    "networkDescription": "IP adreses un maršrutēšana",
+    "networkDescription": "IP adreses un maršrutēšana. Privātās IP parasti sākas ar 10.x.x.x, 172.16-31.x.x vai 192.168.x.x; publiskā IP ir maršrutētāja WAN adrese kartes malā.",
     "transportDescription": "Porti un savienojumi (TCP/UDP)",
     "applicationDescription": "Lietotnes un šifrēšanas statuss",
     "transition_link_network": "Tagad redzat IP adreses, nevis aparatūras ID",
@@ -859,7 +859,7 @@
       },
       "layers_network": {
         "title": "Tīkla slānis: loģiskās adreses",
-        "content": "Tīkla slānis parāda IP adresāciju un maršrutēšanu. Tas atšķir lokālās privātās IP no internetam redzamām adresēm."
+        "content": "Tīkla slānis parāda IP adresāciju un maršrutēšanu. Privātās IP parasti sākas ar 10.x.x.x, 172.16-31.x.x vai 192.168.x.x; publiskā IP ir maršrutētāja WAN adrese kartes malā."
       },
       "layers_transport": {
         "title": "Transporta slānis: savienojumi un porti",

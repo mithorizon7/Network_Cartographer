@@ -152,7 +152,7 @@
     "transport": "Transport",
     "application": "Application",
     "linkDescription": "Physical device identifiers (MAC addresses)",
-    "networkDescription": "IP addresses and routing",
+    "networkDescription": "IP addresses and routing. Private IPs usually start with 10.x.x.x, 172.16-31.x.x, or 192.168.x.x; the router shows the public IP at the edge.",
     "transportDescription": "Ports and connections (TCP/UDP)",
     "applicationDescription": "Apps and encryption status",
     "transition_link_network": "Now seeing IP addresses instead of hardware IDs",
@@ -510,11 +510,6 @@
     "rtsp": "RTSP",
     "print": "Print"
   },
-  "zones": {
-    "main": "Main Network",
-    "guest": "Guest Network",
-    "iot": "IoT Network"
-  },
   "legend": {
     "localId": "Local ID (MAC)",
     "localIdFull": "MAC (full)",
@@ -859,7 +854,7 @@
       },
       "layers_network": {
         "title": "Network Layer: Logical Addresses",
-        "content": "The Network layer shows IP addressing and routing. It distinguishes local private IPs from internet‑facing addresses."
+        "content": "The Network layer shows IP addressing and routing. Private IPs usually start with 10.x.x.x, 172.16-31.x.x, or 192.168.x.x; the router's WAN address is the public IP at the edge of the map."
       },
       "layers_transport": {
         "title": "Transport Layer: Connections & Ports",
