@@ -124,7 +124,7 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
           placeholder={t("filter.searchPlaceholder")}
           value={filters.searchQuery}
           onChange={(e) => handleSearchChange(e.target.value)}
-          className="pl-9 pr-8"
+          className="rounded-full border-border/80 bg-background/80 pl-9 pr-8 shadow-sm backdrop-blur"
           data-testid="input-device-search"
         />
         <AnimatePresence>
@@ -148,7 +148,7 @@ export function DeviceFilter({ devices, networks, filters, onFiltersChange }: De
           <Button
             variant="outline"
             size="sm"
-            className="gap-1.5"
+            className="gap-1.5 rounded-full"
             data-testid="button-filter-toggle"
           >
             <Filter className="h-4 w-4" />

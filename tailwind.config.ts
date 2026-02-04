@@ -83,8 +83,8 @@ export default {
         },
       },
       fontFamily: {
-        sans: ["Inter", "var(--font-sans)", "sans-serif"],
-        serif: ["var(--font-serif)"],
+        sans: ["Bricolage Grotesque", "var(--font-sans)", "system-ui", "sans-serif"],
+        serif: ["Gloock", "var(--font-serif)", "serif"],
         mono: ["JetBrains Mono", "var(--font-mono)", "monospace"],
       },
       keyframes: {

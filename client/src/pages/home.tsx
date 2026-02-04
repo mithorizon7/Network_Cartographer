@@ -424,120 +424,129 @@ export default function Home() {
   const error = listError || scenarioError;
 
   return (
-    <div className="flex h-screen flex-col overflow-x-hidden bg-background" data-testid="page-home">
-      <header className="flex flex-wrap items-center justify-between gap-4 border-b px-4 py-3">
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-2">
-            <div className="rounded-md bg-primary/10 p-2">
+    <div className="app-shell flex h-screen flex-col overflow-x-hidden" data-testid="page-home">
+      <header className="app-header">
+        <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
+          <div className="flex items-center gap-3">
+            <div className="brand-mark">
               <MapIcon className="h-5 w-5 text-primary" />
             </div>
-            <div>
-              <h1 className="text-lg font-semibold leading-tight">{t("app.title")}</h1>
-              <p className="hidden text-xs text-muted-foreground sm:block">{t("app.subtitle")}</p>
+            <div className="space-y-1">
+              <h1 className="app-title">{t("app.title")}</h1>
+              <p className="app-subtitle hidden sm:block">{t("app.subtitle")}</p>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2">
-          {isLoadingList ? (
-            <Skeleton className="h-9 w-[280px]" />
-          ) : (
-            <ScenarioSelector
-              scenarios={scenariosForSelector}
-              selectedId={selectedScenarioId}
-              onSelect={handleScenarioChange}
-            />
-          )}
+          <div className="header-deck">
+            {isLoadingList ? (
+              <Skeleton className="h-9 w-[280px] rounded-full" />
+            ) : (
+              <ScenarioSelector
+                scenarios={scenariosForSelector}
+                selectedId={selectedScenarioId}
+                onSelect={handleScenarioChange}
+              />
+            )}
 
-          <Dialog>
-            <DialogTrigger asChild>
-              <Button variant="ghost" size="icon" data-testid="button-info">
-                <Info className="h-5 w-5" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg">
-              <DialogHeader>
-                <DialogTitle>{t("app.title")}</DialogTitle>
-                <DialogDescription>{t("app.subtitle")}</DialogDescription>
-              </DialogHeader>
-              <div className="space-y-4 text-sm">
-                <p>{t("info.about")}</p>
-                <div>
-                  <h4 className="mb-2 font-medium">{t("layers.title")}</h4>
-                  <ul className="space-y-1 text-muted-foreground">
-                    <li>
-                      <span className="font-medium text-foreground">{t("layers.link")}:</span>{" "}
-                      {t("layers.linkDescription")}
-                    </li>
-                    <li>
-                      <span className="font-medium text-foreground">{t("layers.network")}:</span>{" "}
-                      {t("layers.networkDescription")}
-                    </li>
-                    <li>
-                      <span className="font-medium text-foreground">{t("layers.transport")}:</span>{" "}
-                      {t("layers.transportDescription")}
-                    </li>
-                    <li>
-                      <span className="font-medium text-foreground">
-                        {t("layers.application")}:
-                      </span>{" "}
-                      {t("layers.applicationDescription")}
-                    </li>
-                  </ul>
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  className="rounded-full"
+                  data-testid="button-info"
+                >
+                  <Info className="h-5 w-5" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="app-dialog max-w-lg">
+                <DialogHeader>
+                  <DialogTitle>{t("app.title")}</DialogTitle>
+                  <DialogDescription>{t("app.subtitle")}</DialogDescription>
+                </DialogHeader>
+                <div className="space-y-4 text-sm">
+                  <p>{t("info.about")}</p>
+                  <div>
+                    <h4 className="mb-2 font-medium">{t("layers.title")}</h4>
+                    <ul className="space-y-1 text-muted-foreground">
+                      <li>
+                        <span className="font-medium text-foreground">{t("layers.link")}:</span>{" "}
+                        {t("layers.linkDescription")}
+                      </li>
+                      <li>
+                        <span className="font-medium text-foreground">{t("layers.network")}:</span>{" "}
+                        {t("layers.networkDescription")}
+                      </li>
+                      <li>
+                        <span className="font-medium text-foreground">
+                          {t("layers.transport")}:
+                        </span>{" "}
+                        {t("layers.transportDescription")}
+                      </li>
+                      <li>
+                        <span className="font-medium text-foreground">
+                          {t("layers.application")}:
+                        </span>{" "}
+                        {t("layers.applicationDescription")}
+                      </li>
+                    </ul>
+                  </div>
+                  <div>
+                    <h4 className="mb-2 font-medium">{t("info.keyboardShortcuts")}</h4>
+                    <ul className="space-y-1 text-muted-foreground">
+                      <li>
+                        <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">1-4</kbd>{" "}
+                        {t("info.switchLayers")}
+                      </li>
+                      <li>
+                        <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">Esc</kbd>{" "}
+                        {t("info.deselectDevice")}
+                      </li>
+                      <li>
+                        <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">R</kbd>{" "}
+                        {t("common.reset")}
+                      </li>
+                    </ul>
+                  </div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => onboarding?.restartOnboarding()}
+                      data-testid="button-replay-tour"
+                      disabled={!onboarding}
+                    >
+                      {t("onboarding.replayTour")}
+                    </Button>
+                    {onboarding?.isActive && (
+                      <span className="text-xs text-muted-foreground">
+                        {t("onboarding.mapOnlyNotice")}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-muted-foreground">{t("info.allNetworksFictional")}</p>
                 </div>
-                <div>
-                  <h4 className="mb-2 font-medium">{t("info.keyboardShortcuts")}</h4>
-                  <ul className="space-y-1 text-muted-foreground">
-                    <li>
-                      <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">1-4</kbd>{" "}
-                      {t("info.switchLayers")}
-                    </li>
-                    <li>
-                      <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">Esc</kbd>{" "}
-                      {t("info.deselectDevice")}
-                    </li>
-                    <li>
-                      <kbd className="rounded bg-muted px-1.5 py-0.5 font-mono text-xs">R</kbd>{" "}
-                      {t("common.reset")}
-                    </li>
-                  </ul>
-                </div>
-                <div className="flex flex-wrap items-center gap-2">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => onboarding?.restartOnboarding()}
-                    data-testid="button-replay-tour"
-                    disabled={!onboarding}
-                  >
-                    {t("onboarding.replayTour")}
-                  </Button>
-                  {onboarding?.isActive && (
-                    <span className="text-xs text-muted-foreground">
-                      {t("onboarding.mapOnlyNotice")}
-                    </span>
-                  )}
-                </div>
-                <p className="text-xs text-muted-foreground">{t("info.allNetworksFictional")}</p>
-              </div>
-            </DialogContent>
-          </Dialog>
+              </DialogContent>
+            </Dialog>
 
-          <LanguageSwitcher />
-          <ThemeToggle />
+            <div className="h-6 w-px bg-border/80" aria-hidden="true" />
+            <LanguageSwitcher />
+            <ThemeToggle />
+          </div>
         </div>
       </header>
 
-      <div className="flex flex-1 flex-col gap-4 overflow-hidden p-4 lg:flex-row">
+      <div className="flex flex-1 flex-col gap-5 overflow-hidden px-5 pb-5 pt-4 lg:flex-row">
         <div className="flex flex-1 flex-col gap-4 overflow-hidden">
-          <div className="flex flex-wrap items-center justify-between gap-4">
+          <div className="control-deck reveal">
             <LayerGoggles activeLayer={activeLayer} onChange={setActiveLayer} />
 
-            <div className="flex items-center gap-2">
-              <div className="flex rounded-md bg-muted p-1">
+            <div className="flex flex-wrap items-center gap-2">
+              <div className="segmented-control">
                 <Button
                   variant={viewMode === "map" && !showComparison ? "default" : "ghost"}
                   size="sm"
+                  className="rounded-full"
                   onClick={() => {
                     setViewMode("map");
                     setShowComparison(false);
@@ -550,6 +559,7 @@ export default function Home() {
                 <Button
                   variant={viewMode === "table" && !showComparison ? "default" : "ghost"}
                   size="sm"
+                  className="rounded-full"
                   onClick={() => {
                     setViewMode("table");
                     setShowComparison(false);
@@ -570,6 +580,7 @@ export default function Home() {
                 <Button
                   variant={showComparison ? "default" : "ghost"}
                   size="sm"
+                  className="rounded-full"
                   onClick={() => setShowComparison(true)}
                   data-testid="button-view-compare"
                   disabled={
@@ -588,10 +599,7 @@ export default function Home() {
                 </Button>
               </div>
 
-              <div
-                className="flex items-center gap-2 rounded-md border px-2 py-1"
-                title={t("controls.focusModeDescription")}
-              >
+              <div className="focus-toggle" title={t("controls.focusModeDescription")}>
                 <span className="text-xs font-medium text-muted-foreground">
                   {t("controls.focusMode")}
                 </span>
@@ -610,7 +618,13 @@ export default function Home() {
                 />
               )}
 
-              <Button variant="outline" size="sm" onClick={handleReset} data-testid="button-reset">
+              <Button
+                variant="outline"
+                size="sm"
+                className="rounded-full"
+                onClick={handleReset}
+                data-testid="button-reset"
+              >
                 <RotateCcw className="mr-1.5 h-4 w-4" />
                 {t("common.reset")}
               </Button>
@@ -618,15 +632,17 @@ export default function Home() {
           </div>
 
           {activeScenario && !focusMode && (
-            <DeviceFilter
-              devices={activeScenario.devices}
-              networks={activeScenario.networks}
-              filters={filters}
-              onFiltersChange={setFilters}
-            />
+            <div className="reveal reveal-delay-1 rounded-2xl border border-border/80 bg-card/70 px-4 py-3 shadow-sm backdrop-blur">
+              <DeviceFilter
+                devices={activeScenario.devices}
+                networks={activeScenario.networks}
+                filters={filters}
+                onFiltersChange={setFilters}
+              />
+            </div>
           )}
 
-          <Card className="flex-1 overflow-hidden">
+          <Card className="map-panel reveal reveal-delay-2 flex-1 overflow-hidden">
             {showComparison && scenarioSummaries ? (
               <ScenarioComparison
                 scenarios={scenarioSummaries.map((s) => ({ id: s.id, title: s.title }))}
@@ -699,7 +715,7 @@ export default function Home() {
             )}
           </Card>
 
-          <div className="flex flex-wrap items-center justify-between gap-2 rounded-md border bg-card px-4 py-2">
+          <div className="legend-bar reveal reveal-delay-3 flex flex-wrap items-center justify-between gap-2">
             <div className="flex flex-wrap items-center gap-3">
               <LayerLegend
                 activeLayer={activeLayer}
@@ -718,7 +734,7 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2">
               {showFlowInfo && selectedDevice && (
-                <div className="flex items-center gap-2 rounded-md border px-2 py-1 text-xs">
+                <div className="flex items-center gap-2 rounded-full border border-border/80 bg-card/70 px-3 py-1 text-xs shadow-sm">
                   <span>{t("legend.showSelectedFlows")}</span>
                   <Switch
                     checked={showSelectedFlowsOnly}
@@ -736,9 +752,9 @@ export default function Home() {
           </div>
         </div>
 
-        <aside className="flex h-80 w-full flex-col gap-4 lg:h-auto lg:w-96">
-          <ScrollArea className="flex-1">
-            <div className="space-y-4 pr-4">
+        <aside className="side-panel reveal reveal-delay-2 flex h-80 w-full flex-col gap-4 lg:h-auto lg:w-96">
+          <ScrollArea className="flex-1 pr-2">
+            <div className="space-y-4 pr-2">
               {focusMode ? (
                 <>
                   {activeScenario && (
@@ -999,7 +1015,7 @@ export default function Home() {
       </div>
 
       {activeScenario && activeScenario.description && (
-        <footer className="border-t bg-muted px-4 py-2">
+        <footer className="app-footer px-5 py-3">
           <p className="text-center text-xs text-muted-foreground">
             {scenarioIdToKey[activeScenario.id]
               ? t(`scenarioContent.${scenarioIdToKey[activeScenario.id]}.description`, {

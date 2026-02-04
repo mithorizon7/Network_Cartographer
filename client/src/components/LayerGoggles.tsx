@@ -115,11 +115,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
 
   return (
     <div className="flex flex-col gap-2" data-testid="layer-goggles">
-      <div
-        className="flex items-center gap-1 rounded-md bg-muted p-1"
-        role="group"
-        aria-label={t("layers.title")}
-      >
+      <div className="segmented-control" role="group" aria-label={t("layers.title")}>
         {layerConfigs.map(({ mode, labelKey, shortLabelKey, icon: Icon }) => {
           const isActive = activeLayer === mode;
           const wasPrevious = previousLayer === mode;
@@ -131,7 +127,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
                 size="sm"
                 onClick={() => handleLayerChange(mode)}
                 data-testid={`layer-button-${mode}`}
-                className="w-full gap-1.5 text-xs sm:text-sm"
+                className="w-full gap-1.5 rounded-full text-xs sm:text-sm"
                 aria-pressed={isActive}
               >
                 <motion.div
@@ -178,7 +174,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="flex items-center justify-center gap-2 rounded-md bg-primary/10 px-3 py-2 text-center"
+              className="flex items-center justify-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-center shadow-sm backdrop-blur"
               data-testid="layer-transition-message"
             >
               <ChevronRight className="h-4 w-4 text-primary" />

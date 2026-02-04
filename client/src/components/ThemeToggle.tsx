@@ -38,6 +38,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
+      className="rounded-full"
       onClick={() => setIsDark(!isDark)}
       data-testid="button-theme-toggle"
       aria-label={isDark ? t("theme.switchToLight") : t("theme.switchToDark")}

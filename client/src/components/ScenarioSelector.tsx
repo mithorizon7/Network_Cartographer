@@ -45,7 +45,10 @@ export function ScenarioSelector({ scenarios, selectedId, onSelect }: ScenarioSe
   return (
     <div data-testid="scenario-selector">
       <Select value={selectedId ?? ""} onValueChange={handleSelect}>
-        <SelectTrigger className="w-full min-w-[200px] sm:w-[280px]" data-testid="select-scenario">
+        <SelectTrigger
+          className="w-full min-w-[200px] rounded-full border-border/80 bg-background/80 shadow-sm backdrop-blur sm:w-[280px]"
+          data-testid="select-scenario"
+        >
           <SelectValue placeholder={t("scenarios.selectScenario")} />
         </SelectTrigger>
         <SelectContent>

@@ -66,7 +66,9 @@ function MetricCard({
 }) {
   return (
     <div
-      className={`rounded-md border p-3 ${highlight ? "border-primary/50 bg-card" : "bg-muted"}`}
+      className={`rounded-2xl border p-3 shadow-sm backdrop-blur ${
+        highlight ? "border-primary/40 bg-primary/10" : "border-border/70 bg-card/70"
+      }`}
     >
       <div className="text-xs text-muted-foreground">{label}</div>
       <div className="mt-1 text-lg font-semibold">{value}</div>
@@ -131,13 +133,13 @@ function ScenarioPanel({ scenarioId }: { scenarioId: string | null }) {
         </div>
 
         <div className="flex flex-wrap gap-2">
-          <Badge variant="outline" className="bg-muted/50">
+          <Badge variant="outline" className="bg-card/60">
             <Network className="mr-1 h-3 w-3" />
             {t(`environmentTypes.${scenario.environment.type}`, {
               defaultValue: scenario.environment.type,
             })}
           </Badge>
-          <Badge variant="outline" className="bg-muted/50">
+          <Badge variant="outline" className="bg-card/60">
             <Globe className="mr-1 h-3 w-3" />
             {scenario.environment.isp}
           </Badge>
@@ -184,7 +186,7 @@ function ScenarioPanel({ scenarioId }: { scenarioId: string | null }) {
               .map(([type, count]) => (
                 <div
                   key={type}
-                  className="flex items-center justify-between rounded bg-muted px-2 py-1"
+                  className="flex items-center justify-between rounded-lg border border-border/70 bg-card/60 px-2 py-1"
                 >
                   <span className="capitalize">{t(`deviceTypes.${type}`, type)}</span>
                   <Badge variant="outline" className="text-xs">
@@ -207,7 +209,7 @@ function ScenarioPanel({ scenarioId }: { scenarioId: string | null }) {
                 .map((device) => (
                   <div
                     key={device.id}
-                    className="flex items-center justify-between rounded border border-destructive/30 bg-card px-2 py-1"
+                    className="flex items-center justify-between rounded-lg border border-destructive/30 bg-card/70 px-2 py-1 shadow-sm"
                   >
                     <span>
                       {deviceLabelToKey[device.label]
@@ -247,7 +249,7 @@ export function ScenarioComparison({ scenarios, onClose }: ScenarioComparisonPro
 
   return (
     <div className="flex h-full flex-col" data-testid="scenario-comparison">
-      <div className="flex items-center justify-between border-b px-4 py-3">
+      <div className="flex items-center justify-between border-b border-border/70 bg-card/80 px-4 py-3 backdrop-blur">
         <div className="flex items-center gap-2">
           <GitCompare className="h-5 w-5 text-primary" />
           <h2 className="text-lg font-semibold">{t("comparison.title")}</h2>
@@ -257,7 +259,7 @@ export function ScenarioComparison({ scenarios, onClose }: ScenarioComparisonPro
         </Button>
       </div>
 
-      <div className="flex items-center justify-center gap-4 border-b bg-muted px-4 py-3">
+      <div className="flex items-center justify-center gap-4 border-b border-border/70 bg-card/70 px-4 py-3 backdrop-blur">
         <Select value={leftScenarioId || ""} onValueChange={setLeftScenarioId}>
           <SelectTrigger className="w-[200px]" data-testid="select-left-scenario">
             <SelectValue placeholder={t("scenarios.selectScenario")} />
@@ -291,7 +293,7 @@ export function ScenarioComparison({ scenarios, onClose }: ScenarioComparisonPro
       </div>
 
       <div className="flex flex-1 overflow-hidden">
-        <div className="flex-1 border-r">
+        <div className="flex-1 border-r border-border/70">
           <ScenarioPanel scenarioId={leftScenarioId} />
         </div>
         <div className="flex-1">

@@ -141,8 +141,8 @@ export function TableView({
   return (
     <ScrollArea className="h-full" data-testid="table-view">
       <Table>
-        <TableHeader className="sticky top-0 z-10 bg-background">
-          <TableRow className="bg-background">
+        <TableHeader className="sticky top-0 z-10 bg-card/90 backdrop-blur">
+          <TableRow className="bg-card/90">
             <TableHead className="w-12"></TableHead>
             <TableHead>
               <Button
@@ -206,7 +206,7 @@ export function TableView({
         <TableBody>
           {sortedDevices.map((device) => {
             const Icon = deviceIcons[device.type] || HelpCircle;
-            const network = getNetworkForDevice(device.networkId);
+            const network = networkLookup.get(device.networkId);
             const hasRisks = device.riskFlags.length > 0;
             const isSelected = selectedDeviceId === device.id;
             const isHighlighted = highlightedDeviceIds
@@ -231,7 +231,7 @@ export function TableView({
               >
                 <TableCell>
                   <div
-                    className={`rounded-md p-1.5 ${hasRisks ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"}`}
+                    className={`rounded-lg p-1.5 ${hasRisks ? "bg-destructive/10 text-destructive" : "bg-muted text-muted-foreground"}`}
                   >
                     <Icon className="h-4 w-4" />
                   </div>

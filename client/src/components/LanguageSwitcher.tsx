@@ -29,7 +29,7 @@ export function LanguageSwitcher() {
         <Button
           variant="ghost"
           size="sm"
-          className="gap-1.5"
+          className="gap-1.5 rounded-full"
           data-testid="button-language-switcher"
         >
           <Globe className="h-4 w-4" />
