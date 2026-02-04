@@ -411,7 +411,6 @@
     "macShort": "MAC (last 3 bytes)",
     "inlineTitle": "Unknown device detected",
     "inlineBody": "Investigate now, or continue the current task and return later.",
-    "dismissForScenario": "Don't show again in this scenario",
     "viewDetails": "View details",
     "whatWouldYouDo": "Select a response",
     "gotIt": "Got it",

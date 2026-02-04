@@ -62,7 +62,6 @@ export default function Home() {
   const { t } = useTranslation();
   const onboarding = useOnboardingOptional();
   const focusStorageKey = "network-cartographer-focus-mode";
-  const suppressUnknownKey = "network-cartographer-suppress-unknown-modal";
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
   const [activeLayer, setActiveLayer] = useState<LayerMode>("network");
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
@@ -88,18 +87,6 @@ export default function Home() {
   const [activeTask, setActiveTask] = useState<ScenarioTask | null>(null);
   const [actionOutcome, setActionOutcome] = useState<ActionOutcome | null>(null);
   const [showSelectedFlowsOnly, setShowSelectedFlowsOnly] = useState(false);
-  const [suppressUnknownScenarios, setSuppressUnknownScenarios] = useState<Set<string>>(() => {
-    if (typeof window === "undefined") return new Set();
-    try {
-      const stored = localStorage.getItem(suppressUnknownKey);
-      if (!stored) return new Set();
-      const parsed = JSON.parse(stored);
-      if (Array.isArray(parsed)) return new Set(parsed);
-    } catch {
-      // Ignore storage errors (private mode, blocked storage, etc.)
-    }
-    return new Set();
-  });
 
   const {
     data: scenarioSummaries,
@@ -131,17 +118,6 @@ export default function Home() {
       // Ignore storage errors (private mode, blocked storage, etc.)
     }
   }, [focusMode]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(
-        suppressUnknownKey,
-        JSON.stringify(Array.from(suppressUnknownScenarios)),
-      );
-    } catch {
-      // Ignore storage errors (private mode, blocked storage, etc.)
-    }
-  }, [suppressUnknownScenarios]);
 
   useEffect(() => {
     if (!focusMode) return;
@@ -293,15 +269,12 @@ export default function Home() {
     : "";
   const showFlowInfo = activeLayer === "transport" || activeLayer === "application";
   const disableAdvancedViews = focusMode || onboarding?.isActive;
-  const suppressUnknownModal = activeScenario
-    ? suppressUnknownScenarios.has(activeScenario.id)
-    : false;
   const tasksInProgress = !!activeTask;
   const showInlineUnknown =
     !!selectedDevice &&
     (selectedDevice.type === "unknown" || selectedDevice.riskFlags.includes("unknown_device")) &&
-    tasksInProgress &&
-    !suppressUnknownModal;
+    tasksInProgress;
+  const hasScenarioTasks = (activeScenario?.scenarioTasks?.length ?? 0) > 0;
 
   const handleReset = useCallback(() => {
     setSelectedDeviceId(null);
@@ -339,16 +312,9 @@ export default function Home() {
     }
   }, []);
 
-  const handleSuppressUnknown = useCallback(() => {
-    if (!activeScenario) return;
-    setSuppressUnknownScenarios((prev) => new Set(prev).add(activeScenario.id));
-    setShowUnknownModal(false);
-  }, [activeScenario]);
-
   const handleShowUnknownDetails = useCallback(() => {
-    if (suppressUnknownModal) return;
     setShowUnknownModal(true);
-  }, [suppressUnknownModal]);
+  }, []);
 
   const handleImportScenario = useCallback((imported: Scenario) => {
     setImportedScenario(imported);
@@ -366,7 +332,7 @@ export default function Home() {
       setSelectedDeviceId(deviceId);
       const device = activeScenario?.devices.find((d) => d.id === deviceId);
       if (device && (device.type === "unknown" || device.riskFlags.includes("unknown_device"))) {
-        if (suppressUnknownModal || activeTask) {
+        if (activeTask) {
           setShowUnknownModal(false);
         } else {
           setShowUnknownModal(true);
@@ -376,7 +342,7 @@ export default function Home() {
         onboarding.satisfyGating();
       }
     },
-    [activeScenario, onboarding, suppressUnknownModal, activeTask],
+    [activeScenario, onboarding, activeTask],
   );
 
   useEffect(() => {
@@ -422,6 +388,125 @@ export default function Home() {
 
   const isLoading = isLoadingList || (selectedScenarioId && isLoadingScenario);
   const error = listError || scenarioError;
+
+  const statusStack =
+    showInlineUnknown || actionOutcome ? (
+      <div className="space-y-2">
+        {showInlineUnknown && (
+          <Card
+            className="border-destructive/40 bg-destructive/5"
+            data-testid="inline-unknown-device"
+          >
+            <CardContent className="px-4 py-3">
+              <div className="flex flex-wrap items-start justify-between gap-3">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wide text-destructive">
+                    {t("unknownDevice.inlineTitle")}
+                  </p>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {t("unknownDevice.inlineBody")}
+                  </p>
+                </div>
+                <Button size="sm" variant="outline" onClick={handleShowUnknownDetails}>
+                  {t("unknownDevice.viewDetails")}
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {actionOutcome && (
+          <Card className="border-green-500/30 bg-green-500/5" data-testid="action-outcome-banner">
+            <CardContent className="px-4 py-3">
+              <p className="text-xs font-semibold uppercase tracking-wide text-green-600">
+                {t("actions.outcomeTitle")}
+              </p>
+              <p className="mt-1 text-xs text-green-700 dark:text-green-300">
+                {actionOutcome.message}
+              </p>
+            </CardContent>
+          </Card>
+        )}
+      </div>
+    ) : null;
+
+  const devicePanel = selectedDevice ? (
+    <DeviceDetailsPanel
+      device={selectedDevice}
+      network={selectedNetwork}
+      activeLayer={activeLayer}
+      onClose={() => setSelectedDeviceId(null)}
+      showFullMac={showFullMac}
+      onToggleMacDisplay={setShowFullMac}
+    />
+  ) : (
+    <Card className="p-4" data-testid="panel-device-collapsed">
+      <p className="text-sm font-medium">{t("devicePanel.noDeviceSelected")}</p>
+      <p className="mt-1 text-xs text-muted-foreground">{t("devicePanel.clickToSelect")}</p>
+    </Card>
+  );
+
+  const packetJourneyCard =
+    !focusMode && selectedDevice && selectedDevice.type !== "router" ? (
+      <Card className="p-4">
+        {showPacketJourney ? (
+          <PacketJourney
+            sourceDevice={selectedDevice}
+            routerDevice={routerDevice}
+            activeLayer={activeLayer}
+            publicIp={activeScenario?.environment.publicIp || "0.0.0.0"}
+            flows={activeScenario?.flows || []}
+            onClose={() => setShowPacketJourney(false)}
+            showFullMac={showFullMac}
+          />
+        ) : (
+          <div className="text-center">
+            <Zap className="mx-auto mb-2 h-8 w-8 text-muted-foreground/50" />
+            <p className="mb-3 text-sm text-muted-foreground">
+              {t("common.tracePacketJourneyDescription")}
+            </p>
+            <Button
+              size="sm"
+              onClick={handleTogglePacketJourney}
+              data-testid="button-start-packet-journey"
+            >
+              <Zap className="mr-1.5 h-4 w-4" />
+              {t("common.tracePacketJourney")}
+            </Button>
+          </div>
+        )}
+      </Card>
+    ) : null;
+
+  const learningSection =
+    activeScenario && activeScenario.learningPrompts.length > 0 ? (
+      <LearningPrompts prompts={activeScenario.learningPrompts} />
+    ) : null;
+
+  const scenarioBriefCard = activeScenario ? (
+    <Card data-testid="scenario-brief" className="border-primary/15 bg-primary/5">
+      <CardContent className="pt-4">
+        <p className="text-xs font-semibold uppercase tracking-wide text-primary">
+          {t("scenarioBrief.title")}
+        </p>
+        <p className="mt-2 text-sm leading-relaxed text-foreground">{scenarioBriefBody}</p>
+        {scenarioWatchFor && (
+          <div className="mt-3 rounded-md border border-primary/20 bg-card px-3 py-2 text-xs">
+            <span className="font-semibold">{t("scenarioBrief.watchForLabel")}:</span>{" "}
+            {scenarioWatchFor}
+          </div>
+        )}
+      </CardContent>
+    </Card>
+  ) : null;
+
+  const secondarySection =
+    learningSection || scenarioBriefCard ? (
+      <div className="space-y-4 border-t border-border/70 pt-4">
+        {scenarioBriefCard}
+        {learningSection}
+      </div>
+    ) : null;
 
   return (
     <div className="app-shell flex h-screen flex-col overflow-x-hidden" data-testid="page-home">
@@ -755,260 +840,24 @@ export default function Home() {
         <aside className="side-panel reveal reveal-delay-2 flex h-80 w-full flex-col gap-4 lg:h-auto lg:w-96">
           <ScrollArea className="flex-1 pr-2">
             <div className="space-y-4 pr-2">
-              {focusMode ? (
-                <>
-                  {activeScenario && (
-                    <Card data-testid="scenario-brief" className="border-primary/15 bg-primary/5">
-                      <CardContent className="pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                          {t("scenarioBrief.title")}
-                        </p>
-                        <p className="mt-2 text-sm leading-relaxed text-foreground">
-                          {scenarioBriefBody}
-                        </p>
-                        {scenarioWatchFor && (
-                          <div className="mt-3 rounded-md border border-primary/20 bg-card px-3 py-2 text-xs">
-                            <span className="font-semibold">
-                              {t("scenarioBrief.watchForLabel")}:
-                            </span>{" "}
-                            {scenarioWatchFor}
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  )}
+              {statusStack}
 
-                  {activeScenario && (activeScenario.scenarioTasks?.length ?? 0) > 0 && (
-                    <Card
-                      className="border-dashed border-chart-4/40 bg-chart-4/5"
-                      data-testid="actions-start-here"
-                    >
-                      <CardContent className="pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-chart-4">
-                          {t("actions.startHereTitle")}
-                        </p>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          {t("actions.startHereBody")}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
+              <div className="space-y-4">
+                {activeScenario && hasScenarioTasks && (
+                  <ScenarioActions
+                    scenario={activeScenario}
+                    selectedDevice={selectedDevice}
+                    resetKey={actionsResetKey}
+                    onTaskChange={(task, isComplete) => setActiveTask(isComplete ? null : task)}
+                    onActionComplete={setActionOutcome}
+                  />
+                )}
 
-                  {actionOutcome && (
-                    <Card
-                      className="border-green-500/30 bg-green-500/5"
-                      data-testid="action-outcome-banner"
-                    >
-                      <CardContent className="pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-green-600">
-                          {t("actions.outcomeTitle")}
-                        </p>
-                        <p className="mt-2 text-sm text-green-700 dark:text-green-300">
-                          {actionOutcome.message}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
+                {devicePanel}
+                {packetJourneyCard}
+              </div>
 
-                  {showInlineUnknown && (
-                    <Card
-                      className="border-destructive/40 bg-destructive/5"
-                      data-testid="inline-unknown-device"
-                    >
-                      <CardContent className="pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-destructive">
-                          {t("unknownDevice.inlineTitle")}
-                        </p>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          {t("unknownDevice.inlineBody")}
-                        </p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <Button size="sm" variant="outline" onClick={handleShowUnknownDetails}>
-                            {t("unknownDevice.viewDetails")}
-                          </Button>
-                          <Button size="sm" variant="ghost" onClick={handleSuppressUnknown}>
-                            {t("unknownDevice.dismissForScenario")}
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {activeScenario && (activeScenario.scenarioTasks?.length ?? 0) > 0 && (
-                    <ScenarioActions
-                      scenario={activeScenario}
-                      selectedDevice={selectedDevice}
-                      resetKey={actionsResetKey}
-                      onTaskChange={(task, isComplete) => setActiveTask(isComplete ? null : task)}
-                      onActionComplete={setActionOutcome}
-                    />
-                  )}
-
-                  {activeScenario && activeScenario.learningPrompts.length > 0 && (
-                    <LearningPrompts prompts={activeScenario.learningPrompts} />
-                  )}
-
-                  {selectedDevice ? (
-                    <DeviceDetailsPanel
-                      device={selectedDevice}
-                      network={selectedNetwork}
-                      activeLayer={activeLayer}
-                      onClose={() => setSelectedDeviceId(null)}
-                      showFullMac={showFullMac}
-                      onToggleMacDisplay={setShowFullMac}
-                    />
-                  ) : (
-                    <Card className="p-4" data-testid="panel-device-collapsed">
-                      <p className="text-sm font-medium">{t("devicePanel.noDeviceSelected")}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {t("devicePanel.clickToSelect")}
-                      </p>
-                    </Card>
-                  )}
-                </>
-              ) : (
-                <>
-                  {activeScenario && (
-                    <Card data-testid="scenario-brief" className="border-primary/15 bg-primary/5">
-                      <CardContent className="pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-primary">
-                          {t("scenarioBrief.title")}
-                        </p>
-                        <p className="mt-2 text-sm leading-relaxed text-foreground">
-                          {scenarioBriefBody}
-                        </p>
-                        {scenarioWatchFor && (
-                          <div className="mt-3 rounded-md border border-primary/20 bg-card px-3 py-2 text-xs">
-                            <span className="font-semibold">
-                              {t("scenarioBrief.watchForLabel")}:
-                            </span>{" "}
-                            {scenarioWatchFor}
-                          </div>
-                        )}
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {activeScenario && (activeScenario.scenarioTasks?.length ?? 0) > 0 && (
-                    <Card
-                      className="border-dashed border-chart-4/40 bg-chart-4/5"
-                      data-testid="actions-start-here"
-                    >
-                      <CardContent className="pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-chart-4">
-                          {t("actions.startHereTitle")}
-                        </p>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          {t("actions.startHereBody")}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {actionOutcome && (
-                    <Card
-                      className="border-green-500/30 bg-green-500/5"
-                      data-testid="action-outcome-banner"
-                    >
-                      <CardContent className="pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-green-600">
-                          {t("actions.outcomeTitle")}
-                        </p>
-                        <p className="mt-2 text-sm text-green-700 dark:text-green-300">
-                          {actionOutcome.message}
-                        </p>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {showInlineUnknown && (
-                    <Card
-                      className="border-destructive/40 bg-destructive/5"
-                      data-testid="inline-unknown-device"
-                    >
-                      <CardContent className="pt-4">
-                        <p className="text-xs font-semibold uppercase tracking-wide text-destructive">
-                          {t("unknownDevice.inlineTitle")}
-                        </p>
-                        <p className="mt-2 text-sm text-muted-foreground">
-                          {t("unknownDevice.inlineBody")}
-                        </p>
-                        <div className="mt-3 flex flex-wrap gap-2">
-                          <Button size="sm" variant="outline" onClick={handleShowUnknownDetails}>
-                            {t("unknownDevice.viewDetails")}
-                          </Button>
-                          <Button size="sm" variant="ghost" onClick={handleSuppressUnknown}>
-                            {t("unknownDevice.dismissForScenario")}
-                          </Button>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  )}
-
-                  {activeScenario && (activeScenario.scenarioTasks?.length ?? 0) > 0 && (
-                    <ScenarioActions
-                      scenario={activeScenario}
-                      selectedDevice={selectedDevice}
-                      resetKey={actionsResetKey}
-                      onTaskChange={(task, isComplete) => setActiveTask(isComplete ? null : task)}
-                      onActionComplete={setActionOutcome}
-                    />
-                  )}
-
-                  {activeScenario && activeScenario.learningPrompts.length > 0 && (
-                    <LearningPrompts prompts={activeScenario.learningPrompts} />
-                  )}
-
-                  {selectedDevice ? (
-                    <DeviceDetailsPanel
-                      device={selectedDevice}
-                      network={selectedNetwork}
-                      activeLayer={activeLayer}
-                      onClose={() => setSelectedDeviceId(null)}
-                      showFullMac={showFullMac}
-                      onToggleMacDisplay={setShowFullMac}
-                    />
-                  ) : (
-                    <Card className="p-4" data-testid="panel-device-collapsed">
-                      <p className="text-sm font-medium">{t("devicePanel.noDeviceSelected")}</p>
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        {t("devicePanel.clickToSelect")}
-                      </p>
-                    </Card>
-                  )}
-
-                  {selectedDevice && selectedDevice.type !== "router" && (
-                    <Card className="p-4">
-                      {showPacketJourney ? (
-                        <PacketJourney
-                          sourceDevice={selectedDevice}
-                          routerDevice={routerDevice}
-                          activeLayer={activeLayer}
-                          publicIp={activeScenario?.environment.publicIp || "0.0.0.0"}
-                          flows={activeScenario?.flows || []}
-                          onClose={() => setShowPacketJourney(false)}
-                          showFullMac={showFullMac}
-                        />
-                      ) : (
-                        <div className="text-center">
-                          <Zap className="mx-auto mb-2 h-8 w-8 text-muted-foreground/50" />
-                          <p className="mb-3 text-sm text-muted-foreground">
-                            {t("common.tracePacketJourneyDescription")}
-                          </p>
-                          <Button
-                            size="sm"
-                            onClick={handleTogglePacketJourney}
-                            data-testid="button-start-packet-journey"
-                          >
-                            <Zap className="mr-1.5 h-4 w-4" />
-                            {t("common.tracePacketJourney")}
-                          </Button>
-                        </div>
-                      )}
-                    </Card>
-                  )}
-                </>
-              )}
+              {secondarySection}
             </div>
           </ScrollArea>
         </aside>
@@ -1045,7 +894,6 @@ export default function Home() {
         isOpen={showUnknownModal}
         onClose={() => setShowUnknownModal(false)}
         showFullMac={showFullMac}
-        onSuppressForScenario={handleSuppressUnknown}
       />
     </div>
   );

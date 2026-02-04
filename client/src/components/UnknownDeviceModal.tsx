@@ -20,7 +20,6 @@ interface UnknownDeviceModalProps {
   isOpen: boolean;
   onClose: () => void;
   showFullMac?: boolean;
-  onSuppressForScenario?: () => void;
 }
 
 const responseIds = ["investigate", "block", "ignore"] as const;
@@ -40,7 +39,6 @@ export function UnknownDeviceModal({
   isOpen,
   onClose,
   showFullMac = true,
-  onSuppressForScenario,
 }: UnknownDeviceModalProps) {
   const { t } = useTranslation();
   const [selectedResponse, setSelectedResponse] = useState<string | null>(null);
@@ -62,11 +60,6 @@ export function UnknownDeviceModal({
     setSelectedResponse(null);
     setShowFeedback(false);
     onClose();
-  };
-
-  const handleSuppress = () => {
-    onSuppressForScenario?.();
-    handleClose();
   };
 
   if (!device) return null;
@@ -159,16 +152,6 @@ export function UnknownDeviceModal({
               <Button onClick={handleClose} className="w-full" data-testid="button-close-modal">
                 {t("unknownDevice.gotIt")}
               </Button>
-              {onSuppressForScenario && (
-                <Button
-                  variant="ghost"
-                  onClick={handleSuppress}
-                  className="w-full"
-                  data-testid="button-dismiss-unknown-scenario"
-                >
-                  {t("unknownDevice.dismissForScenario")}
-                </Button>
-              )}
             </div>
           )}
         </div>

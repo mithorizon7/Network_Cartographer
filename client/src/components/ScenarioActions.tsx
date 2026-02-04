@@ -266,6 +266,9 @@ export function ScenarioActions({
           </span>
         </div>
         <Progress value={progress} className="mt-2 h-1.5" />
+        {safeIndex === 0 && completedIds.size === 0 && (
+          <p className="mt-2 text-xs text-muted-foreground">{t("actions.startHereBody")}</p>
+        )}
       </CardHeader>
       <CardContent className="space-y-3">
         <div className="space-y-1">
