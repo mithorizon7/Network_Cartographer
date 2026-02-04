@@ -61,7 +61,6 @@ interface ScenarioSummary {
 export default function Home() {
   const { t } = useTranslation();
   const onboarding = useOnboardingOptional();
-  const focusStorageKey = "network-cartographer-focus-mode";
   const [selectedScenarioId, setSelectedScenarioId] = useState<string | null>(null);
   const [activeLayer, setActiveLayer] = useState<LayerMode>("network");
   const [selectedDeviceId, setSelectedDeviceId] = useState<string | null>(null);
@@ -73,17 +72,6 @@ export default function Home() {
   const [showUnknownModal, setShowUnknownModal] = useState(false);
   const [actionsResetKey, setActionsResetKey] = useState(0);
   const [showFullMac, setShowFullMac] = useState(true);
-  const [focusMode, setFocusMode] = useState(() => {
-    if (typeof window === "undefined") return true;
-    try {
-      const stored = localStorage.getItem(focusStorageKey);
-      if (stored === null) return true;
-      return stored === "true";
-    } catch {
-      // Ignore storage errors (private mode, blocked storage, etc.)
-      return true;
-    }
-  });
   const [activeTask, setActiveTask] = useState<ScenarioTask | null>(null);
   const [actionOutcome, setActionOutcome] = useState<ActionOutcome | null>(null);
   const [showSelectedFlowsOnly, setShowSelectedFlowsOnly] = useState(false);
@@ -110,27 +98,6 @@ export default function Home() {
       setSelectedScenarioId(scenarioSummaries[0].id);
     }
   }, [scenarioSummaries, selectedScenarioId]);
-
-  useEffect(() => {
-    try {
-      localStorage.setItem(focusStorageKey, String(focusMode));
-    } catch {
-      // Ignore storage errors (private mode, blocked storage, etc.)
-    }
-  }, [focusMode]);
-
-  useEffect(() => {
-    if (!focusMode) return;
-    if (viewMode !== "map") {
-      setViewMode("map");
-    }
-    if (showComparison) {
-      setShowComparison(false);
-    }
-    if (showPacketJourney) {
-      setShowPacketJourney(false);
-    }
-  }, [focusMode, viewMode, showComparison, showPacketJourney]);
 
   useEffect(() => {
     if (!onboarding?.isActive) return;
@@ -268,7 +235,7 @@ export default function Home() {
     ? t(`scenarioBrief.${scenarioKey}.watchFor`, { defaultValue: "" })
     : "";
   const showFlowInfo = activeLayer === "transport" || activeLayer === "application";
-  const disableAdvancedViews = focusMode || onboarding?.isActive;
+  const disableAdvancedViews = onboarding?.isActive;
   const tasksInProgress = !!activeTask;
   const showInlineUnknown =
     !!selectedDevice &&
@@ -300,16 +267,6 @@ export default function Home() {
 
   const handleTogglePacketJourney = useCallback(() => {
     setShowPacketJourney((prev) => !prev);
-  }, []);
-
-  const handleToggleFocusMode = useCallback((enabled: boolean) => {
-    setFocusMode(enabled);
-    if (enabled) {
-      setViewMode("map");
-      setShowComparison(false);
-      setShowPacketJourney(false);
-      setFilters(defaultFilters);
-    }
   }, []);
 
   const handleShowUnknownDetails = useCallback(() => {
@@ -447,7 +404,7 @@ export default function Home() {
   );
 
   const packetJourneyCard =
-    !focusMode && selectedDevice && selectedDevice.type !== "router" ? (
+    selectedDevice && selectedDevice.type !== "router" ? (
       <Card className="p-4">
         {showPacketJourney ? (
           <PacketJourney
@@ -651,13 +608,7 @@ export default function Home() {
                   }}
                   data-testid="button-view-table"
                   disabled={disableAdvancedViews}
-                  title={
-                    disableAdvancedViews
-                      ? onboarding?.isActive
-                        ? t("onboarding.mapOnlyNotice")
-                        : t("controls.focusModeLocked")
-                      : undefined
-                  }
+                  title={disableAdvancedViews ? t("onboarding.mapOnlyNotice") : undefined}
                 >
                   <TableIcon className="mr-1.5 h-4 w-4" />
                   {t("controls.tableView")}
@@ -671,32 +622,14 @@ export default function Home() {
                   disabled={
                     disableAdvancedViews || !scenarioSummaries || scenarioSummaries.length < 2
                   }
-                  title={
-                    disableAdvancedViews
-                      ? onboarding?.isActive
-                        ? t("onboarding.mapOnlyNotice")
-                        : t("controls.focusModeLocked")
-                      : undefined
-                  }
+                  title={disableAdvancedViews ? t("onboarding.mapOnlyNotice") : undefined}
                 >
                   <GitCompare className="mr-1.5 h-4 w-4" />
                   {t("controls.compare")}
                 </Button>
               </div>
 
-              <div className="focus-toggle" title={t("controls.focusModeDescription")}>
-                <span className="text-xs font-medium text-muted-foreground">
-                  {t("controls.focusMode")}
-                </span>
-                <Switch
-                  checked={focusMode}
-                  onCheckedChange={handleToggleFocusMode}
-                  aria-label={t("controls.focusMode")}
-                  data-testid="toggle-focus-mode"
-                />
-              </div>
-
-              {!focusMode && !onboarding?.isActive && (
+              {!onboarding?.isActive && (
                 <ScenarioExportImport
                   scenario={activeScenario || null}
                   onImport={handleImportScenario}
@@ -716,7 +649,7 @@ export default function Home() {
             </div>
           </div>
 
-          {activeScenario && !focusMode && (
+          {activeScenario && (
             <div className="reveal reveal-delay-1 rounded-2xl border border-border/80 bg-card/70 px-4 py-3 shadow-sm backdrop-blur">
               <DeviceFilter
                 devices={activeScenario.devices}
@@ -827,11 +760,6 @@ export default function Home() {
                     aria-label={t("legend.showSelectedFlows")}
                   />
                 </div>
-              )}
-              {focusMode && (
-                <Badge variant="secondary" className="text-xs">
-                  {t("controls.focusModeOn")}
-                </Badge>
               )}
             </div>
           </div>
