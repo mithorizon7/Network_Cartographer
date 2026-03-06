@@ -8,11 +8,22 @@ import { nanoid } from "nanoid";
 
 const viteLogger = createLogger();
 
+function resolveAllowedHosts(): string[] {
+  const configuredHosts = (process.env.ALLOWED_HOSTS || process.env.REPLIT_DOMAINS || "")
+    .split(",")
+    .map((host) => host.trim())
+    .filter(Boolean);
+
+  const defaultHosts = ["localhost", "127.0.0.1"];
+  const mergedHosts = new Set([...defaultHosts, ...configuredHosts]);
+  return Array.from(mergedHosts);
+}
+
 export async function setupVite(server: Server, app: Express) {
   const serverOptions = {
     middlewareMode: true,
     hmr: { server, path: "/vite-hmr" },
-    allowedHosts: true as const,
+    allowedHosts: resolveAllowedHosts(),
   };
 
   const vite = await createViteServer({

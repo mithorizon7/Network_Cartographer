@@ -113,6 +113,8 @@
     "invalidFormatError": "Nederīgs scenārija formāts",
     "invalidJsonError": "Nederīgs JSON formāts. Lūdzu, pārbaudiet ievadi.",
     "invalidJsonFileError": "Nederīgs JSON fails. Lūdzu, pārbaudiet faila formātu.",
+    "importTooLarge": "Importa saturs ir pārāk liels (maks. {{maxKb}} KB).",
+    "fileTooLarge": "Fails ir pārāk liels (maks. {{maxKb}} KB).",
     "readFileError": "Neizdevās nolasīt failu",
     "failedReadFileError": "Faila nolasīšana neizdevās",
     "validationError": "Validācijas kļūda pie \"{{path}}\".",

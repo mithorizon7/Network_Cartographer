@@ -113,6 +113,8 @@
     "invalidFormatError": "Invalid scenario format",
     "invalidJsonError": "Invalid JSON format. Please check your input.",
     "invalidJsonFileError": "Invalid JSON file. Please check the file format.",
+    "importTooLarge": "Import content is too large (max {{maxKb}} KB).",
+    "fileTooLarge": "File is too large (max {{maxKb}} KB).",
     "readFileError": "Could not read file",
     "failedReadFileError": "Failed to read file",
     "validationError": "Validation error at \"{{path}}\".",

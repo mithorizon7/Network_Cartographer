@@ -113,6 +113,8 @@
     "invalidFormatError": "Неверный формат сценария",
     "invalidJsonError": "Неверный формат JSON. Проверьте ввод.",
     "invalidJsonFileError": "Неверный JSON файл. Проверьте формат файла.",
+    "importTooLarge": "Импортируемое содержимое слишком большое (макс. {{maxKb}} КБ).",
+    "fileTooLarge": "Файл слишком большой (макс. {{maxKb}} КБ).",
     "readFileError": "Не удалось прочитать файл",
     "failedReadFileError": "Ошибка чтения файла",
     "validationError": "Ошибка проверки по пути \"{{path}}\".",

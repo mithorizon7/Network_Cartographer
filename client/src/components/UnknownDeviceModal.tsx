@@ -65,7 +65,14 @@ export function UnknownDeviceModal({
   if (!device) return null;
 
   return (
-    <Dialog open={isOpen} onOpenChange={handleClose}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={(open) => {
+        if (!open) {
+          handleClose();
+        }
+      }}
+    >
       <DialogContent className="max-w-md" data-testid="modal-unknown-device">
         <DialogHeader>
           <div className="flex items-center gap-3">

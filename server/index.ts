@@ -5,6 +5,13 @@ import { createServer } from "http";
 
 const app = express();
 const httpServer = createServer(app);
+const isDevelopment = process.env.NODE_ENV === "development";
+
+app.disable("x-powered-by");
+
+if (process.env.NODE_ENV === "production") {
+  app.set("trust proxy", 1);
+}
 
 declare module "http" {
   interface IncomingMessage {
@@ -33,9 +40,24 @@ export function log(message: string, source = "express") {
   console.log(`${formattedTime} [${source}] ${message}`);
 }
 
+function safeSerializeForLog(value: unknown): string | null {
+  try {
+    const serialized = JSON.stringify(value);
+    const maxLength = 1200;
+    if (serialized.length <= maxLength) {
+      return serialized;
+    }
+    const truncatedCount = serialized.length - maxLength;
+    return `${serialized.slice(0, maxLength)}... [truncated ${truncatedCount} chars]`;
+  } catch {
+    return null;
+  }
+}
+
 app.use((req, res, next) => {
   const start = Date.now();
   const path = req.path;
+  const shouldLogResponseBody = isDevelopment;
   let capturedJsonResponse: unknown = undefined;
 
   const originalResJson = res.json;
@@ -48,8 +70,11 @@ app.use((req, res, next) => {
     const duration = Date.now() - start;
     if (path.startsWith("/api")) {
       let logLine = `${req.method} ${path} ${res.statusCode} in ${duration}ms`;
-      if (capturedJsonResponse) {
-        logLine += ` :: ${JSON.stringify(capturedJsonResponse)}`;
+      if (shouldLogResponseBody && capturedJsonResponse !== undefined) {
+        const serialized = safeSerializeForLog(capturedJsonResponse);
+        if (serialized) {
+          logLine += ` :: ${serialized}`;
+        }
       }
 
       log(logLine);
@@ -62,13 +87,24 @@ app.use((req, res, next) => {
 (async () => {
   await registerRoutes(httpServer, app);
 
-  app.use((err: unknown, _req: Request, res: Response, _next: NextFunction) => {
+  app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
     const error = err as { status?: number; statusCode?: number; message?: string };
-    const status = error.status || error.statusCode || 500;
-    const message = error.message || "Internal Server Error";
+    const statusCandidate = error.status || error.statusCode || 500;
+    const status =
+      Number.isInteger(statusCandidate) && statusCandidate >= 400 && statusCandidate <= 599
+        ? statusCandidate
+        : 500;
+    const rawMessage = error.message || "Internal Server Error";
+    const message = status >= 500 && !isDevelopment ? "Internal Server Error" : rawMessage;
+
+    log(`${req.method} ${req.originalUrl} ${status} :: ${rawMessage}`, "error");
+
+    if (res.headersSent) {
+      next(err);
+      return;
+    }
 
     res.status(status).json({ message });
-    throw err;
   });
 
   // importantly only setup vite in development and after
@@ -96,4 +132,8 @@ app.use((req, res, next) => {
       log(`serving on port ${port}`);
     },
   );
-})();
+})().catch((err: unknown) => {
+  const message = err instanceof Error ? err.stack || err.message : String(err);
+  log(`startup failed: ${message}`, "startup");
+  process.exit(1);
+});
