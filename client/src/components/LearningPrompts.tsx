@@ -11,9 +11,10 @@ import { promptIdToKey } from "@/lib/scenarioUtils";
 interface LearningPromptsProps {
   prompts: LearningPrompt[];
   onComplete?: () => void;
+  onPromptAnswered?: () => void;
 }
 
-export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
+export function LearningPrompts({ prompts, onComplete, onPromptAnswered }: LearningPromptsProps) {
   const { t } = useTranslation();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
@@ -68,6 +69,7 @@ export function LearningPrompts({ prompts, onComplete }: LearningPromptsProps) {
     if (selectedAnswer !== null) return;
     setSelectedAnswer(answerIndex);
     setShowExplanation(true);
+    onPromptAnswered?.();
 
     const isCorrect = currentPrompt.answers[answerIndex].isCorrect;
     if (isCorrect) {

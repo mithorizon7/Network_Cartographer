@@ -27,6 +27,7 @@ import { ScenarioActions, type ActionOutcome } from "@/components/ScenarioAction
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Progress } from "@/components/ui/progress";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Switch } from "@/components/ui/switch";
@@ -39,6 +40,9 @@ import {
   Loader2,
   Zap,
   GitCompare,
+  CheckCircle2,
+  Circle,
+  Compass,
 } from "lucide-react";
 import {
   Dialog,
@@ -58,6 +62,36 @@ interface ScenarioSummary {
   networkCount: number;
 }
 
+interface MissionMilestones {
+  comparedLayers: boolean;
+  inspectedDevice: boolean;
+  completedAction: boolean;
+  answeredPrompt: boolean;
+}
+
+const MISSION_STORAGE_KEY = "network-cartographer-first-mission";
+
+const defaultMissionMilestones: MissionMilestones = {
+  comparedLayers: false,
+  inspectedDevice: false,
+  completedAction: false,
+  answeredPrompt: false,
+};
+
+function normalizeMissionMilestones(value: unknown): MissionMilestones {
+  if (!value || typeof value !== "object") {
+    return { ...defaultMissionMilestones };
+  }
+
+  const raw = value as Partial<Record<keyof MissionMilestones, unknown>>;
+  return {
+    comparedLayers: raw.comparedLayers === true,
+    inspectedDevice: raw.inspectedDevice === true,
+    completedAction: raw.completedAction === true,
+    answeredPrompt: raw.answeredPrompt === true,
+  };
+}
+
 export default function Home() {
   const { t } = useTranslation();
   const onboarding = useOnboardingOptional();
@@ -75,6 +109,15 @@ export default function Home() {
   const [activeTask, setActiveTask] = useState<ScenarioTask | null>(null);
   const [actionOutcome, setActionOutcome] = useState<ActionOutcome | null>(null);
   const [showSelectedFlowsOnly, setShowSelectedFlowsOnly] = useState(false);
+  const [missionMilestones, setMissionMilestones] = useState<MissionMilestones>(() => {
+    try {
+      const stored = localStorage.getItem(MISSION_STORAGE_KEY);
+      if (!stored) return { ...defaultMissionMilestones };
+      return normalizeMissionMilestones(JSON.parse(stored));
+    } catch {
+      return { ...defaultMissionMilestones };
+    }
+  });
 
   const {
     data: scenarioSummaries,
@@ -112,8 +155,37 @@ export default function Home() {
     return () => clearTimeout(timer);
   }, [actionOutcome]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(MISSION_STORAGE_KEY, JSON.stringify(missionMilestones));
+    } catch {
+      // Ignore storage errors (private mode, blocked storage, etc.)
+    }
+  }, [missionMilestones]);
+
+  const markMilestone = useCallback((key: keyof MissionMilestones) => {
+    setMissionMilestones((prev) => (prev[key] ? prev : { ...prev, [key]: true }));
+  }, []);
+
+  const handleReplayGuidedMission = useCallback(() => {
+    setMissionMilestones({ ...defaultMissionMilestones });
+    setActiveLayer("network");
+    setSelectedDeviceId(null);
+    setActionOutcome(null);
+    setActiveTask(null);
+    setActionsResetKey((prev) => prev + 1);
+    onboarding?.restartOnboarding();
+  }, [onboarding]);
+
   const activeScenario = importedScenario || scenario;
   const scenarioKey = activeScenario ? scenarioIdToKey[activeScenario.id] : null;
+  const onboardingStepId = onboarding?.currentStep?.id;
+
+  useEffect(() => {
+    if (activeLayer !== "network") {
+      markMilestone("comparedLayers");
+    }
+  }, [activeLayer, markMilestone]);
 
   const selectedDevice = activeScenario?.devices.find((d) => d.id === selectedDeviceId) || null;
   const selectedNetwork = selectedDevice
@@ -133,6 +205,27 @@ export default function Home() {
       setActiveTask(null);
     }
   }, [activeScenario]);
+
+  useEffect(() => {
+    if (!onboarding?.isActive || !onboardingStepId) return;
+
+    const shouldUnlock =
+      (onboardingStepId === "layer_toggle" && missionMilestones.comparedLayers) ||
+      (onboardingStepId === "device_inspection" && missionMilestones.inspectedDevice) ||
+      (onboardingStepId === "complete_first_action" && missionMilestones.completedAction) ||
+      (onboardingStepId === "quiz_answer" && missionMilestones.answeredPrompt);
+
+    if (shouldUnlock) {
+      onboarding.satisfyGating();
+    }
+  }, [
+    onboarding,
+    onboardingStepId,
+    missionMilestones.comparedLayers,
+    missionMilestones.inspectedDevice,
+    missionMilestones.completedAction,
+    missionMilestones.answeredPrompt,
+  ]);
 
   const filteredDevices = useDeviceFilter(
     activeScenario?.devices || [],
@@ -242,6 +335,31 @@ export default function Home() {
     (selectedDevice.type === "unknown" || selectedDevice.riskFlags.includes("unknown_device")) &&
     tasksInProgress;
   const hasScenarioTasks = (activeScenario?.scenarioTasks?.length ?? 0) > 0;
+  const missionItems = [
+    {
+      id: "comparedLayers",
+      done: missionMilestones.comparedLayers,
+      label: t("onboarding.missionChecklist.items.comparedLayers"),
+    },
+    {
+      id: "inspectedDevice",
+      done: missionMilestones.inspectedDevice,
+      label: t("onboarding.missionChecklist.items.inspectedDevice"),
+    },
+    {
+      id: "completedAction",
+      done: missionMilestones.completedAction,
+      label: t("onboarding.missionChecklist.items.completedAction"),
+    },
+    {
+      id: "answeredPrompt",
+      done: missionMilestones.answeredPrompt,
+      label: t("onboarding.missionChecklist.items.answeredPrompt"),
+    },
+  ];
+  const completedMissionCount = missionItems.filter((item) => item.done).length;
+  const missionProgress = (completedMissionCount / missionItems.length) * 100;
+  const missionComplete = completedMissionCount === missionItems.length;
 
   const handleReset = useCallback(() => {
     setSelectedDeviceId(null);
@@ -287,6 +405,7 @@ export default function Home() {
   const handleDeviceSelect = useCallback(
     (deviceId: string) => {
       setSelectedDeviceId(deviceId);
+      markMilestone("inspectedDevice");
       const device = activeScenario?.devices.find((d) => d.id === deviceId);
       if (device && (device.type === "unknown" || device.riskFlags.includes("unknown_device"))) {
         if (activeTask) {
@@ -299,8 +418,26 @@ export default function Home() {
         onboarding.satisfyGating();
       }
     },
-    [activeScenario, onboarding, activeTask],
+    [activeScenario, onboarding, activeTask, markMilestone],
   );
+
+  const handleActionComplete = useCallback(
+    (outcome: ActionOutcome) => {
+      setActionOutcome(outcome);
+      markMilestone("completedAction");
+      if (onboarding?.isActive && onboarding.currentStep?.id === "complete_first_action") {
+        onboarding.satisfyGating();
+      }
+    },
+    [onboarding, markMilestone],
+  );
+
+  const handlePromptAnswered = useCallback(() => {
+    markMilestone("answeredPrompt");
+    if (onboarding?.isActive && onboarding.currentStep?.id === "quiz_answer") {
+      onboarding.satisfyGating();
+    }
+  }, [onboarding, markMilestone]);
 
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -345,6 +482,73 @@ export default function Home() {
 
   const isLoading = isLoadingList || (selectedScenarioId && isLoadingScenario);
   const error = listError || scenarioError;
+
+  const missionChecklistCard = (
+    <Card data-testid="first-mission-checklist" className="border-chart-4/30 bg-chart-4/5">
+      <CardContent className="px-4 py-3">
+        <div className="flex items-start justify-between gap-3">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wide text-chart-4">
+              {t("onboarding.missionChecklist.kicker")}
+            </p>
+            <h3 className="mt-1 text-sm font-semibold">{t("onboarding.missionChecklist.title")}</h3>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {t("onboarding.missionChecklist.description")}
+            </p>
+          </div>
+          <Compass className="mt-0.5 h-4 w-4 text-chart-4" />
+        </div>
+
+        <div className="mt-3 space-y-2">
+          <div className="flex items-center justify-between text-xs text-muted-foreground">
+            <span>{t("onboarding.missionChecklist.progressLabel")}</span>
+            <span>
+              {t("onboarding.missionChecklist.progress", {
+                completed: completedMissionCount,
+                total: missionItems.length,
+              })}
+            </span>
+          </div>
+          <Progress value={missionProgress} className="h-1.5" />
+        </div>
+
+        <div className="mt-3 space-y-1.5">
+          {missionItems.map((item) => (
+            <div key={item.id} className="flex items-center gap-2 text-xs">
+              {item.done ? (
+                <CheckCircle2 className="h-3.5 w-3.5 text-green-600 dark:text-green-400" />
+              ) : (
+                <Circle className="h-3.5 w-3.5 text-muted-foreground/60" />
+              )}
+              <span className={item.done ? "text-foreground" : "text-muted-foreground"}>
+                {item.label}
+              </span>
+            </div>
+          ))}
+        </div>
+
+        <div className="mt-3 flex flex-wrap items-center gap-2">
+          <Button
+            variant={onboarding?.isActive ? "default" : "outline"}
+            size="sm"
+            onClick={handleReplayGuidedMission}
+            disabled={!onboarding}
+            data-testid="button-guided-mission"
+          >
+            {t("onboarding.missionChecklist.restart")}
+          </Button>
+          {missionComplete && (
+            <Badge
+              variant="secondary"
+              className="border-green-500/40 bg-green-500/10 text-green-700"
+            >
+              {t("onboarding.missionChecklist.allDone")}
+            </Badge>
+          )}
+        </div>
+      </CardContent>
+    </Card>
+  );
 
   const statusStack =
     showInlineUnknown || actionOutcome ? (
@@ -437,7 +641,10 @@ export default function Home() {
 
   const learningSection =
     activeScenario && activeScenario.learningPrompts.length > 0 ? (
-      <LearningPrompts prompts={activeScenario.learningPrompts} />
+      <LearningPrompts
+        prompts={activeScenario.learningPrompts}
+        onPromptAnswered={handlePromptAnswered}
+      />
     ) : null;
 
   const scenarioBriefCard = activeScenario ? (
@@ -554,7 +761,7 @@ export default function Home() {
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => onboarding?.restartOnboarding()}
+                      onClick={handleReplayGuidedMission}
                       data-testid="button-replay-tour"
                       disabled={!onboarding}
                     >
@@ -768,6 +975,7 @@ export default function Home() {
         <aside className="side-panel reveal reveal-delay-2 flex h-80 w-full flex-col gap-4 lg:h-auto lg:w-96">
           <ScrollArea className="flex-1 pr-2">
             <div className="space-y-4 pr-2">
+              {missionChecklistCard}
               {statusStack}
 
               <div className="space-y-4">
@@ -777,7 +985,7 @@ export default function Home() {
                     selectedDevice={selectedDevice}
                     resetKey={actionsResetKey}
                     onTaskChange={(task, isComplete) => setActiveTask(isComplete ? null : task)}
-                    onActionComplete={setActionOutcome}
+                    onActionComplete={handleActionComplete}
                   />
                 )}
 

@@ -89,16 +89,8 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
     setTransitionMessage(message);
     onChange(newLayer);
 
-    if (onboarding?.isActive && onboarding.currentStep) {
-      const stepId = onboarding.currentStep.id;
-      if (
-        (stepId === "layers_link" && newLayer === "link") ||
-        (stepId === "layers_network" && newLayer === "network") ||
-        (stepId === "layers_transport" && newLayer === "transport") ||
-        (stepId === "layers_application" && newLayer === "application")
-      ) {
-        onboarding.satisfyGating();
-      }
+    if (onboarding?.isActive && onboarding.currentStep?.id === "layer_toggle") {
+      onboarding.satisfyGating();
     }
 
     if (timeoutRef.current) {

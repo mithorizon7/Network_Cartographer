@@ -798,8 +798,8 @@
     }
   },
   "onboarding": {
-    "replayTour": "Atkārtot ekskursiju",
-    "mapOnlyNotice": "Ekskursijas laikā ir pieejams tikai kartes skats.",
+    "replayTour": "Atkārtot vadīto misiju",
+    "mapOnlyNotice": "Vadītās misijas laikā ir pieejams tikai kartes skats.",
     "buttons": {
       "continue": "Turpināt",
       "next": "Tālāk",
@@ -814,80 +814,62 @@
       "clickNetwork": "Noklikšķiniet uz Network, lai turpinātu",
       "clickTransport": "Noklikšķiniet uz Transport, lai turpinātu",
       "clickApplication": "Noklikšķiniet uz Application, lai turpinātu",
-      "clickDevice": "Noklikšķiniet uz jebkuras ierīces, lai turpinātu"
+      "clickDevice": "Noklikšķiniet uz jebkuras ierīces, lai turpinātu",
+      "toggleLayer": "Pārslēdzieties uz citu slāni, lai turpinātu",
+      "completeAction": "Pabeidziet pašreizējo scenārija darbību, lai turpinātu",
+      "answerPrompt": "Atbildiet uz vienu mācību pārbaudes jautājumu, lai turpinātu"
+    },
+    "missionChecklist": {
+      "kicker": "Pirmā sesija",
+      "title": "Prasmju misija",
+      "description": "Izmantojiet šo sarakstu, lai ātri sasniegtu rezultātu. Vadību varat atsākt jebkurā brīdī.",
+      "progressLabel": "Progress",
+      "progress": "{{completed}} no {{total}} pabeigti",
+      "restart": "Restartēt vadīto misiju",
+      "allDone": "Misija pabeigta",
+      "items": {
+        "comparedLayers": "Pārslēdziet slāņus un salīdziniet izmaiņas",
+        "inspectedDevice": "Kartē izpētiet vienu ierīci",
+        "completedAction": "Pabeidziet vienu scenārija darbību",
+        "answeredPrompt": "Atbildiet uz vienu mācību pārbaudes jautājumu"
+      }
     },
     "steps": {
-      "welcome_hook": {
-        "title": "Jūsu tīkls vienmēr runā",
-        "content": "Ierīces jūsu tīklā nepārtraukti apmainās ar datplūsmu — tālruņi, TV un termostati. Šis kurss parāda, ar ko tās sazinās un kas ir atklāts."
-      },
-      "welcome_challenge": {
-        "title": "Slēptie riski",
-        "content": "Uzbrucēji izmanto aizmirstas ierīces, vājas paroles un nešifrētus savienojumus. Drošība sākas ar redzamību."
-      },
       "welcome_mission": {
-        "title": "Jūsu tīkla atklājumu misija",
-        "content": "Jūs iemācīsieties lasīt tīklu slāni pa slānim, atpazīt riskus un veikt koriģējošas darbības."
+        "title": "Sāciet ar vienu praktisku misiju",
+        "content": "Šajā sesijā jūs izpētīsiet vienu ierīci, pabeigsiet vienu drošības darbību un atbildēsiet uz vienu īsu pārbaudi."
       },
-      "map_solar_system": {
-        "title": "Jūsu tīkls kā Saules sistēma",
-        "content": "Karte izmanto Saules sistēmas izkārtojumu: maršrutētājs centrā, gredzeni uzticības zonām, punkti ierīcēm."
+      "scenario_context": {
+        "title": "Izvēlieties scenārija kontekstu",
+        "content": "Katrs scenārijs atspoguļo citu reālu vidi. Sāciet ar šo, pēc tam salīdziniet pārējos scenārijus."
       },
-      "map_trust_zones": {
-        "title": "Uzticības zonu izpratne",
-        "content": "Tīkli tiek segmentēti zonās: galvenā, viesu un IoT. Izolācija ierobežo, kam var piekļūt kompromitēta ierīce."
+      "map_scan": {
+        "title": "Noskenējiet tīkla karti",
+        "content": "Maršrutētājs ir centrā, bet ierīces riņķo uzticības zonās (galvenā, viesu, IoT). Tā ātrāk redzēsiet saistības."
       },
-      "map_device_indicators": {
-        "title": "Ierīču signālu lasīšana",
-        "content": "Pulsējošie gredzeni norāda riska karodziņus, piemēram, nezināma ierīce, noklusējuma parole vai novecojusi programmaparatūra."
-      },
-      "scenario_contexts": {
-        "title": "Reāli tīklu scenāriji",
-        "content": "Scenāriji atspoguļo tipiskas vides: mājas tīkli, mazi biroji un viesnīcu Wi-Fi. Katrā ir atšķirīgi riski un kontroles."
-      },
-      "scenario_select": {
-        "title": "Izvēlieties savu vidi",
-        "content": "Izvēlieties scenāriju. Jūs varat pārslēgties jebkurā laikā, lai salīdzinātu riskus un kontroles."
-      },
-      "layers_why": {
-        "title": "Skatīšanās slāņos",
-        "content": "Tīkla slāņi rāda atšķirīgus identifikatorus un kontroles mehānismus. Pārslēdzoties, jūs varat izsekot trafiku no saites līdz lietojumprogrammai."
-      },
-      "layers_link": {
-        "title": "Saites slānis: fiziskā identitāte",
-        "content": "Saites slānis parāda MAC adreses un lokālo piegādi. Šeit pamanāt neatļautas ierīces."
-      },
-      "layers_network": {
-        "title": "Tīkla slānis: loģiskās adreses",
-        "content": "Tīkla slānis parāda IP adresāciju un maršrutēšanu. Privātās IP parasti sākas ar 10.x.x.x, 172.16-31.x.x vai 192.168.x.x; publiskā IP ir maršrutētāja WAN adrese kartes malā."
-      },
-      "layers_transport": {
-        "title": "Transporta slānis: savienojumi un porti",
-        "content": "Transporta slānis parāda aktīvos savienojumus, portu numurus un to, vai plūsma izmanto TCP vai UDP."
-      },
-      "layers_application": {
-        "title": "Lietojumprogrammu slānis: kas tiek pārsūtīts",
-        "content": "Lietojumprogrammu slānis parāda protokolus un šifrēšanas statusu. HTTPS izmanto TLS; HTTP nav šifrēts."
+      "layer_toggle": {
+        "title": "Izmantojiet Layer Goggles",
+        "content": "Pārslēdziet slāņus, lai redzētu vienu un to pašu tīklu dažādos skatījumos: lokālā identitāte, IP maršrutēšana, plūsmas un lietojumprogrammas."
       },
       "device_inspection": {
-        "title": "Ierīču izmeklēšana",
-        "content": "Atlasiet ierīci, lai redzētu tās identitāti, aktīvās plūsmas un riska karodziņus. Vispirms pievērsiet uzmanību augstiem riskiem."
+        "title": "Izpētiet vienu ierīci",
+        "content": "Noklikšķiniet uz jebkuras ierīces, lai atvērtu detaļas. Pievērsiet uzmanību riska karodziņiem un saziņai."
       },
-      "device_risk_flags": {
-        "title": "Riska karodziņu izpratne",
-        "content": "Riska karodziņi norāda konkrētas problēmas: noklusējuma paroles, novecojusi programmaparatūra vai nezināmas ierīces."
+      "action_panel": {
+        "title": "Praktizējiet reālu lēmumu",
+        "content": "Darbību panelis pārvērš novērojumus darbībās. Šeit jūs trenējat drošības lēmumus."
       },
-      "device_learn_tab": {
-        "title": "Iebūvēta mācīšanās",
-        "content": "Cilnē Learn ir ierīcei specifiski riski un novēršanas soļi."
+      "complete_first_action": {
+        "title": "Pabeidziet pirmo darbību",
+        "content": "Atlasiet pareizo mērķi un pabeidziet vienu darbību. Tas ir jūsu pirmais nozīmīgais panākums simulatorā."
       },
-      "quiz_intro": {
-        "title": "Pārbaudiet savu izpratni",
-        "content": "Īsas pārbaudes nostiprina galvenos jēdzienus. Izmantojiet tās, lai apstiprinātu izpratni."
+      "quiz_answer": {
+        "title": "Nostipriniet izpratni",
+        "content": "Atbildiet uz vienu mācību pārbaudes jautājumu, lai nostiprinātu tikko redzēto."
       },
       "mission_complete": {
-        "title": "Misija pabeigta",
-        "content": "Tagad jūs protat kartēt ierīces, interpretēt slāņus un rīkoties pēc riskiem. Turpiniet scenārijus, lai nostiprinātu iemaņas."
+        "title": "Jūs esat gatavs turpināt",
+        "content": "Tagad jūs zināt pamatplūsmu: salīdzināt slāņus, izpētīt ierīces, rīkoties pēc riska un pārbaudīt izpratni."
       }
     }
   },

@@ -793,8 +793,8 @@
     }
   },
   "onboarding": {
-    "replayTour": "Replay tour",
-    "mapOnlyNotice": "Map view is locked during the tour.",
+    "replayTour": "Replay guided mission",
+    "mapOnlyNotice": "Map view is locked during the guided mission.",
     "buttons": {
       "continue": "Continue",
       "next": "Next",
@@ -809,80 +809,62 @@
       "clickNetwork": "Click Network to continue",
       "clickTransport": "Click Transport to continue",
       "clickApplication": "Click Application to continue",
-      "clickDevice": "Click any device to continue"
+      "clickDevice": "Click any device to continue",
+      "toggleLayer": "Switch to a different layer to continue",
+      "completeAction": "Complete the current scenario action to continue",
+      "answerPrompt": "Answer one learning check question to continue"
+    },
+    "missionChecklist": {
+      "kicker": "First Session",
+      "title": "Fluency Mission",
+      "description": "Use this checklist to get value fast. You can restart guidance at any time.",
+      "progressLabel": "Progress",
+      "progress": "{{completed}} of {{total}} complete",
+      "restart": "Restart guided mission",
+      "allDone": "Mission complete",
+      "items": {
+        "comparedLayers": "Switch layers to compare what changes",
+        "inspectedDevice": "Inspect one device from the map",
+        "completedAction": "Complete one scenario action",
+        "answeredPrompt": "Answer one learning check question"
+      }
     },
     "steps": {
-      "welcome_hook": {
-        "title": "Your Network is Always Talking",
-        "content": "Devices on your network exchange traffic continuously—phones, TVs, and thermostats. This course shows who they talk to and what is exposed."
-      },
-      "welcome_challenge": {
-        "title": "The Hidden Risks",
-        "content": "Attackers exploit forgotten devices, weak passwords, and unencrypted connections. Security starts with visibility."
-      },
       "welcome_mission": {
-        "title": "Your Network Discovery Mission",
-        "content": "You will learn to read the network layer by layer, identify risks, and take corrective actions."
+        "title": "Start with one practical mission",
+        "content": "In this session, you will inspect a device, complete one security action, and answer one quick check."
       },
-      "map_solar_system": {
-        "title": "Your Network as a Solar System",
-        "content": "The map uses a solar‑system layout: the router at the center, rings for trust zones, and dots for devices."
+      "scenario_context": {
+        "title": "Pick a scenario context",
+        "content": "Each scenario mirrors a different real-world environment. Start here, then compare scenarios after your first mission."
       },
-      "map_trust_zones": {
-        "title": "Understanding Trust Zones",
-        "content": "Networks are segmented into zones: main, guest, and IoT. Isolation limits what a compromised device can reach."
+      "map_scan": {
+        "title": "Scan the network map",
+        "content": "The router is at the center, and devices orbit in trust zones (main, guest, IoT). Use this layout to spot relationships quickly."
       },
-      "map_device_indicators": {
-        "title": "Reading Device Signals",
-        "content": "Pulsing rings mark risk flags such as unknown device, default password, or outdated firmware."
-      },
-      "scenario_contexts": {
-        "title": "Real-World Network Scenarios",
-        "content": "Scenarios reflect common environments: home networks, small offices, and hotel Wi‑Fi. Each has different risks and controls."
-      },
-      "scenario_select": {
-        "title": "Choose Your Environment",
-        "content": "Select a scenario. You can switch anytime to compare how risks and controls differ."
-      },
-      "layers_why": {
-        "title": "Seeing in Layers",
-        "content": "Network layers expose different identifiers and controls. Switching layers lets you trace traffic from link to application."
-      },
-      "layers_link": {
-        "title": "Link Layer: Physical Identity",
-        "content": "The Link layer shows MAC addresses and local delivery. It is where you spot unauthorized devices."
-      },
-      "layers_network": {
-        "title": "Network Layer: Logical Addresses",
-        "content": "The Network layer shows IP addressing and routing. Private IPs usually start with 10.x.x.x, 172.16-31.x.x, or 192.168.x.x; the router's WAN address is the public IP at the edge of the map."
-      },
-      "layers_transport": {
-        "title": "Transport Layer: Connections & Ports",
-        "content": "The Transport layer shows active connections, port numbers, and whether a flow uses TCP or UDP."
-      },
-      "layers_application": {
-        "title": "Application Layer: What's Being Communicated",
-        "content": "The Application layer shows protocols and encryption status. HTTPS uses TLS; HTTP is unencrypted."
+      "layer_toggle": {
+        "title": "Use Layer Goggles",
+        "content": "Switch layers to see the same network through different lenses: local identity, IP routing, flows, and application behavior."
       },
       "device_inspection": {
-        "title": "Investigating Devices",
-        "content": "Select a device to view its identity, active flows, and risk flags. Prioritize high‑risk flags."
+        "title": "Inspect a device",
+        "content": "Click any device to open details. Focus on risk flags and what the device is communicating."
       },
-      "device_risk_flags": {
-        "title": "Understanding Risk Flags",
-        "content": "Risk flags indicate concrete issues such as default passwords, outdated firmware, or unknown devices."
+      "action_panel": {
+        "title": "Practice a real decision",
+        "content": "The Actions panel turns observation into action. Use it to apply what you learned to this scenario."
       },
-      "device_learn_tab": {
-        "title": "Built-in Learning",
-        "content": "Use the Learn tab for device‑specific risks and mitigations."
+      "complete_first_action": {
+        "title": "Complete your first action",
+        "content": "Select the right target and complete one action. This is your first meaningful success in the simulator."
       },
-      "quiz_intro": {
-        "title": "Test Your Understanding",
-        "content": "Short checks reinforce key concepts. Use them to confirm understanding."
+      "quiz_answer": {
+        "title": "Lock in understanding",
+        "content": "Answer one Learning Check question to reinforce what you just observed."
       },
       "mission_complete": {
-        "title": "Mission Complete",
-        "content": "You can now map devices, interpret layers, and act on risks. Continue with scenarios to build fluency."
+        "title": "You are ready to explore",
+        "content": "You now know the core workflow: compare layers, inspect devices, act on risk, and validate understanding."
       }
     }
   },

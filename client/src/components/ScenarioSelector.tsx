@@ -9,7 +9,6 @@ import {
 import { Home, Building2, Wifi } from "lucide-react";
 import { useTranslation } from "react-i18next";
 import { scenarioIdToKey } from "@/lib/scenarioUtils";
-import { useOnboardingOptional } from "@/components/OnboardingProvider";
 
 interface ScenarioSelectorProps {
   scenarios: Scenario[];
@@ -25,7 +24,6 @@ const scenarioIcons: Record<string, typeof Home> = {
 
 export function ScenarioSelector({ scenarios, selectedId, onSelect }: ScenarioSelectorProps) {
   const { t } = useTranslation();
-  const onboarding = useOnboardingOptional();
 
   const getLocalizedTitle = (scenario: Scenario): string => {
     const key = scenarioIdToKey[scenario.id];
@@ -35,16 +33,9 @@ export function ScenarioSelector({ scenarios, selectedId, onSelect }: ScenarioSe
     return scenario.title;
   };
 
-  const handleSelect = (id: string) => {
-    onSelect(id);
-    if (onboarding?.isActive && onboarding.currentStep?.id === "scenario_select") {
-      onboarding.satisfyGating();
-    }
-  };
-
   return (
     <div data-testid="scenario-selector">
-      <Select value={selectedId ?? ""} onValueChange={handleSelect}>
+      <Select value={selectedId ?? ""} onValueChange={onSelect}>
         <SelectTrigger
           className="w-full min-w-[200px] rounded-full border-border/80 bg-background/80 shadow-sm backdrop-blur sm:w-[280px]"
           data-testid="select-scenario"

@@ -12,59 +12,35 @@ export interface OnboardingStep {
 }
 
 const ONBOARDING_STEPS: OnboardingStep[] = [
-  { id: "welcome_hook", chapter: 1, isModal: true },
-  { id: "welcome_challenge", chapter: 1, isModal: true },
   { id: "welcome_mission", chapter: 1, isModal: true },
-
-  { id: "map_solar_system", chapter: 2, targetSelector: "[data-testid='network-canvas']" },
-  { id: "map_trust_zones", chapter: 2, targetSelector: "[data-testid='network-canvas']" },
-  { id: "map_device_indicators", chapter: 2, targetSelector: "[data-testid='network-canvas']" },
-
-  { id: "scenario_contexts", chapter: 3, targetSelector: "[data-testid='scenario-selector']" },
+  { id: "scenario_context", chapter: 2, targetSelector: "[data-testid='scenario-selector']" },
+  { id: "map_scan", chapter: 3, targetSelector: "[data-testid='network-canvas']" },
   {
-    id: "scenario_select",
-    chapter: 3,
-    targetSelector: "[data-testid='scenario-selector']",
-    gatingAction: "onboarding.gating.selectScenario",
-  },
-
-  { id: "layers_why", chapter: 4, targetSelector: "[data-testid='layer-goggles']" },
-  {
-    id: "layers_link",
+    id: "layer_toggle",
     chapter: 4,
-    targetSelector: "[data-testid='layer-button-link']",
-    gatingAction: "onboarding.gating.clickLink",
+    targetSelector: "[data-testid='layer-goggles']",
+    gatingAction: "onboarding.gating.toggleLayer",
   },
-  {
-    id: "layers_network",
-    chapter: 4,
-    targetSelector: "[data-testid='layer-button-network']",
-    gatingAction: "onboarding.gating.clickNetwork",
-  },
-  {
-    id: "layers_transport",
-    chapter: 4,
-    targetSelector: "[data-testid='layer-button-transport']",
-    gatingAction: "onboarding.gating.clickTransport",
-  },
-  {
-    id: "layers_application",
-    chapter: 4,
-    targetSelector: "[data-testid='layer-button-application']",
-    gatingAction: "onboarding.gating.clickApplication",
-  },
-
   {
     id: "device_inspection",
     chapter: 5,
     targetSelector: "[data-testid='network-canvas']",
     gatingAction: "onboarding.gating.clickDevice",
   },
-  { id: "device_risk_flags", chapter: 5, targetSelector: "[data-testid='device-details-panel']" },
-  { id: "device_learn_tab", chapter: 5, targetSelector: "[data-testid='tab-learn']" },
-
-  { id: "quiz_intro", chapter: 6, targetSelector: "[data-testid='learning-prompts']" },
-  { id: "mission_complete", chapter: 6, isModal: true },
+  { id: "action_panel", chapter: 6, targetSelector: "[data-testid='scenario-actions']" },
+  {
+    id: "complete_first_action",
+    chapter: 6,
+    targetSelector: "[data-testid='scenario-actions']",
+    gatingAction: "onboarding.gating.completeAction",
+  },
+  {
+    id: "quiz_answer",
+    chapter: 7,
+    targetSelector: "[data-testid='learning-prompts']",
+    gatingAction: "onboarding.gating.answerPrompt",
+  },
+  { id: "mission_complete", chapter: 7, isModal: true },
 ];
 
 const STORAGE_KEY = "network-cartographer-onboarding";
@@ -116,7 +92,13 @@ export function OnboardingProvider({ children, autoStart = true }: OnboardingPro
     try {
       const stored = localStorage.getItem(STORAGE_KEY);
       if (stored) {
-        return JSON.parse(stored);
+        const parsed = JSON.parse(stored) as Partial<OnboardingState>;
+        const parsedStep = typeof parsed.currentStep === "number" ? parsed.currentStep : 0;
+        return {
+          completed: !!parsed.completed,
+          currentStep: parsedStep >= 0 && parsedStep < ONBOARDING_STEPS.length ? parsedStep : 0,
+          startedAt: typeof parsed.startedAt === "number" ? parsed.startedAt : undefined,
+        };
       }
     } catch {
       // Ignore storage errors (private mode, blocked storage, etc.)
@@ -226,8 +208,8 @@ export function OnboardingProvider({ children, autoStart = true }: OnboardingPro
     ],
   );
 
-  const showPrev = state.currentStep > 2;
-  const showSkip = state.currentStep >= 2;
+  const showPrev = state.currentStep > 0;
+  const showSkip = state.currentStep < ONBOARDING_STEPS.length - 1;
 
   return (
     <OnboardingContext.Provider value={contextValue}>
@@ -248,9 +230,7 @@ export function OnboardingProvider({ children, autoStart = true }: OnboardingPro
           nextLabel={
             state.currentStep === ONBOARDING_STEPS.length - 1
               ? t("onboarding.buttons.finish")
-              : state.currentStep < 3
-                ? t("onboarding.buttons.continue")
-                : t("onboarding.buttons.next")
+              : t("onboarding.buttons.next")
           }
           prevLabel={t("onboarding.buttons.back")}
           skipLabel={t("onboarding.buttons.skip")}
