@@ -726,6 +726,8 @@
     "restart": "Sākt no jauna",
     "startHereTitle": "Sāciet šeit",
     "startHereBody": "Pabeidziet šīs darbības, lai nodrošinātu scenāriju.",
+    "selectTargetHint": "Izmantojiet šo palīgu, ja vēlaties, lai vajadzīgais mērķis tiktu atlasīts jūsu vietā.",
+    "selectTarget": "Atlasīt pareizo mērķi",
     "outcomeTitle": "Rezultāts"
   },
   "actionTypes": {
@@ -834,6 +836,41 @@
         "inspectedDevice": "Kartē izpētiet vienu ierīci",
         "completedAction": "Pabeidziet vienu scenārija darbību",
         "answeredPrompt": "Atbildiet uz vienu mācību pārbaudes jautājumu"
+      }
+    },
+    "nextStep": {
+      "kicker": "Dariet to tagad",
+      "whyLabel": "Kāpēc tas ir svarīgi",
+      "deviceHint": "Izceltā ierīce ir labākā vieta, kur turpināt.",
+      "layer": {
+        "title": "Pārslēdziet vienu slāni",
+        "description": "Vienreiz izmantojiet Layer Goggles, lai karte neizskatītos kā viens nemainīgs attēls.",
+        "why": "Mācīties ir vieglāk, kad redzat, ka vienu tīklu var lasīt vairākos veidos.",
+        "cta": "Rādīt Link/Local"
+      },
+      "inspect": {
+        "title": "Izpētiet {{device}}",
+        "description": "Atveriet vienu ierīci un apskatiet tās riskus, adresi un uzvedību, pirms pieņemat lēmumu.",
+        "why": "Sānu panelis kļūst noderīgs, kad piesaistāt uzmanību vienai konkrētai ierīcei.",
+        "cta": "Izpētīt {{device}}"
+      },
+      "action": {
+        "title": "Pabeidziet pašreizējo darbību",
+        "description": "Izmantojiet Darbību paneli, lai pieņemtu vienu konkrētu drošības lēmumu ar pareizo mērķi.",
+        "why": "Viens īsts drošības solis ir ātrākais veids, kā apgūt darba plūsmu.",
+        "cta": "Atvērt pašreizējo darbību"
+      },
+      "prompt": {
+        "title": "Atbildiet uz vienu pārbaudi",
+        "description": "Pabeidziet ar īsu jautājumu, kamēr scenārijs vēl ir svaigā atmiņā.",
+        "why": "Īsa atsaukšana atmiņā pārvērš novērojumus noturīgā izpratnē.",
+        "cta": "Pāriet uz pārbaudi"
+      },
+      "done": {
+        "title": "Jūs zināt pamatplūsmu",
+        "description": "Pamēģiniet citu scenāriju, salīdziniet skatus vai atkārtojiet misiju, ja vēlaties vēl vienu vadītu gājienu.",
+        "why": "Pamata soļi tagad ir pazīstami, tāpēc papildu rīki dos ieskatu, nevis apjukumu.",
+        "cta": "Restartēt vadīto misiju"
       }
     },
     "steps": {

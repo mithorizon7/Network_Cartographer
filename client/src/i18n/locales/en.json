@@ -721,6 +721,8 @@
     "restart": "Restart actions",
     "startHereTitle": "Start here",
     "startHereBody": "Complete these actions to secure the scenario.",
+    "selectTargetHint": "Use the helper below if you want the required target selected for you.",
+    "selectTarget": "Select the right target",
     "outcomeTitle": "Outcome"
   },
   "actionTypes": {
@@ -829,6 +831,41 @@
         "inspectedDevice": "Inspect one device from the map",
         "completedAction": "Complete one scenario action",
         "answeredPrompt": "Answer one learning check question"
+      }
+    },
+    "nextStep": {
+      "kicker": "Do this next",
+      "whyLabel": "Why this matters",
+      "deviceHint": "The highlighted device is the best place to continue.",
+      "layer": {
+        "title": "Switch one layer",
+        "description": "Use Layer Goggles once so the map stops feeling like a single fixed picture.",
+        "why": "You learn faster once you see that the same network can be read in different ways.",
+        "cta": "Show Link/Local"
+      },
+      "inspect": {
+        "title": "Inspect {{device}}",
+        "description": "Open one device and look at its risks, address, and behavior before making any decision.",
+        "why": "The side panel becomes useful once you anchor on one real device.",
+        "cta": "Inspect {{device}}"
+      },
+      "action": {
+        "title": "Complete the current action",
+        "description": "Use the Actions panel to make one concrete security decision with the correct target.",
+        "why": "Doing one authentic security action is the fastest way to learn the workflow.",
+        "cta": "Focus current action"
+      },
+      "prompt": {
+        "title": "Answer one learning check",
+        "description": "Finish with a short question while the scenario is still fresh.",
+        "why": "A quick retrieval step turns observation into durable understanding.",
+        "cta": "Jump to learning check"
+      },
+      "done": {
+        "title": "You know the core loop",
+        "description": "Try another scenario, compare views, or replay the mission when you want another guided run.",
+        "why": "The basics are now familiar, so the extra tools add insight instead of confusion.",
+        "cta": "Restart guided mission"
       }
     },
     "steps": {

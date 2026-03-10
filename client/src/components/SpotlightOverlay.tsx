@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -60,16 +60,42 @@ export function SpotlightOverlay({
   const prefersReducedMotion = useRef(
     typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches,
   );
+  const resolveTarget = useCallback(() => {
+    if (targetRef?.current) {
+      return targetRef.current;
+    }
+    if (targetSelector) {
+      return document.querySelector<HTMLElement>(targetSelector);
+    }
+    return null;
+  }, [targetRef, targetSelector]);
+
+  useEffect(() => {
+    if (isModal || typeof window === "undefined") return;
+
+    const element = resolveTarget();
+    if (!element) return;
+
+    const rect = element.getBoundingClientRect();
+    const buffer = 24;
+    const isOffscreen =
+      rect.top < buffer ||
+      rect.bottom > window.innerHeight - buffer ||
+      rect.left < buffer ||
+      rect.right > window.innerWidth - buffer;
+
+    if (!isOffscreen) return;
+
+    element.scrollIntoView({
+      behavior: prefersReducedMotion.current ? "auto" : "smooth",
+      block: "center",
+      inline: "nearest",
+    });
+  }, [isModal, resolveTarget, stepNumber]);
 
   useEffect(() => {
     const updatePosition = () => {
-      let element: HTMLElement | null = null;
-
-      if (targetRef?.current) {
-        element = targetRef.current;
-      } else if (targetSelector) {
-        element = document.querySelector(targetSelector);
-      }
+      const element = resolveTarget();
 
       if (element && !isModal) {
         const rect = element.getBoundingClientRect();
@@ -131,7 +157,12 @@ export function SpotlightOverlay({
       window.removeEventListener("scroll", updatePosition, true);
       observer.disconnect();
     };
-  }, [targetSelector, targetRef, isModal]);
+  }, [isModal, resolveTarget, stepNumber]);
+
+  useEffect(() => {
+    if (!tooltipRef.current) return;
+    tooltipRef.current.focus({ preventScroll: true });
+  }, [stepNumber, title]);
 
   const animationProps = prefersReducedMotion.current
     ? {}
@@ -196,6 +227,7 @@ export function SpotlightOverlay({
             top: tooltipPosition.top,
             left: tooltipPosition.left,
           }}
+          tabIndex={-1}
           {...animationProps}
           data-testid="onboarding-tooltip"
         >

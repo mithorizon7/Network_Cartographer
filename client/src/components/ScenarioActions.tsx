@@ -24,6 +24,7 @@ interface ScenarioActionsProps {
   resetKey?: number;
   onTaskChange?: (task: ScenarioTask | null, isComplete: boolean) => void;
   onActionComplete?: (outcome: ActionOutcome) => void;
+  onRequestTargetFocus?: (target: ScenarioTask["target"]) => void;
 }
 
 const actionIcons: Record<ScenarioActionType, typeof ShieldCheck> = {
@@ -47,6 +48,7 @@ export function ScenarioActions({
   resetKey = 0,
   onTaskChange,
   onActionComplete,
+  onRequestTargetFocus,
 }: ScenarioActionsProps) {
   const { t } = useTranslation();
   const tasks = scenario.scenarioTasks ?? [];
@@ -289,7 +291,20 @@ export function ScenarioActions({
 
         {requirementText && (
           <div className="rounded-md border border-dashed border-muted-foreground/20 bg-muted/40 px-3 py-2 text-xs">
-            {requirementText}
+            <div>{requirementText}</div>
+            {!isTargetMatch && currentTask.target.type !== "none" && onRequestTargetFocus && (
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <p className="text-[11px] text-muted-foreground">{t("actions.selectTargetHint")}</p>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onRequestTargetFocus(currentTask.target)}
+                  data-testid="button-select-required-target"
+                >
+                  {t("actions.selectTarget")}
+                </Button>
+              </div>
+            )}
           </div>
         )}
 

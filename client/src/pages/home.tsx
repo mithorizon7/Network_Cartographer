@@ -1,8 +1,15 @@
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useTranslation } from "react-i18next";
-import type { LayerMode, Scenario, Environment, ScenarioTask, FlowCategory } from "@shared/schema";
-import { scenarioIdToKey } from "@/lib/scenarioUtils";
+import type {
+  LayerMode,
+  Scenario,
+  Environment,
+  ScenarioTask,
+  FlowCategory,
+  Device,
+} from "@shared/schema";
+import { scenarioIdToKey, deviceLabelToKey } from "@/lib/scenarioUtils";
 import { useOnboardingOptional } from "@/components/OnboardingProvider";
 import { NetworkCanvas } from "@/components/NetworkCanvas";
 import { LayerGoggles, LayerLegend } from "@/components/LayerGoggles";
@@ -90,6 +97,22 @@ function normalizeMissionMilestones(value: unknown): MissionMilestones {
     completedAction: raw.completedAction === true,
     answeredPrompt: raw.answeredPrompt === true,
   };
+}
+
+type MissionGuideAction =
+  | "switch_layer"
+  | "inspect_device"
+  | "focus_action"
+  | "focus_prompt"
+  | "replay";
+
+interface MissionGuideStep {
+  action: MissionGuideAction;
+  title: string;
+  description: string;
+  why: string;
+  cta: string;
+  deviceId?: string;
 }
 
 export default function Home() {
@@ -180,6 +203,65 @@ export default function Home() {
   const activeScenario = importedScenario || scenario;
   const scenarioKey = activeScenario ? scenarioIdToKey[activeScenario.id] : null;
   const onboardingStepId = onboarding?.currentStep?.id;
+  const getLocalizedDeviceName = useCallback(
+    (device: Device | null) => {
+      if (!device) return t("common.noData");
+      const deviceKey = deviceLabelToKey[device.label];
+      return deviceKey
+        ? t(`deviceLabels.${deviceKey}`, { defaultValue: device.label })
+        : device.label;
+    },
+    [t],
+  );
+  const scrollToSelector = useCallback((selector: string) => {
+    if (typeof document === "undefined" || typeof window === "undefined") return;
+    const element = document.querySelector<HTMLElement>(selector);
+    if (!element) return;
+
+    const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches
+      ? "auto"
+      : "smooth";
+    element.scrollIntoView({ behavior, block: "center", inline: "nearest" });
+  }, []);
+  const queueScrollToSelector = useCallback(
+    (selector: string) => {
+      if (typeof window === "undefined") return;
+      window.requestAnimationFrame(() => {
+        window.requestAnimationFrame(() => {
+          scrollToSelector(selector);
+        });
+      });
+    },
+    [scrollToSelector],
+  );
+  const selectDevice = useCallback(
+    (deviceId: string, options?: { revealPanel?: boolean }) => {
+      setSelectedDeviceId(deviceId);
+      markMilestone("inspectedDevice");
+
+      const device = activeScenario?.devices.find((candidate) => candidate.id === deviceId);
+      if (device && (device.type === "unknown" || device.riskFlags.includes("unknown_device"))) {
+        if (activeTask) {
+          setShowUnknownModal(false);
+        } else {
+          setShowUnknownModal(true);
+        }
+      }
+
+      if (onboarding?.isActive && onboarding.currentStep?.id === "device_inspection") {
+        onboarding.satisfyGating();
+      }
+
+      if (
+        options?.revealPanel &&
+        typeof window !== "undefined" &&
+        window.matchMedia("(max-width: 1023px)").matches
+      ) {
+        queueScrollToSelector("[data-testid='device-details-panel']");
+      }
+    },
+    [activeScenario, activeTask, markMilestone, onboarding, queueScrollToSelector],
+  );
 
   useEffect(() => {
     if (activeLayer !== "network") {
@@ -335,31 +417,165 @@ export default function Home() {
     (selectedDevice.type === "unknown" || selectedDevice.riskFlags.includes("unknown_device")) &&
     tasksInProgress;
   const hasScenarioTasks = (activeScenario?.scenarioTasks?.length ?? 0) > 0;
-  const missionItems = [
-    {
-      id: "comparedLayers",
-      done: missionMilestones.comparedLayers,
-      label: t("onboarding.missionChecklist.items.comparedLayers"),
-    },
-    {
-      id: "inspectedDevice",
-      done: missionMilestones.inspectedDevice,
-      label: t("onboarding.missionChecklist.items.inspectedDevice"),
-    },
-    {
-      id: "completedAction",
-      done: missionMilestones.completedAction,
-      label: t("onboarding.missionChecklist.items.completedAction"),
-    },
-    {
-      id: "answeredPrompt",
-      done: missionMilestones.answeredPrompt,
-      label: t("onboarding.missionChecklist.items.answeredPrompt"),
-    },
-  ];
+  const currentTaskFocusDevice = useMemo(() => {
+    if (!activeScenario || !activeTask) return null;
+    if (activeTask.target.type === "device" && activeTask.target.id) {
+      return activeScenario.devices.find((device) => device.id === activeTask.target.id) || null;
+    }
+    if (activeTask.target.type === "network" && activeTask.target.id) {
+      return (
+        activeScenario.devices.find((device) => device.networkId === activeTask.target.id) || null
+      );
+    }
+    return null;
+  }, [activeScenario, activeTask]);
+  const recommendedInspectDevice = useMemo(() => {
+    if (!activeScenario) return null;
+    return (
+      currentTaskFocusDevice ||
+      activeScenario.devices.find(
+        (device) => device.riskFlags.length > 0 && device.type !== "router",
+      ) ||
+      activeScenario.devices.find((device) => device.type !== "router") ||
+      activeScenario.devices[0] ||
+      null
+    );
+  }, [activeScenario, currentTaskFocusDevice]);
+  const missionItems = useMemo(
+    () => [
+      {
+        id: "comparedLayers",
+        done: missionMilestones.comparedLayers,
+        label: t("onboarding.missionChecklist.items.comparedLayers"),
+      },
+      {
+        id: "inspectedDevice",
+        done: missionMilestones.inspectedDevice,
+        label: t("onboarding.missionChecklist.items.inspectedDevice"),
+      },
+      ...(hasScenarioTasks
+        ? [
+            {
+              id: "completedAction",
+              done: missionMilestones.completedAction,
+              label: t("onboarding.missionChecklist.items.completedAction"),
+            },
+          ]
+        : []),
+      ...((activeScenario?.learningPrompts.length ?? 0) > 0
+        ? [
+            {
+              id: "answeredPrompt",
+              done: missionMilestones.answeredPrompt,
+              label: t("onboarding.missionChecklist.items.answeredPrompt"),
+            },
+          ]
+        : []),
+    ],
+    [
+      activeScenario?.learningPrompts.length,
+      hasScenarioTasks,
+      missionMilestones.answeredPrompt,
+      missionMilestones.comparedLayers,
+      missionMilestones.completedAction,
+      missionMilestones.inspectedDevice,
+      t,
+    ],
+  );
   const completedMissionCount = missionItems.filter((item) => item.done).length;
-  const missionProgress = (completedMissionCount / missionItems.length) * 100;
-  const missionComplete = completedMissionCount === missionItems.length;
+  const missionProgress =
+    missionItems.length > 0 ? (completedMissionCount / missionItems.length) * 100 : 0;
+  const missionComplete = missionItems.length > 0 && completedMissionCount === missionItems.length;
+  const missionGuide = useMemo<MissionGuideStep | null>(() => {
+    if (!activeScenario) return null;
+
+    if (!missionMilestones.comparedLayers) {
+      return {
+        action: "switch_layer",
+        title: t("onboarding.nextStep.layer.title"),
+        description: t("onboarding.nextStep.layer.description"),
+        why: t("onboarding.nextStep.layer.why"),
+        cta: t("onboarding.nextStep.layer.cta"),
+      };
+    }
+
+    if (!missionMilestones.inspectedDevice && recommendedInspectDevice) {
+      const deviceName = getLocalizedDeviceName(recommendedInspectDevice);
+      return {
+        action: "inspect_device",
+        title: t("onboarding.nextStep.inspect.title", { device: deviceName }),
+        description: t("onboarding.nextStep.inspect.description"),
+        why: t("onboarding.nextStep.inspect.why"),
+        cta: t("onboarding.nextStep.inspect.cta", { device: deviceName }),
+        deviceId: recommendedInspectDevice.id,
+      };
+    }
+
+    if (!missionMilestones.completedAction && hasScenarioTasks) {
+      return {
+        action: "focus_action",
+        title: t("onboarding.nextStep.action.title"),
+        description: t("onboarding.nextStep.action.description"),
+        why: t("onboarding.nextStep.action.why"),
+        cta: t("onboarding.nextStep.action.cta"),
+        deviceId: currentTaskFocusDevice?.id,
+      };
+    }
+
+    if (!missionMilestones.answeredPrompt && activeScenario.learningPrompts.length > 0) {
+      return {
+        action: "focus_prompt",
+        title: t("onboarding.nextStep.prompt.title"),
+        description: t("onboarding.nextStep.prompt.description"),
+        why: t("onboarding.nextStep.prompt.why"),
+        cta: t("onboarding.nextStep.prompt.cta"),
+      };
+    }
+
+    return {
+      action: "replay",
+      title: t("onboarding.nextStep.done.title"),
+      description: t("onboarding.nextStep.done.description"),
+      why: t("onboarding.nextStep.done.why"),
+      cta: t("onboarding.nextStep.done.cta"),
+    };
+  }, [
+    activeScenario,
+    currentTaskFocusDevice,
+    getLocalizedDeviceName,
+    hasScenarioTasks,
+    missionMilestones.answeredPrompt,
+    missionMilestones.completedAction,
+    missionMilestones.comparedLayers,
+    missionMilestones.inspectedDevice,
+    recommendedInspectDevice,
+    t,
+  ]);
+  const guideHighlightedDeviceIds = useMemo(() => {
+    if (!missionGuide || missionComplete) return undefined;
+    if (
+      (missionGuide.action === "inspect_device" || missionGuide.action === "focus_action") &&
+      missionGuide.deviceId
+    ) {
+      return new Set<string>([missionGuide.deviceId]);
+    }
+    return undefined;
+  }, [missionComplete, missionGuide]);
+  const showGuideMapHint =
+    !!missionGuide &&
+    !selectedDevice &&
+    !!guideHighlightedDeviceIds &&
+    guideHighlightedDeviceIds.size > 0 &&
+    viewMode === "map" &&
+    (missionGuide.action === "inspect_device" || missionGuide.action === "focus_action");
+  const combinedFlashDeviceIds = useMemo(() => {
+    const combined = new Set<string>();
+
+    flashDeviceIds?.forEach((deviceId) => combined.add(deviceId));
+    guideHighlightedDeviceIds?.forEach((deviceId) => combined.add(deviceId));
+
+    return combined.size > 0 ? combined : undefined;
+  }, [flashDeviceIds, guideHighlightedDeviceIds]);
 
   const handleReset = useCallback(() => {
     setSelectedDeviceId(null);
@@ -404,22 +620,87 @@ export default function Home() {
 
   const handleDeviceSelect = useCallback(
     (deviceId: string) => {
-      setSelectedDeviceId(deviceId);
-      markMilestone("inspectedDevice");
-      const device = activeScenario?.devices.find((d) => d.id === deviceId);
-      if (device && (device.type === "unknown" || device.riskFlags.includes("unknown_device"))) {
-        if (activeTask) {
-          setShowUnknownModal(false);
-        } else {
-          setShowUnknownModal(true);
-        }
-      }
-      if (onboarding?.isActive && onboarding.currentStep?.id === "device_inspection") {
-        onboarding.satisfyGating();
-      }
+      selectDevice(deviceId);
     },
-    [activeScenario, onboarding, activeTask, markMilestone],
+    [selectDevice],
   );
+
+  const handleFocusActionTarget = useCallback(
+    (target: ScenarioTask["target"]) => {
+      if (!activeScenario) return;
+
+      setShowComparison(false);
+      setShowSelectedFlowsOnly(false);
+
+      if (targetHiddenByFilters) {
+        setFilters(defaultFilters);
+      }
+
+      if (target.type === "none") {
+        queueScrollToSelector("[data-testid='scenario-actions']");
+        return;
+      }
+
+      const targetDevice =
+        target.type === "device"
+          ? activeScenario.devices.find((device) => device.id === target.id) || null
+          : activeScenario.devices.find((device) => device.networkId === target.id) || null;
+
+      if (targetDevice) {
+        selectDevice(targetDevice.id);
+        queueScrollToSelector("[data-testid='scenario-actions']");
+        return;
+      }
+
+      queueScrollToSelector("[data-testid='scenario-actions']");
+    },
+    [activeScenario, queueScrollToSelector, selectDevice, targetHiddenByFilters],
+  );
+
+  const handleMissionGuideAction = useCallback(() => {
+    if (!missionGuide) return;
+
+    switch (missionGuide.action) {
+      case "switch_layer":
+        setShowComparison(false);
+        setViewMode("map");
+        setActiveLayer("link");
+        queueScrollToSelector("[data-testid='layer-goggles']");
+        break;
+      case "inspect_device":
+        if (missionGuide.deviceId) {
+          setShowComparison(false);
+          setViewMode("map");
+          if (filtersActive) {
+            setFilters(defaultFilters);
+          }
+          queueScrollToSelector("[data-testid='network-canvas']");
+          selectDevice(missionGuide.deviceId, { revealPanel: true });
+        }
+        break;
+      case "focus_action":
+        if (activeTask) {
+          handleFocusActionTarget(activeTask.target);
+        } else {
+          queueScrollToSelector("[data-testid='scenario-actions']");
+        }
+        break;
+      case "focus_prompt":
+        queueScrollToSelector("[data-testid='learning-prompts']");
+        break;
+      case "replay":
+        handleReplayGuidedMission();
+        break;
+    }
+  }, [
+    activeTask,
+    filtersActive,
+    handleFocusActionTarget,
+    handleReplayGuidedMission,
+    missionGuide,
+    queueScrollToSelector,
+    selectDevice,
+  ]);
 
   const handleActionComplete = useCallback(
     (outcome: ActionOutcome) => {
@@ -511,6 +792,33 @@ export default function Home() {
           </div>
           <Progress value={missionProgress} className="h-1.5" />
         </div>
+
+        {missionGuide && (
+          <div className="mt-3 rounded-xl border border-chart-4/30 bg-background/80 p-3 shadow-sm">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-chart-4">
+              {t("onboarding.nextStep.kicker")}
+            </p>
+            <h4 className="mt-1 text-sm font-semibold text-foreground">{missionGuide.title}</h4>
+            <p className="mt-1 text-xs leading-relaxed text-muted-foreground">
+              {missionGuide.description}
+            </p>
+            <p className="mt-2 text-xs text-foreground/90">
+              <span className="font-semibold">{t("onboarding.nextStep.whyLabel")}:</span>{" "}
+              {missionGuide.why}
+            </p>
+            {showGuideMapHint && (
+              <p className="mt-2 text-xs text-chart-4">{t("onboarding.nextStep.deviceHint")}</p>
+            )}
+            <Button
+              size="sm"
+              className="mt-3"
+              onClick={handleMissionGuideAction}
+              data-testid="button-mission-next-step"
+            >
+              {missionGuide.cta}
+            </Button>
+          </div>
+        )}
 
         <div className="mt-3 space-y-1.5">
           {missionItems.map((item) => (
@@ -900,7 +1208,7 @@ export default function Home() {
                   onDeviceSelect={handleDeviceSelect}
                   highlightedDeviceIds={filteredDeviceIds}
                   showFullMac={showFullMac}
-                  flashDeviceIds={flashDeviceIds}
+                  flashDeviceIds={combinedFlashDeviceIds}
                   dimmedDeviceIds={dimmedDeviceIds}
                   highlightZone={highlightZone || undefined}
                   flowFilterDeviceId={showSelectedFlowsOnly ? selectedDevice?.id || null : null}
@@ -986,6 +1294,7 @@ export default function Home() {
                     resetKey={actionsResetKey}
                     onTaskChange={(task, isComplete) => setActiveTask(isComplete ? null : task)}
                     onActionComplete={handleActionComplete}
+                    onRequestTargetFocus={handleFocusActionTarget}
                   />
                 )}
 
