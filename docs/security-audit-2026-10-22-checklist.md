@@ -22,7 +22,7 @@ Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence 
 ## Audit Queue
 
 - [x] Q-007 [status:verified] Removed braces through supported toolchain upgrades. Verified complete mobile mission, desktop keyboard map selection, table/comparison, dark theme and EN/LV/RU rendering. Narrow-screen controls wrap; untranslated task labels and tutorial phrases corrected.
-- [ ] Q-008 [status:in_progress] Commit/push and merge after CI passes; protect main. Existing owner SSH and owner gh credentials verified without changing active CLI account. Corrected repository homepage to canonical public app URL.
+- [x] Q-008 [status:verified] Committed b4befcf and merged PR #7 as df4d327 after CI run 39833192810 passed every step, including checksum-verified Linux deployment bootstrap. Owner SSH and scoped owner gh credentials used without changing active account. Main now requires PR and GitHub Actions build (app 15368), up-to-date branch, no force pushes/deletion, admin enforcement and conversation resolution; zero independent reviewer requirement is explicit for solo maintenance.
 - [ ] Q-009 [status:in_progress] Synchronize and publish verified Replit app aff19e5e-883a-4a41-badf-9e88bb454182, preserving its local changes. Provider reports older Node 20 workspace, stale main and existing deployment https://networkcartographer.replit.app. Recheck actual deployed runtime and public behavior.
 
 - [x] Q-001 [status:verified] Review March audit and current changes before executing code. Prior headers, rate limits, input guards and crash fix remain in source. Previous vulnerability scan is stale.
@@ -34,22 +34,29 @@ Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence 
 
 ## Findings Log
 
+- [x] F-009 [status:verified] [P2] [confidence:1.0] Theme preference overwritten before initialization: desktop/mobile dark mode reset to light on reload. Read saved theme in lazy state initializer before persistence effect, retaining blocked-storage fallback. Evidence: actual Russian mobile reload, ThemeToggle.tsx; follow-up browser test and CI required.
+
 - [x] F-001 [status:verified] [P1] [confidence:1.0] Repository runtime/CI pins repaired; .npmrc enforces engines; startup rejects unsupported Node. Verified tests use checksum-verified temporary Node 22.23.4. Original machine and deployment runtime updates remain pending (R-001). Evidence: .nvmrc, package.json, .replit, server/runtime.ts and V-002/V-007. Owner: codex (local fixes); maintainer (delivery follow-up).
 - [ ] F-002 [status:in_progress] [P2] [confidence:1.0] Replit app access recovered using list endpoint; initial workspace on stale main and Node 20. Deployment synchronization/runtime checks underway. Historical compromise and provider host state remain unverified. Evidence: Q-009 and provider inspection. Owner: codex/provider.
 - [x] F-003 [status:verified] [P1] [confidence:1.0] Vulnerable dependencies patched and braces removed via toolchain migration. Final full npm audit, including dev dependencies: zero findings. Evidence: package-lock.json and audit-release-final.json. Owner: codex.
 - [x] F-004 [status:verified] [P2] [confidence:1.0] Headers ran after limiter and request parsing; 429s lacked protections and read-only API parsed unused bodies. Removed body parsing, moved headers before limiter, added JSON 404/405 and tests. Evidence: server/routes.ts, server/index.ts and scripts/security-test.ts. Owner: codex (local fixes); maintainer (delivery follow-up).
 - [x] F-005 [status:verified] [P2] [confidence:1.0] Default runtime mode could load Vite source-serving middleware. Development now explicit; production build removes dev import. Default local dev listener restricted to loopback; Replit explicit HOST retained. Evidence: server/index.ts, server/static.ts, production bundle and V-005. Owner: codex (local fixes); maintainer (delivery follow-up).
 - [x] F-006 [status:verified] [P2] [confidence:1.0] .gitignore did not exclude credentials/evidence. Added env/key/certificate/evidence exclusions; no matching leaked secrets detected in history. Evidence: .gitignore and V-004. Owner: codex (local fixes); maintainer (delivery follow-up).
-- [ ] F-007 [status:blocked] [P2] [confidence:1.0] GitHub main unprotected, verified by API. Prepare ruleset instructions; changing account/repo access policy awaits maintainer authorization. Evidence: GitHub branches/main API returned protected=false on 2026-10-22. Owner: maintainer.
+- [x] F-007 [status:verified] [P2] [confidence:1.0] Main branch protection applied and read back through GitHub API. PR plus strict GitHub Actions build check required; force pushes and deletion blocked, admin enforcement enabled. Independent approval count is zero, not claimed as external review. Evidence: branch-protection-request.json and API response, 2026-10-22. Owner: codex.
 - [x] F-008 [status:verified] [P2] [confidence:1.0] CI/hooks relied on home-directory formatting/lint-staged config. Added repository-local equivalents; replaced npx fallback with explicit local hook executable. Evidence: .prettierrc.json, .lintstagedrc.cjs, .husky/pre-commit and V-007. Owner: codex (local fixes); maintainer (delivery follow-up).
 
 ## Fix Log
+
+- [x] P-004 [status:verified] Removed braces through toolchain migration; completed accessible responsive onboarding, translated task targets, map role and focus recovery; production HTML cache regression test added. Addresses F-003/F-005; evidence: source, full suite, manual browser interactions and CI run 39833192810.
+- [x] P-005 [status:verified] Moved theme initialization ahead of storage persistence and removed competing mount effect. Addresses F-009. Evidence: ThemeToggle.tsx; browser reload check tracked in V-012.
 
 - [x] P-001 [status:verified] Added .nvmrc/engines, updated Replit module, pinned CI actions by verified SHA, reduced workflow permissions and disabled persisted Git credentials. F-001. Evidence: .nvmrc, package.json, .replit, .github/workflows/ci.yml and V-007. Addresses: F-001 and F-008.
 - [x] P-002 [status:verified] Patched Vite 6.4.5, ws 8.22.0, proxy-addr 2.0.8, qs 6.16.1, Drizzle 0.45.4 and transitive vulnerabilities; build-only dependencies moved to dev; compatible transitive overrides validated. F-003. Evidence: package-lock.json and V-006/V-007. Addresses: F-003.
 - [x] P-003 [status:verified] API/status/static serving/logging/request-timeout hardening plus security regression tests. F-004/F-005. Evidence: server/index.ts, server/routes.ts, server/static.ts and V-005/V-007. Addresses: F-004 and F-005.
 
 ## Validation Log
+
+- [x] V-012 [status:verified] Dark and light preferences each survived full browser reload on the fixed build; modal Shift+Tab/Tab containment and Escape focus restoration verified. Local typecheck, lint, format, build and production-artifact test pass. System-preference/blocked-storage fallback source-reviewed. Follow-up commit requires CI before publish.
 
 - [x] V-001 [status:verified] Read-only source/metadata precheck completed before installs/builds/tests; raw evidence directory /private/tmp/network-cartographer-security-2026-10-22 mode 0700, excluded from Git. Evidence: 2026-10-22 pass for the recorded local check; see private audit evidence and detailed report.
 - [x] V-002 [status:verified] Temporary Node 22.23.4 official archive SHA256 checked. Old Node includes emSign ECC G3 root; patched Node does not. No trust override environment keys found in audit process. Original system unchanged. Evidence: 2026-10-22 pass for the recorded local check; see private audit evidence and detailed report.
@@ -59,7 +66,7 @@ Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence 
 - [x] V-006 [status:verified] Follow-up full npm audit including dev dependencies reports zero findings; braces absent from lock and installed tree. Evidence: audit-toolchain-final.json and clean install output, 2026-10-22 EDT.
 - [x] V-007 [status:verified] Follow-up suite passed: typecheck, lint, format, 689-key three-locale validation, scenario smoke test, two security tests, production build and production-artifact test. All-dependency audit zero. Evidence: 2026-10-22 local release runs; translation-only changes rerun through affected checks. Final reviewed tree revalidated by CI.
 - [x] V-009 [status:verified] Browser checks: 390px complete mobile mission through gates and learning-check feedback; 320px Russian layout without document overflow; accessible map nodes and desktop keyboard selection; table/comparison, LV/RU and theme. Invalid saved-state recovery source-reviewed only; direct browser storage mutation unsupported, not claimed tested.
-- [ ] V-010 [status:in_progress] GitHub CI and Linux deployment-wrapper verification; protect main and merge only tested commit.
+- [x] V-010 [status:verified] PR #7 CI run 39833192810 passed all checks on b4befcf; exact Linux deployment bootstrap and production-artifact test passed. Main protected; merge df4d327 confirmed and local checkout synchronized. Evidence: GitHub Actions jobs API and merge response.
 - [ ] V-011 [status:in_progress] Synchronize verified Replit app, publish, check actual runtime, match deployed asset hashes to merged source, and test public learning flow and rejection/header behavior.
 - [x] V-008 [status:verified] OSV cross-check completed for 855 unique package/version pairs; no MAL record matched. Evidence: 2026-10-22 13:27 EDT pass for query execution; only one advisory pair returned, so documented coverage discrepancy with npm remains.
 
