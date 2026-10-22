@@ -11,6 +11,24 @@ interface SpotlightPosition {
   height: number;
 }
 
+function clampPosition(value: number, min: number, max: number) {
+  if (max < min) return min;
+  return Math.min(Math.max(value, min), max);
+}
+
+function getOverlapArea(
+  first: { top: number; left: number; width: number; height: number },
+  second: { top: number; left: number; width: number; height: number },
+) {
+  const left = Math.max(first.left, second.left);
+  const right = Math.min(first.left + first.width, second.left + second.width);
+  const top = Math.max(first.top, second.top);
+  const bottom = Math.min(first.top + first.height, second.top + second.height);
+
+  if (right <= left || bottom <= top) return 0;
+  return (right - left) * (bottom - top);
+}
+
 interface SpotlightOverlayProps {
   targetSelector?: string;
   targetRef?: React.RefObject<HTMLElement>;
@@ -65,16 +83,51 @@ export function SpotlightOverlay({
       return targetRef.current;
     }
     if (targetSelector) {
-      return document.querySelector<HTMLElement>(targetSelector);
+      return document.querySelector(targetSelector);
     }
     return null;
   }, [targetRef, targetSelector]);
-
-  useEffect(() => {
+  const revealTarget = useCallback(() => {
     if (isModal || typeof window === "undefined") return;
 
     const element = resolveTarget();
     if (!element) return;
+
+    const behavior = prefersReducedMotion.current ? "auto" : "smooth";
+    let current = element.parentElement;
+
+    while (current) {
+      const styles = window.getComputedStyle(current);
+      const canScrollY =
+        /(auto|scroll)/.test(styles.overflowY) && current.scrollHeight > current.clientHeight;
+      const canScrollX =
+        /(auto|scroll)/.test(styles.overflowX) && current.scrollWidth > current.clientWidth;
+
+      if (canScrollY || canScrollX) {
+        const elementRect = element.getBoundingClientRect();
+        const containerRect = current.getBoundingClientRect();
+
+        if (canScrollY) {
+          const targetTop =
+            current.scrollTop +
+            (elementRect.top - containerRect.top) -
+            current.clientHeight / 2 +
+            elementRect.height / 2;
+          current.scrollTo({ top: Math.max(0, targetTop), behavior });
+        }
+
+        if (canScrollX) {
+          const targetLeft =
+            current.scrollLeft +
+            (elementRect.left - containerRect.left) -
+            current.clientWidth / 2 +
+            elementRect.width / 2;
+          current.scrollTo({ left: Math.max(0, targetLeft), behavior });
+        }
+      }
+
+      current = current.parentElement;
+    }
 
     const rect = element.getBoundingClientRect();
     const buffer = 24;
@@ -84,14 +137,33 @@ export function SpotlightOverlay({
       rect.left < buffer ||
       rect.right > window.innerWidth - buffer;
 
-    if (!isOffscreen) return;
+    if (isOffscreen) {
+      element.scrollIntoView({
+        behavior,
+        block: "center",
+        inline: "nearest",
+      });
+    }
+  }, [isModal, resolveTarget]);
 
-    element.scrollIntoView({
-      behavior: prefersReducedMotion.current ? "auto" : "smooth",
-      block: "center",
-      inline: "nearest",
+  useEffect(() => {
+    if (isModal || typeof window === "undefined") return;
+
+    let frameId = 0;
+    let timeoutId = 0;
+
+    frameId = window.requestAnimationFrame(() => {
+      revealTarget();
+      frameId = window.requestAnimationFrame(revealTarget);
     });
-  }, [isModal, resolveTarget, stepNumber]);
+
+    timeoutId = window.setTimeout(revealTarget, 250);
+
+    return () => {
+      window.cancelAnimationFrame(frameId);
+      window.clearTimeout(timeoutId);
+    };
+  }, [isModal, revealTarget, stepNumber]);
 
   useEffect(() => {
     const updatePosition = () => {
@@ -107,39 +179,63 @@ export function SpotlightOverlay({
           height: rect.height + padding * 2,
         });
 
-        const tooltipWidth = 360;
-        const tooltipHeight = 200;
+        const tooltipWidth = tooltipRef.current?.offsetWidth || 360;
+        const tooltipHeight = tooltipRef.current?.offsetHeight || 224;
         const viewportWidth = window.innerWidth;
         const viewportHeight = window.innerHeight;
+        const targetRect = {
+          top: rect.top - padding,
+          left: rect.left - padding,
+          width: rect.width + padding * 2,
+          height: rect.height + padding * 2,
+        };
+        const candidates: Array<{
+          placement: "top" | "bottom" | "left" | "right";
+          top: number;
+          left: number;
+          score: number;
+        }> = (["bottom", "top", "right", "left"] as const).map((placement) => {
+          const rawTop =
+            placement === "bottom"
+              ? rect.bottom + padding + 16
+              : placement === "top"
+                ? rect.top - padding - tooltipHeight - 16
+                : rect.top + rect.height / 2 - tooltipHeight / 2;
+          const rawLeft =
+            placement === "right"
+              ? rect.right + padding + 16
+              : placement === "left"
+                ? rect.left - padding - tooltipWidth - 16
+                : rect.left + rect.width / 2 - tooltipWidth / 2;
+          const top = clampPosition(rawTop, 20, viewportHeight - tooltipHeight - 20);
+          const left = clampPosition(rawLeft, 20, viewportWidth - tooltipWidth - 20);
+          const overlapArea = getOverlapArea(
+            { top, left, width: tooltipWidth, height: tooltipHeight },
+            targetRect,
+          );
+          const clampPenalty = Math.abs(rawTop - top) + Math.abs(rawLeft - left);
 
-        let placement: "top" | "bottom" | "left" | "right" = "bottom";
-        let top = rect.bottom + padding + 16;
-        let left = rect.left + rect.width / 2 - tooltipWidth / 2;
+          return {
+            placement,
+            top,
+            left,
+            score: overlapArea * 10 + clampPenalty,
+          };
+        });
+        const bestCandidate = candidates.sort((a, b) => a.score - b.score)[0];
 
-        if (top + tooltipHeight > viewportHeight - 20) {
-          placement = "top";
-          top = rect.top - padding - tooltipHeight - 16;
-        }
-
-        if (top < 20) {
-          placement = "right";
-          top = rect.top + rect.height / 2 - tooltipHeight / 2;
-          left = rect.right + padding + 16;
-        }
-
-        if (left + tooltipWidth > viewportWidth - 20) {
-          left = viewportWidth - tooltipWidth - 20;
-        }
-        if (left < 20) {
-          left = 20;
-        }
-
-        setTooltipPosition({ top, left, placement });
+        setTooltipPosition({
+          top: bestCandidate.top,
+          left: bestCandidate.left,
+          placement: bestCandidate.placement,
+        });
       } else {
         setPosition(null);
+        const width = tooltipRef.current?.offsetWidth || Math.min(360, window.innerWidth - 40);
+        const height = tooltipRef.current?.offsetHeight || 300;
         setTooltipPosition({
-          top: window.innerHeight / 2 - 150,
-          left: window.innerWidth / 2 - 180,
+          top: Math.max(16, (window.innerHeight - height) / 2),
+          left: Math.max(10, (window.innerWidth - width) / 2),
           placement: "bottom",
         });
       }
@@ -160,9 +256,47 @@ export function SpotlightOverlay({
   }, [isModal, resolveTarget, stepNumber]);
 
   useEffect(() => {
+    const previousFocus = document.activeElement;
+    return () => {
+      if (previousFocus instanceof HTMLElement && previousFocus.isConnected) {
+        previousFocus.focus({ preventScroll: true });
+      }
+    };
+  }, []);
+
+  useEffect(() => {
     if (!tooltipRef.current) return;
     tooltipRef.current.focus({ preventScroll: true });
   }, [stepNumber, title]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.defaultPrevented) return;
+      if (event.key === "Escape") {
+        event.preventDefault();
+        onSkip();
+        return;
+      }
+      if (!isModal || event.key !== "Tab" || !tooltipRef.current) return;
+      const buttons =
+        tooltipRef.current.querySelectorAll<HTMLButtonElement>("button:not(:disabled)");
+      const first = buttons[0];
+      const last = buttons[buttons.length - 1];
+      if (!first || !last) return;
+      if (
+        event.shiftKey &&
+        (document.activeElement === first || document.activeElement === tooltipRef.current)
+      ) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
+      }
+    };
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isModal, onSkip]);
 
   const animationProps = prefersReducedMotion.current
     ? {}
@@ -176,8 +310,8 @@ export function SpotlightOverlay({
   const overlayContent = (
     <AnimatePresence>
       <div
-        className="pointer-events-none fixed inset-0 z-[9999]"
-        aria-modal="true"
+        className={`${isModal ? "pointer-events-auto" : "pointer-events-none"} fixed inset-0 z-[9999]`}
+        aria-modal={isModal ? true : undefined}
         role="dialog"
         aria-labelledby="spotlight-title"
         aria-describedby="spotlight-content"
@@ -222,7 +356,7 @@ export function SpotlightOverlay({
 
         <motion.div
           ref={tooltipRef}
-          className="pointer-events-auto absolute z-[10000] w-[360px] max-w-[calc(100vw-40px)] rounded-lg border bg-card p-5 shadow-xl"
+          className="pointer-events-auto absolute z-[10000] max-h-[calc(100dvh-2rem)] w-[calc(100vw-20px)] max-w-[350px] overflow-y-auto rounded-lg border bg-card p-4 shadow-xl sm:w-[360px] sm:max-w-[calc(100vw-40px)] sm:p-5"
           style={{
             top: tooltipPosition.top,
             left: tooltipPosition.left,
@@ -249,16 +383,22 @@ export function SpotlightOverlay({
             )}
           </div>
 
-          <h3 id="spotlight-title" className="mb-2 text-lg font-semibold leading-tight">
+          <h3
+            id="spotlight-title"
+            className="mb-2 text-base font-semibold leading-tight sm:text-lg"
+          >
             {title}
           </h3>
 
-          <p id="spotlight-content" className="mb-4 text-sm leading-relaxed text-muted-foreground">
+          <p
+            id="spotlight-content"
+            className="mb-3 text-sm leading-relaxed text-muted-foreground sm:mb-4"
+          >
             {content}
           </p>
 
           {gatingAction && !isGatingSatisfied && (
-            <p className="mb-4 text-xs font-medium text-primary">{gatingAction}</p>
+            <p className="mb-3 text-xs font-medium text-primary sm:mb-4">{gatingAction}</p>
           )}
 
           <div className="flex items-center justify-between gap-2">

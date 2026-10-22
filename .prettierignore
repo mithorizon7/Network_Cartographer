@@ -1,0 +1,6 @@
+node_modules/
+dist/
+attached_assets/
+package-lock.json
+security-evidence/
+test-results/
