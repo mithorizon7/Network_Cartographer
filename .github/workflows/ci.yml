@@ -31,4 +31,6 @@ jobs:
       - run: npm run test:security
       - name: Build using the verified deployment runtime
         run: bash script/replit-build.sh
+        env:
+          NODE_ENV: production
       - run: npm run test:production
