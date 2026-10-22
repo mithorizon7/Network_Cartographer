@@ -34,6 +34,8 @@ Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence 
 
 ## Findings Log
 
+- [ ] F-011 [status:in_progress] [P1] [confidence:1.0] First actual publish rejected by Replit automatic package installation on ambient Node 22.22.0 before reviewed bootstrap ran. Runtime guard correctly failed closed; old public deployment remains live. Explicitly disable platform package installation/import guessing so reviewed bootstrap performs installation on verified Node without relaxing engine/audit safeguards. Evidence: publish failure 2026-10-22 15:03 EDT and Replit build log; official packager.features.enabledForHosting documentation.
+
 - [x] F-010 [status:verified] [P2] [confidence:1.0] Production build environment can omit required dev build tools when NODE_ENV=production, and formatter scans downloaded runtime/platform caches. Build explicitly includes dev dependencies and audits them; production mode applies to compilation. Formatter excludes generated directories only. Evidence: npm ci include/omit options and Replit formatting timeout; CI production-mode bootstrap required.
 
 - [x] F-009 [status:verified] [P2] [confidence:1.0] Theme preference overwritten before initialization: desktop/mobile dark mode reset to light on reload. Read saved theme in lazy state initializer before persistence effect, retaining blocked-storage fallback. Evidence: actual Russian mobile reload, ThemeToggle.tsx; follow-up browser test and CI required.
@@ -57,6 +59,8 @@ Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence 
 - [x] P-003 [status:verified] API/status/static serving/logging/request-timeout hardening plus security regression tests. F-004/F-005. Evidence: server/index.ts, server/routes.ts, server/static.ts and V-005/V-007. Addresses: F-004 and F-005.
 
 ## Validation Log
+
+- [ ] V-014 [status:in_progress] Verify actual publication skips the outdated ambient installer, runs the verified build and launches patched Node. A workspace build and Linux CI alone do not establish this provider pipeline behavior.
 
 - [ ] V-013 [status:in_progress] Validate Linux deployment build with parent NODE_ENV=production and explicit dev-tool installation, and verify generated runtime/cache directories are ignored by formatting. Preserve all application-source validation.
 
