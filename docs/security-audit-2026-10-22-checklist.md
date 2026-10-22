@@ -34,6 +34,8 @@ Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence 
 
 ## Findings Log
 
+- [x] F-010 [status:verified] [P2] [confidence:1.0] Production build environment can omit required dev build tools when NODE_ENV=production, and formatter scans downloaded runtime/platform caches. Build explicitly includes dev dependencies and audits them; production mode applies to compilation. Formatter excludes generated directories only. Evidence: npm ci include/omit options and Replit formatting timeout; CI production-mode bootstrap required.
+
 - [x] F-009 [status:verified] [P2] [confidence:1.0] Theme preference overwritten before initialization: desktop/mobile dark mode reset to light on reload. Read saved theme in lazy state initializer before persistence effect, retaining blocked-storage fallback. Evidence: actual Russian mobile reload, ThemeToggle.tsx; follow-up browser test and CI required.
 
 - [x] F-001 [status:verified] [P1] [confidence:1.0] Repository runtime/CI pins repaired; .npmrc enforces engines; startup rejects unsupported Node. Verified tests use checksum-verified temporary Node 22.23.4. Original machine and deployment runtime updates remain pending (R-001). Evidence: .nvmrc, package.json, .replit, server/runtime.ts and V-002/V-007. Owner: codex (local fixes); maintainer (delivery follow-up).
@@ -55,6 +57,8 @@ Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence 
 - [x] P-003 [status:verified] API/status/static serving/logging/request-timeout hardening plus security regression tests. F-004/F-005. Evidence: server/index.ts, server/routes.ts, server/static.ts and V-005/V-007. Addresses: F-004 and F-005.
 
 ## Validation Log
+
+- [ ] V-013 [status:in_progress] Validate Linux deployment build with parent NODE_ENV=production and explicit dev-tool installation, and verify generated runtime/cache directories are ignored by formatting. Preserve all application-source validation.
 
 - [x] V-012 [status:verified] Dark and light preferences each survived full browser reload on the fixed build; modal Shift+Tab/Tab containment and Escape focus restoration verified. Local typecheck, lint, format, build and production-artifact test pass. System-preference/blocked-storage fallback source-reviewed. Follow-up commit requires CI before publish.
 

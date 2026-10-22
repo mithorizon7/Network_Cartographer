@@ -31,6 +31,6 @@ mv "$temporary/node-v$version-linux-$arch" .runtime/node
 export PATH="$PWD/.runtime/node/bin:$PATH"
 unset NODE_OPTIONS NODE_EXTRA_CA_CERTS NODE_USE_SYSTEM_CA NODE_USE_ENV_PROXY
 node --version
-npm ci --ignore-scripts
-npm audit --audit-level=moderate
-npm run build
+npm ci --include=dev --ignore-scripts
+npm audit --include=dev --audit-level=moderate
+NODE_ENV=production npm run build
