@@ -14,6 +14,12 @@ The owner subsequently authorized finishing the fixes, committing/merging and de
 - Tailwind 4 requires Safari 16.4+, Chrome 111+ or Firefox 128+. Existing theme configuration, animation classes, CSS variable utilities and focus-visible semantics were migrated; desktop/mobile browser validation is required before release. This is a documented browser-support change, not an assertion of compatibility with older browsers.
 - Commit, CI, main protection, synchronization, publishing and public verification are tracked in the living checklist. Broader workstation updates and inaccessible provider host/incident evidence are not closed by application deployment.
 
+### Follow-up Verification Before Publishing
+
+- PR #7 passed every CI step, including the exact Linux runtime bootstrap and built-artifact test: [CI run 39833192810](https://github.com/mithorizon7/Network_Cartographer/actions/runs/39833192810). Merged as `df4d327`; main now requires a PR and strict GitHub Actions build check, blocks force pushes/deletion and enforces the rule for administrators. Independent review count is explicitly zero for solo maintenance, not represented as external review.
+- Final reload checks found and fixed an additional theme preference initialization race. Dark and light now both survive reload. Keyboard focus containment and Escape restoration were verified in the actual browser.
+- Rechecking the local nvm installation found Node 22.23.4 already available; its executable matches the official checksum-verified audit binary byte for byte. This run did not change global runtime defaults. The project pin selects this patched version; the original inherited shell PATH is not evidence of the current nvm default.
+
 ## Initial Audit Snapshot
 
 The following inventory and initial action list record the earlier audit state. Follow-up results above supersede its pending dependency/access statements; external incident-response checks remain conditional and unverified until evidence is obtained.

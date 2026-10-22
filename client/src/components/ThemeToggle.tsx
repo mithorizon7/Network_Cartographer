@@ -6,10 +6,15 @@ import { Sun, Moon } from "lucide-react";
 export function ThemeToggle() {
   const { t } = useTranslation();
   const [isDark, setIsDark] = useState(() => {
-    if (typeof window !== "undefined") {
-      return document.documentElement.classList.contains("dark");
+    if (typeof window === "undefined") return false;
+    try {
+      const stored = localStorage.getItem("theme");
+      if (stored === "dark") return true;
+      if (stored === "light") return false;
+    } catch {
+      // Use the system preference when storage is unavailable.
     }
-    return false;
+    return window.matchMedia("(prefers-color-scheme: dark)").matches;
   });
 
   useEffect(() => {
@@ -27,32 +32,12 @@ export function ThemeToggle() {
     }
   }, [isDark]);
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("theme");
-      if (stored === "dark") {
-        setIsDark(true);
-        return;
-      }
-      if (stored === "light") {
-        setIsDark(false);
-        return;
-      }
-    } catch {
-      // Ignore storage errors (private mode, blocked storage, etc.)
-    }
-
-    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      setIsDark(true);
-    }
-  }, []);
-
   return (
     <Button
       variant="ghost"
       size="icon"
       className="rounded-full"
-      onClick={() => setIsDark(!isDark)}
+      onClick={() => setIsDark((previous) => !previous)}
       data-testid="button-theme-toggle"
       aria-label={isDark ? t("theme.switchToLight") : t("theme.switchToDark")}
     >
