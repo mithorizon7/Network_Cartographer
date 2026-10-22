@@ -1,6 +1,9 @@
-modules = ["nodejs-22", "web", "postgresql-16"]
+modules = ["web", "postgresql-16"]
 run = "bash script/replit-start.sh"
 hidden = [".config", ".git", "generated-icon.png", "node_modules", "dist"]
+
+[packager]
+language = "nodejs"
 
 [packager.features]
 # The verified deployment bootstrap installs dependencies on patched Node first.
