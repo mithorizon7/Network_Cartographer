@@ -1,6 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import "tailwindcss";
+@import "tw-animate-css";
+@config "../../tailwind.config.ts";
 
 /* LIGHT MODE */
 :root {
@@ -198,6 +198,11 @@
 @layer base {
   * {
     @apply border-border;
+  }
+
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
   }
 
   body {

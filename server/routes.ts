@@ -48,8 +48,6 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
     message: { error: "Too many requests, please try again later." },
   });
 
-  app.use("/api", apiLimiter);
-
   app.use((req, res, next) => {
     res.setHeader("Content-Security-Policy", buildContentSecurityPolicy(isDev));
     res.setHeader("X-Content-Type-Options", "nosniff");
@@ -65,10 +63,21 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       res.setHeader("Strict-Transport-Security", "max-age=15552000; includeSubDomains");
     }
 
-    if (req.path.startsWith("/api")) {
+    if (/^\/api(?:\/|$)/i.test(req.path)) {
       res.setHeader("Cache-Control", "no-store");
     }
 
+    next();
+  });
+
+  app.use("/api", apiLimiter);
+  // The scenario API is read-only and has no request-body consumers.
+  app.use("/api", (req, res, next) => {
+    if (req.method !== "GET" && req.method !== "HEAD") {
+      res.setHeader("Allow", "GET, HEAD");
+      res.status(405).json({ error: "Method not allowed" });
+      return;
+    }
     next();
   });
 
@@ -108,6 +117,10 @@ export async function registerRoutes(httpServer: Server, app: Express): Promise<
       console.error("Error fetching scenario:", error);
       res.status(500).json({ error: "Failed to fetch scenario" });
     }
+  });
+
+  app.use("/api", (_req, res) => {
+    res.status(404).json({ error: "API route not found" });
   });
 
   return httpServer;

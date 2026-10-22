@@ -723,6 +723,7 @@
     "startHereBody": "Complete these actions to secure the scenario.",
     "selectTargetHint": "Use the helper below if you want the required target selected for you.",
     "selectTarget": "Select the right target",
+    "readyToComplete": "The right target is selected. You can complete this action now.",
     "outcomeTitle": "Outcome"
   },
   "actionTypes": {
@@ -851,9 +852,9 @@
       },
       "action": {
         "title": "Complete the current action",
-        "description": "Use the Actions panel to make one concrete security decision with the correct target.",
+        "description": "Use the Actions panel to make one concrete security decision. The app will line up the right target first.",
         "why": "Doing one authentic security action is the fastest way to learn the workflow.",
-        "cta": "Focus current action"
+        "cta": "Select target and continue"
       },
       "prompt": {
         "title": "Answer one learning check",

@@ -106,8 +106,12 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
   const activeLayerInfo = layerConfigs.find((l) => l.mode === activeLayer);
 
   return (
-    <div className="flex flex-col gap-2" data-testid="layer-goggles">
-      <div className="segmented-control" role="group" aria-label={t("layers.title")}>
+    <div className="flex w-full flex-col gap-2" data-testid="layer-goggles">
+      <div
+        className="segmented-control grid w-full grid-cols-2 rounded-2xl sm:flex sm:rounded-full"
+        role="group"
+        aria-label={t("layers.title")}
+      >
         {layerConfigs.map(({ mode, labelKey, shortLabelKey, icon: Icon }) => {
           const isActive = activeLayer === mode;
           const wasPrevious = previousLayer === mode;
@@ -119,7 +123,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
                 size="sm"
                 onClick={() => handleLayerChange(mode)}
                 data-testid={`layer-button-${mode}`}
-                className="w-full gap-1.5 rounded-full text-xs sm:text-sm"
+                className="min-h-11 w-full min-w-0 gap-1 whitespace-normal px-2 text-[11px] sm:min-h-8 sm:gap-1.5 sm:text-sm"
                 aria-pressed={isActive}
               >
                 <motion.div
@@ -135,7 +139,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
                 <span className="hidden sm:inline" aria-hidden="true">
                   {t(labelKey)}
                 </span>
-                <span className="sm:hidden" aria-hidden="true">
+                <span className="min-w-0 break-words sm:hidden" aria-hidden="true">
                   {t(shortLabelKey)}
                 </span>
                 <span className="sr-only">{t(labelKey)}</span>
@@ -166,7 +170,7 @@ export function LayerGoggles({ activeLayer, onChange }: LayerGogglesProps) {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.2 }}
-              className="flex items-center justify-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-center shadow-sm backdrop-blur"
+              className="flex items-center justify-center gap-2 rounded-full border border-primary/30 bg-primary/10 px-4 py-2 text-center shadow-xs backdrop-blur-sm"
               data-testid="layer-transition-message"
             >
               <ChevronRight className="h-4 w-4 text-primary" />

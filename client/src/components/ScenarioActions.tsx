@@ -305,6 +305,12 @@ export function ScenarioActions({
                 </Button>
               </div>
             )}
+            {isTargetMatch && currentTask.target.type !== "none" && status !== "success" && (
+              <div className="mt-2 flex items-center gap-1.5 text-[11px] font-medium text-green-600 dark:text-green-400">
+                <CheckCircle2 className="h-3.5 w-3.5" />
+                <span>{t("actions.readyToComplete")}</span>
+              </div>
+            )}
           </div>
         )}
 

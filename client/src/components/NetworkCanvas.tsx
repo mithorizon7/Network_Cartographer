@@ -574,13 +574,13 @@ export function NetworkCanvas({
 
   return (
     <div
-      className="relative h-full w-full overflow-hidden rounded-md bg-gradient-to-br from-background to-muted/30"
+      className="relative h-full w-full overflow-hidden rounded-md bg-linear-to-br from-background to-muted/30"
       data-testid="network-canvas"
     >
       <svg
         viewBox="0 0 800 700"
         className="h-full w-full"
-        role="img"
+        role="group"
         aria-label={t("accessibility.networkVisualization")}
       >
         <defs>
@@ -916,7 +916,7 @@ export function NetworkCanvas({
       </svg>
 
       <motion.div
-        className="absolute bottom-4 left-4 rounded-md bg-card/80 px-3 py-2 text-xs backdrop-blur-sm"
+        className="absolute bottom-4 left-4 rounded-md bg-card/80 px-3 py-2 text-xs backdrop-blur-xs"
         data-testid="scenario-info"
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}

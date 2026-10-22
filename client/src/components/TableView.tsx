@@ -141,7 +141,7 @@ export function TableView({
   return (
     <ScrollArea className="h-full" data-testid="table-view">
       <Table>
-        <TableHeader className="sticky top-0 z-10 bg-card/90 backdrop-blur">
+        <TableHeader className="sticky top-0 z-10 bg-card/90 backdrop-blur-sm">
           <TableRow className="bg-card/90">
             <TableHead className="w-12"></TableHead>
             <TableHead>

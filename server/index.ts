@@ -2,6 +2,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { serveStatic } from "./static";
 import { createServer } from "http";
+import { assertSupportedRuntime } from "./runtime";
 
 const app = express();
 const httpServer = createServer(app);
@@ -13,22 +14,6 @@ if (process.env.NODE_ENV === "production") {
   app.set("trust proxy", 1);
 }
 
-declare module "http" {
-  interface IncomingMessage {
-    rawBody: unknown;
-  }
-}
-
-app.use(
-  express.json({
-    verify: (req, _res, buf) => {
-      req.rawBody = buf;
-    },
-  }),
-);
-
-app.use(express.urlencoded({ extended: false }));
-
 export function log(message: string, source = "express") {
   const formattedTime = new Date().toLocaleTimeString("en-US", {
     hour: "numeric",
@@ -38,6 +23,17 @@ export function log(message: string, source = "express") {
   });
 
   console.log(`${formattedTime} [${source}] ${message}`);
+}
+
+function safeLogPath(path: string): string {
+  return path
+    .split("")
+    .filter((character) => {
+      const code = character.charCodeAt(0);
+      return code >= 32 && (code < 127 || code > 159);
+    })
+    .join("")
+    .slice(0, 200);
 }
 
 function safeSerializeForLog(value: unknown): string | null {
@@ -56,7 +52,7 @@ function safeSerializeForLog(value: unknown): string | null {
 
 app.use((req, res, next) => {
   const start = Date.now();
-  const path = req.path;
+  const path = safeLogPath(req.path);
   const shouldLogResponseBody = isDevelopment;
   let capturedJsonResponse: unknown = undefined;
 
@@ -85,7 +81,16 @@ app.use((req, res, next) => {
 });
 
 (async () => {
+  assertSupportedRuntime();
   await registerRoutes(httpServer, app);
+
+  // Default to serving the production build; development must be explicit.
+  if (process.env.NODE_ENV === "development") {
+    const { setupVite } = await import("./vite");
+    await setupVite(httpServer, app);
+  } else {
+    serveStatic(app);
+  }
 
   app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
     const error = err as { status?: number; statusCode?: number; message?: string };
@@ -97,7 +102,8 @@ app.use((req, res, next) => {
     const rawMessage = error.message || "Internal Server Error";
     const message = status >= 500 && !isDevelopment ? "Internal Server Error" : rawMessage;
 
-    log(`${req.method} ${req.originalUrl} ${status} :: ${rawMessage}`, "error");
+    const safePath = safeLogPath(req.path);
+    log(`${req.method} ${safePath} ${status}`, "error");
 
     if (res.headersSent) {
       next(err);
@@ -107,29 +113,24 @@ app.use((req, res, next) => {
     res.status(status).json({ message });
   });
 
-  // importantly only setup vite in development and after
-  // setting up all the other routes so the catch-all route
-  // doesn't interfere with the other routes
-  if (process.env.NODE_ENV === "production") {
-    serveStatic(app);
-  } else {
-    const { setupVite } = await import("./vite");
-    await setupVite(httpServer, app);
-  }
-
   // ALWAYS serve the app on the port specified in the environment variable PORT
   // Other ports are firewalled. Default to 5000 if not specified.
   // this serves both the API and the client.
   // It is the only port that is not firewalled.
   const port = parseInt(process.env.PORT || "5000", 10);
+  httpServer.requestTimeout = 15_000;
+  httpServer.headersTimeout = 10_000;
+  httpServer.keepAliveTimeout = 5_000;
+  httpServer.maxRequestsPerSocket = 1000;
   httpServer.listen(
     {
       port,
-      host: "0.0.0.0",
-      reusePort: true,
+      host: process.env.HOST || (isDevelopment ? "127.0.0.1" : "0.0.0.0"),
     },
     () => {
-      log(`serving on port ${port}`);
+      const address = httpServer.address();
+      const listeningPort = address && typeof address !== "string" ? address.port : port;
+      log(`serving on port ${listeningPort}; Node ${process.version}`);
     },
   );
 })().catch((err: unknown) => {

@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 
 const Table = React.forwardRef<HTMLTableElement, React.HTMLAttributes<HTMLTableElement>>(
   ({ className, ...props }, ref) => (
-    <div className="relative w-full overflow-auto rounded-2xl border border-border/80 bg-card/70 shadow-sm backdrop-blur">
+    <div className="relative w-full overflow-auto rounded-2xl border border-border/80 bg-card/70 shadow-xs backdrop-blur-sm">
       <table ref={ref} className={cn("w-full caption-bottom text-sm", className)} {...props} />
     </div>
   ),

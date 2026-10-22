@@ -14,7 +14,7 @@ export interface OnboardingStep {
 const ONBOARDING_STEPS: OnboardingStep[] = [
   { id: "welcome_mission", chapter: 1, isModal: true },
   { id: "scenario_context", chapter: 2, targetSelector: "[data-testid='scenario-selector']" },
-  { id: "map_scan", chapter: 3, targetSelector: "[data-testid='network-canvas']" },
+  { id: "map_scan", chapter: 3, targetSelector: "[data-testid='network-canvas'] svg" },
   {
     id: "layer_toggle",
     chapter: 4,
@@ -24,20 +24,20 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: "device_inspection",
     chapter: 5,
-    targetSelector: "[data-testid='network-canvas']",
+    targetSelector: "[data-testid='network-canvas'] svg",
     gatingAction: "onboarding.gating.clickDevice",
   },
-  { id: "action_panel", chapter: 6, targetSelector: "[data-testid='scenario-actions']" },
+  { id: "action_panel", chapter: 6, targetSelector: "[data-testid='actions-start-here']" },
   {
     id: "complete_first_action",
     chapter: 6,
-    targetSelector: "[data-testid='scenario-actions']",
+    targetSelector: "[data-testid='button-complete-action']",
     gatingAction: "onboarding.gating.completeAction",
   },
   {
     id: "quiz_answer",
     chapter: 7,
-    targetSelector: "[data-testid='learning-prompts']",
+    targetSelector: "[data-testid='text-prompt-question']",
     gatingAction: "onboarding.gating.answerPrompt",
   },
   { id: "mission_complete", chapter: 7, isModal: true },
@@ -95,8 +95,11 @@ export function OnboardingProvider({ children, autoStart = true }: OnboardingPro
         const parsed = JSON.parse(stored) as Partial<OnboardingState>;
         const parsedStep = typeof parsed.currentStep === "number" ? parsed.currentStep : 0;
         return {
-          completed: !!parsed.completed,
-          currentStep: parsedStep >= 0 && parsedStep < ONBOARDING_STEPS.length ? parsedStep : 0,
+          completed: parsed.completed === true,
+          currentStep:
+            Number.isInteger(parsedStep) && parsedStep >= 0 && parsedStep < ONBOARDING_STEPS.length
+              ? parsedStep
+              : 0,
           startedAt: typeof parsed.startedAt === "number" ? parsed.startedAt : undefined,
         };
       }

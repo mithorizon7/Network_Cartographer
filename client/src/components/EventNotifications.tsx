@@ -107,7 +107,8 @@ export function EventNotifications({
         animate={{ opacity: 1, scale: 1, y: 0 }}
         exit={{ opacity: 0, scale: 0.95, y: -20 }}
         transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
-        className="fixed left-1/2 top-20 z-50 w-full max-w-md -translate-x-1/2 px-4"
+        className="fixed inset-x-4 top-20 z-50 mx-auto max-w-md"
+        role="status"
         data-testid="event-notification"
       >
         <Card
@@ -142,6 +143,7 @@ export function EventNotifications({
               size="icon"
               onClick={handleDismiss}
               className="shrink-0"
+              aria-label={t("common.dismiss")}
               data-testid="button-dismiss-event"
             >
               <X className="h-4 w-4" />

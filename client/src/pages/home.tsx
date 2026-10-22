@@ -794,7 +794,7 @@ export default function Home() {
         </div>
 
         {missionGuide && (
-          <div className="mt-3 rounded-xl border border-chart-4/30 bg-background/80 p-3 shadow-sm">
+          <div className="mt-3 rounded-xl border border-chart-4/30 bg-background/80 p-3 shadow-xs">
             <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-chart-4">
               {t("onboarding.nextStep.kicker")}
             </p>
@@ -981,7 +981,10 @@ export default function Home() {
     ) : null;
 
   return (
-    <div className="app-shell flex h-screen flex-col overflow-x-hidden" data-testid="page-home">
+    <div
+      className="app-shell flex min-h-screen flex-col overflow-x-hidden lg:h-screen"
+      data-testid="page-home"
+    >
       <header className="app-header">
         <div className="flex flex-wrap items-center justify-between gap-4 px-5 py-4">
           <div className="flex items-center gap-3">
@@ -1093,13 +1096,13 @@ export default function Home() {
         </div>
       </header>
 
-      <div className="flex flex-1 flex-col gap-5 overflow-hidden px-5 pb-5 pt-4 lg:flex-row">
-        <div className="flex flex-1 flex-col gap-4 overflow-hidden">
+      <div className="flex flex-1 flex-col gap-5 overflow-visible px-5 pb-5 pt-4 lg:flex-row lg:overflow-hidden">
+        <div className="flex flex-1 flex-col gap-4 overflow-visible lg:overflow-hidden">
           <div className="control-deck reveal">
             <LayerGoggles activeLayer={activeLayer} onChange={setActiveLayer} />
 
             <div className="flex flex-wrap items-center gap-2">
-              <div className="segmented-control">
+              <div className="segmented-control flex-wrap rounded-2xl sm:rounded-full">
                 <Button
                   variant={viewMode === "map" && !showComparison ? "default" : "ghost"}
                   size="sm"
@@ -1165,7 +1168,7 @@ export default function Home() {
           </div>
 
           {activeScenario && (
-            <div className="reveal reveal-delay-1 rounded-2xl border border-border/80 bg-card/70 px-4 py-3 shadow-sm backdrop-blur">
+            <div className="reveal reveal-delay-1 rounded-2xl border border-border/80 bg-card/70 px-4 py-3 shadow-xs backdrop-blur-sm">
               <DeviceFilter
                 devices={activeScenario.devices}
                 networks={activeScenario.networks}
@@ -1175,7 +1178,7 @@ export default function Home() {
             </div>
           )}
 
-          <Card className="map-panel reveal reveal-delay-2 flex-1 overflow-hidden">
+          <Card className="map-panel reveal reveal-delay-2 min-h-[22rem] overflow-hidden lg:flex-1 lg:min-h-0">
             {showComparison && scenarioSummaries ? (
               <ScenarioComparison
                 scenarios={scenarioSummaries.map((s) => ({ id: s.id, title: s.title }))}
@@ -1267,7 +1270,7 @@ export default function Home() {
             </div>
             <div className="flex items-center gap-2">
               {showFlowInfo && selectedDevice && (
-                <div className="flex items-center gap-2 rounded-full border border-border/80 bg-card/70 px-3 py-1 text-xs shadow-sm">
+                <div className="flex items-center gap-2 rounded-full border border-border/80 bg-card/70 px-3 py-1 text-xs shadow-xs">
                   <span>{t("legend.showSelectedFlows")}</span>
                   <Switch
                     checked={showSelectedFlowsOnly}
@@ -1280,9 +1283,9 @@ export default function Home() {
           </div>
         </div>
 
-        <aside className="side-panel reveal reveal-delay-2 flex h-80 w-full flex-col gap-4 lg:h-auto lg:w-96">
-          <ScrollArea className="flex-1 pr-2">
-            <div className="space-y-4 pr-2">
+        <aside className="side-panel reveal reveal-delay-2 flex w-full flex-col gap-4 lg:h-auto lg:w-96">
+          <ScrollArea className="overflow-visible lg:flex-1 lg:overflow-hidden lg:pr-2">
+            <div className="space-y-4 pr-0 lg:pr-2">
               {missionChecklistCard}
               {statusStack}
 

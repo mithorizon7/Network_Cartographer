@@ -66,7 +66,7 @@ function MetricCard({
 }) {
   return (
     <div
-      className={`rounded-2xl border p-3 shadow-sm backdrop-blur ${
+      className={`rounded-2xl border p-3 shadow-xs backdrop-blur-sm ${
         highlight ? "border-primary/40 bg-primary/10" : "border-border/70 bg-card/70"
       }`}
     >
@@ -209,7 +209,7 @@ function ScenarioPanel({ scenarioId }: { scenarioId: string | null }) {
                 .map((device) => (
                   <div
                     key={device.id}
-                    className="flex items-center justify-between rounded-lg border border-destructive/30 bg-card/70 px-2 py-1 shadow-sm"
+                    className="flex items-center justify-between rounded-lg border border-destructive/30 bg-card/70 px-2 py-1 shadow-xs"
                   >
                     <span>
                       {deviceLabelToKey[device.label]
@@ -249,17 +249,23 @@ export function ScenarioComparison({ scenarios, onClose }: ScenarioComparisonPro
 
   return (
     <div className="flex h-full flex-col" data-testid="scenario-comparison">
-      <div className="flex items-center justify-between border-b border-border/70 bg-card/80 px-4 py-3 backdrop-blur">
+      <div className="flex items-center justify-between border-b border-border/70 bg-card/80 px-4 py-3 backdrop-blur-sm">
         <div className="flex items-center gap-2">
           <GitCompare className="h-5 w-5 text-primary" />
           <h2 className="text-lg font-semibold">{t("comparison.title")}</h2>
         </div>
-        <Button variant="ghost" size="icon" onClick={onClose} data-testid="button-close-comparison">
+        <Button
+          variant="ghost"
+          size="icon"
+          onClick={onClose}
+          aria-label={t("common.close")}
+          data-testid="button-close-comparison"
+        >
           <X className="h-5 w-5" />
         </Button>
       </div>
 
-      <div className="flex items-center justify-center gap-4 border-b border-border/70 bg-card/70 px-4 py-3 backdrop-blur">
+      <div className="flex items-center justify-center gap-4 border-b border-border/70 bg-card/70 px-4 py-3 backdrop-blur-sm">
         <Select value={leftScenarioId || ""} onValueChange={setLeftScenarioId}>
           <SelectTrigger className="w-[200px]" data-testid="select-left-scenario">
             <SelectValue placeholder={t("scenarios.selectScenario")} />

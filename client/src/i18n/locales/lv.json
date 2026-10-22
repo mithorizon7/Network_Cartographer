@@ -728,6 +728,7 @@
     "startHereBody": "Pabeidziet šīs darbības, lai nodrošinātu scenāriju.",
     "selectTargetHint": "Izmantojiet šo palīgu, ja vēlaties, lai vajadzīgais mērķis tiktu atlasīts jūsu vietā.",
     "selectTarget": "Atlasīt pareizo mērķi",
+    "readyToComplete": "Pareizais mērķis ir atlasīts. Tagad varat pabeigt šo darbību.",
     "outcomeTitle": "Rezultāts"
   },
   "actionTypes": {
@@ -741,16 +742,16 @@
     "familyIoT": {
       "blockUnknown": {
         "title": "Bloķēt nezināmo ierīci",
-        "instruction": "Atlasiet «Generic Smart Controller» un bloķējiet to.",
+        "instruction": "Atlasiet «Vispārīgais viedais kontrolieris» un bloķējiet to.",
         "success": "Nezināmā ierīce ir bloķēta. Tūlītējais risks samazināts.",
         "failure": "Tā nav nezināmā ierīce. Vispirms atrodiet nepazīstamo.",
         "tip": "Pārbaudiet nezināmas ierīces un bloķējiet tās, kuras nevarat identificēt."
       },
       "changeCameraPassword": {
         "title": "Mainīt kameras paroli",
-        "instruction": "Atrodiet Indoor Camera un nomainiet noklusējuma paroli.",
+        "instruction": "Atrodiet Iekštelpu kamera un nomainiet noklusējuma paroli.",
         "success": "Noklusējuma parole nomainīta — izplatīta IoT vājā vieta ir novērsta.",
-        "failure": "Atlasiet Indoor Camera ar noklusējuma paroli.",
+        "failure": "Atlasiet Iekštelpu kamera ar noklusējuma paroli.",
         "tip": "Noklusējuma paroles ir biežs kompromitācijas vektors."
       },
       "enableGuest": {
@@ -814,7 +815,7 @@
     },
     "gating": {
       "selectScenario": "Izvēlieties scenāriju, lai turpinātu",
-      "clickLink": "Noklikšķiniet uz Link/Local, lai turpinātu",
+      "clickLink": "Noklikšķiniet uz Saite/Lokāls, lai turpinātu",
       "clickNetwork": "Noklikšķiniet uz Network, lai turpinātu",
       "clickTransport": "Noklikšķiniet uz Transport, lai turpinātu",
       "clickApplication": "Noklikšķiniet uz Application, lai turpinātu",
@@ -844,9 +845,9 @@
       "deviceHint": "Izceltā ierīce ir labākā vieta, kur turpināt.",
       "layer": {
         "title": "Pārslēdziet vienu slāni",
-        "description": "Vienreiz izmantojiet Layer Goggles, lai karte neizskatītos kā viens nemainīgs attēls.",
+        "description": "Vienreiz izmantojiet slāņu brilles, lai karte neizskatītos kā viens nemainīgs attēls.",
         "why": "Mācīties ir vieglāk, kad redzat, ka vienu tīklu var lasīt vairākos veidos.",
-        "cta": "Rādīt Link/Local"
+        "cta": "Rādīt slāni Saite/Lokāls"
       },
       "inspect": {
         "title": "Izpētiet {{device}}",
@@ -856,9 +857,9 @@
       },
       "action": {
         "title": "Pabeidziet pašreizējo darbību",
-        "description": "Izmantojiet Darbību paneli, lai pieņemtu vienu konkrētu drošības lēmumu ar pareizo mērķi.",
+        "description": "Izmantojiet Darbību paneli vienam konkrētam drošības lēmumam. Lietotne vispirms atlasīs pareizo mērķi.",
         "why": "Viens īsts drošības solis ir ātrākais veids, kā apgūt darba plūsmu.",
-        "cta": "Atvērt pašreizējo darbību"
+        "cta": "Atlasīt mērķi un turpināt"
       },
       "prompt": {
         "title": "Atbildiet uz vienu pārbaudi",
@@ -887,7 +888,7 @@
         "content": "Maršrutētājs ir centrā, bet ierīces riņķo uzticības zonās (galvenā, viesu, IoT). Tā ātrāk redzēsiet saistības."
       },
       "layer_toggle": {
-        "title": "Izmantojiet Layer Goggles",
+        "title": "Izmantojiet slāņu brilles",
         "content": "Pārslēdziet slāņus, lai redzētu vienu un to pašu tīklu dažādos skatījumos: lokālā identitāte, IP maršrutēšana, plūsmas un lietojumprogrammas."
       },
       "device_inspection": {
