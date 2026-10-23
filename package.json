@@ -21,6 +21,7 @@
     "i18n:check": "npm run i18n:scan && npm run i18n:lint",
     "test": "tsx scripts/smoke-test.ts",
     "test:security": "tsx --test scripts/security-test.ts",
+    "test:onboarding": "tsx --test scripts/onboarding-test.ts",
     "test:production": "node --test scripts/production-test.mjs",
     "db:push": "drizzle-kit push",
     "prepare": "husky install"

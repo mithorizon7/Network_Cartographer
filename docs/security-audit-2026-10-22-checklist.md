@@ -34,6 +34,15 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 
 ## Findings Log
 
+- [ ] F-018 [status:in_progress] [P1] [confidence:1.0] Native Replit interaction verification of 8a6b20e found that step 7's single-button spotlight covered Select the right target at 375x568 when the learner inspected a different device. Highlight the entire action card, or its actionable content on short screens, including both selection and completion controls. Keep completed-action/debrief fallbacks. Verify the wrong-target recovery path before merge and publication.
+
+- [ ] F-017 [status:in_progress] [P1] [confidence:1.0] At an explicitly measured 320x568 Russian viewport the layer coach mark covered the layer buttons and normal clicks could not unlock Next. Reserve vertical space through target-aware scrolling and resize recovery; use concise short-screen practice guidance and smaller actionable quiz/detail targets. Preserve the full explanation for assistive technology and normal-height screens. Validate actual hit targets and normal clicks, not merely rendered text.
+
+- [ ] F-016 [status:in_progress] [P2] [confidence:1.0] Back navigation briefly reset a completed gate before milestone-restoration effects; a persistent deadlock after those effects settled was not established. Replace the reset/restore race with derived per-run gate history and guard stale/double-click Next callbacks. Replay also remounts LearningPrompts so selected answers do not survive a fresh practice attempt. New regression tests pass; actual 320x568 Back/Next retained completed gates immediately. Final replay/public verification remains required.
+
+- [ ] F-014 [status:in_progress] [P2] [confidence:1.0] Actual public mobile inspection enabled Next without revealing below-screen device details. Once inspection succeeds, move the tutorial spotlight to the existing details panel; retain collapsed-panel fallback. Evidence: live 390x844 run on first successful release 0bb98cb.
+- [ ] F-015 [status:in_progress] [P1] [confidence:1.0] Actual public mobile Learning Check tooltip highlighted only the question and covered the answer buttons, blocking normal clicks and advancement. Highlight the complete learning card before answering, then the feedback afterward. Add localized, non-color-only answer status and polite announcement using existing translations. Evidence: live step 8 screenshot and normal answer click leaving Next disabled on 0bb98cb; rerun actual mobile and desktop interactions after fix.
+
 - [ ] F-013 [status:in_progress] [P1] [confidence:1.0] Provider Node module shadowed the working Nix candidate and inherited an OpenSSL CA override. On October 23 the catalog now supplies patched Node 22.23.4 and 24.22.1. Select the supported Node 22 module to match .nvmrc/CI, explicitly select patched bundled CAs, retain strict engines/scripts/TLS, and remove the unused custom Nix workaround. Actual provider environment and publish validation remain required. The previously observed generated module addition is authorized for correction by the owner's October 23 request.
 
 - [ ] F-012 [status:in_progress] [P1] [confidence:1.0] Second actual publish used correct a37ad344 snapshot but still invoked npm install on Node 22.22.0. Platform installer flags do not control the observed stage; exact internal cause unexposed. Add checksum-pinned project Nix Node provisioning before installer, remove competing old Node module, and enforce lifecycle scripts disabled in .npmrc. Evidence: second complete publish log, build 0c6323ec-45cc-4b24-b7a1-d47fbf0502e9; actual Nix/runtime and publish verification required.
@@ -64,11 +73,13 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 
 ## Validation Log
 
+- [x] V-017 [status:verified] Final local production-browser checks at explicitly read 320x568, Russian: layer action, revealed device risks, full quiz answers with unobstructed hit centers, wrong-answer explanation, Back/Next retaining completed gates, and 9/9 completion. Replay changed a previously disabled answered option back to enabled. Localized detail panel now measures left 33/right 287 within viewport 320; all sidebar text/button bounds checked without horizontal clipping. Separate wrong-device path: inspect Work Laptop, try first action, read safe failure, tap Select the right target, and complete successfully without changing viewport. Final CI/native/public checks remain separate gates.
+
 - [x] V-016 [status:verified] 2026-10-23 fresh local release pass on Node 22.23.4/npm 10.9.9: typecheck, lint, formatting, 689-key EN/LV/RU validation, scenario smoke test, two security tests, production build and bundled-server test all pass; full npm audit reports zero findings. Bundled/default roots both count 116 and contain no emSign ECC G3. Replit configuration changes require native validation and CI after final edit.
 
-- [ ] V-015 [status:in_progress] Validate replit.nix evaluation/build and actual installer Node version on provider before accepting system-runtime fix. Local Mac lacks Nix; Linux CI still validates unchanged bootstrap and full app. Confirm archive checksum and CA baseline, preserve platform security scan and critical-finding gate.
+- [x] V-015 [status:verified] The initial Nix candidate evaluated/built successfully but was shadowed by provider module provisioning, so the unused workaround was removed. Exact final candidate 1010e24 passed full native Replit production-mode bootstrap, all CI commands and both npm audits (zero findings). Ordinary shells resolve supported Node 22.23.4/npm 10.9.9 before PATH overrides; bundled/default CA stores both contain 116 certificates, no emSign ECC G3, no extras; strict engines/scripts/TLS effective. PR #14 CI runs 40004851523 and 40004842643 passed; merged as 0bb98cb. Replit release/reviewed-0bb98cb is clean and tree-identical (8f00f3d5) to the validated candidate. Actual publication is tracked separately in V-014.
 
-- [ ] V-014 [status:in_progress] Verify actual publication skips the outdated ambient installer, runs the verified build and launches patched Node. A workspace build and Linux CI alone do not establish this provider pipeline behavior.
+- [ ] V-014 [status:in_progress] October 23 publication started from merged 0bb98cb using the Replit UI after independently reading the critical-vulnerability blocking switch as checked. Verify actual installer/build/runtime logs and successful publication. A workspace build and Linux CI alone do not establish this provider pipeline behavior.
 
 - [x] V-013 [status:verified] PR #12 CI run 39835515546 passed the Linux deployment build with parent NODE_ENV=production and explicit dev-tool installation; generated runtime/cache directories are ignored by formatting. Full application-source validation retained. Later PR #14 CI run 39839583110 also passed.
 
@@ -94,6 +105,8 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 - [x] R-004 [status:verified] Formatting-only changes resolve the prior onboarding files' style failures; final format check passes.
 
 ## Change Log
+
+- 2026-10-23: Final candidate passed native provider validation and required CI; PR #14 merged as 0bb98cb. Provider checkout confirmed clean, exact merged release with identical validated tree. Critical-vulnerability blocking independently checked in publishing UI; production publication started. A new private recovery archive/Git bundle was checksum-verified under .git/private-recovery; older external archives are unavailable in the replacement container, not claimed reverified. Recovery branches remain intact.
 
 - 2026-10-23: Owner authorized finishing the known provider-runtime correction. Rechecked clean local branch and open PR #14, reran the full application suite and current npm audit. Provider reports its Node 24 module is now patched; replace the shadowed Nix workaround with the supported module and explicit bundled-CA policy, pending native validation and actual publication.
 

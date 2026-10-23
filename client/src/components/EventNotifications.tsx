@@ -13,6 +13,7 @@ interface EventNotificationsProps {
   scenarioId: string;
   selectedDeviceId: string | null;
   onDismiss?: () => void;
+  suppressed?: boolean;
 }
 
 const eventIdToKey: Record<string, string> = {
@@ -27,6 +28,7 @@ export function EventNotifications({
   scenarioId,
   selectedDeviceId,
   onDismiss,
+  suppressed = false,
 }: EventNotificationsProps) {
   const { t } = useTranslation();
   const [activeEvent, setActiveEvent] = useState<NetworkEvent | null>(null);
@@ -94,7 +96,7 @@ export function EventNotifications({
     return event.message;
   };
 
-  if (!activeEvent) return null;
+  if (!activeEvent || suppressed) return null;
 
   const device = getEventDevice(activeEvent);
   const isWarning = device?.riskFlags.includes("unknown_device") || device?.type === "unknown";

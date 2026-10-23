@@ -29,6 +29,7 @@ jobs:
       - run: npm run i18n:lint
       - run: npm run test
       - run: npm run test:security
+      - run: npm run test:onboarding
       - name: Build using the verified deployment runtime
         run: bash script/replit-build.sh
         env:

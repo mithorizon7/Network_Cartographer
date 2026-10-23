@@ -376,6 +376,11 @@
     backdrop-filter: blur(12px);
   }
 
+  /* Radix's intrinsic-width table wrapper must not widen the card sidebar. */
+  .side-panel-scroll > [data-radix-scroll-area-viewport] > div {
+    display: block !important;
+  }
+
   .app-footer {
     border-top: 1px solid hsl(var(--border));
     background: hsl(var(--card) / 0.7);

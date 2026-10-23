@@ -280,9 +280,9 @@ export function ScenarioActions({
           </div>
         )}
       </CardHeader>
-      <CardContent className="space-y-3">
+      <CardContent className="space-y-3" data-testid="action-practice">
         <div className="space-y-1">
-          <Badge variant="secondary" className="text-xs">
+          <Badge variant="secondary" className="max-w-full whitespace-normal text-xs">
             {t(`actionTypes.${currentTask.actionType}`, { defaultValue: currentTask.actionType })}
           </Badge>
           <h4 className="text-sm font-semibold">{getTaskText(currentTask, "title")}</h4>
