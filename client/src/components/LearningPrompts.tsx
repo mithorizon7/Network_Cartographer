@@ -176,58 +176,61 @@ export function LearningPrompts({ prompts, onComplete, onPromptAnswered }: Learn
         <Progress value={progress} className="mt-2 h-1.5" />
       </CardHeader>
       <CardContent className="space-y-4">
-        <div>
-          {currentPrompt.relatedLayer && (
-            <Badge variant="secondary" className="mb-2 text-xs capitalize">
-              {t("learning.layer", { layer: t(`layers.${currentPrompt.relatedLayer}`) })}
-            </Badge>
-          )}
-          <p className="text-sm font-medium leading-relaxed" data-testid="text-prompt-question">
-            {promptKey
-              ? t(`learningPrompts.${promptKey}.question`, { defaultValue: currentPrompt.question })
-              : currentPrompt.question}
-          </p>
-        </div>
+        <div className="space-y-4" data-testid="learning-question">
+          <div>
+            {currentPrompt.relatedLayer && (
+              <Badge variant="secondary" className="mb-2 text-xs capitalize">
+                {t("learning.layer", { layer: t(`layers.${currentPrompt.relatedLayer}`) })}
+              </Badge>
+            )}
+            <p className="text-sm font-medium leading-relaxed" data-testid="text-prompt-question">
+              {promptKey
+                ? t(`learningPrompts.${promptKey}.question`, {
+                    defaultValue: currentPrompt.question,
+                  })
+                : currentPrompt.question}
+            </p>
+          </div>
 
-        <div className="space-y-2">
-          {currentPrompt.answers.map((answer, index) => {
-            const isSelected = selectedAnswer === index;
-            const isCorrect = answer.isCorrect;
-            const showResult = selectedAnswer !== null;
+          <div className="space-y-2">
+            {currentPrompt.answers.map((answer, index) => {
+              const isSelected = selectedAnswer === index;
+              const isCorrect = answer.isCorrect;
+              const showResult = selectedAnswer !== null;
 
-            let buttonVariant: "outline" | "default" | "destructive" = "outline";
-            let statusIcon = null;
+              let buttonVariant: "outline" | "default" | "destructive" = "outline";
+              let statusIcon = null;
 
-            if (showResult) {
-              if (isCorrect) {
-                buttonVariant = "default";
-                statusIcon = <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />;
-              } else if (isSelected && !isCorrect) {
-                buttonVariant = "destructive";
-                statusIcon = <XCircle className="h-4 w-4 shrink-0" />;
+              if (showResult) {
+                if (isCorrect) {
+                  buttonVariant = "default";
+                  statusIcon = <CheckCircle2 className="h-4 w-4 shrink-0 text-green-500" />;
+                } else if (isSelected && !isCorrect) {
+                  buttonVariant = "destructive";
+                  statusIcon = <XCircle className="h-4 w-4 shrink-0" />;
+                }
               }
-            }
 
-            const translatedAnswer = promptKey
-              ? t(`learningPrompts.${promptKey}.answers.${index}`, { defaultValue: answer.text })
-              : answer.text;
+              const translatedAnswer = promptKey
+                ? t(`learningPrompts.${promptKey}.answers.${index}`, { defaultValue: answer.text })
+                : answer.text;
 
-            return (
-              <Button
-                key={index}
-                variant={buttonVariant}
-                className="h-auto w-full justify-start gap-3 whitespace-normal py-3 text-left"
-                onClick={() => handleAnswerSelect(index)}
-                disabled={selectedAnswer !== null}
-                data-testid={`button-answer-${index}`}
-              >
-                <span className="flex-1">{translatedAnswer}</span>
-                {showResult && statusIcon}
-              </Button>
-            );
-          })}
+              return (
+                <Button
+                  key={index}
+                  variant={buttonVariant}
+                  className="h-auto w-full justify-start gap-3 whitespace-normal py-3 text-left"
+                  onClick={() => handleAnswerSelect(index)}
+                  disabled={selectedAnswer !== null}
+                  data-testid={`button-answer-${index}`}
+                >
+                  <span className="flex-1">{translatedAnswer}</span>
+                  {showResult && statusIcon}
+                </Button>
+              );
+            })}
+          </div>
         </div>
-
         {showExplanation && (
           <div
             className="rounded-md border border-chart-2/30 bg-chart-2/5 p-3"

@@ -950,6 +950,7 @@ export default function Home() {
   const learningSection =
     activeScenario && activeScenario.learningPrompts.length > 0 ? (
       <LearningPrompts
+        key={`${activeScenario.id}-${actionsResetKey}`}
         prompts={activeScenario.learningPrompts}
         onPromptAnswered={handlePromptAnswered}
       />

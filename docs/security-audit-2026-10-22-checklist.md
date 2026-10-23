@@ -34,6 +34,10 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 
 ## Findings Log
 
+- [ ] F-017 [status:in_progress] [P1] [confidence:1.0] At an explicitly measured 320x568 Russian viewport the layer coach mark covered the layer buttons and normal clicks could not unlock Next. Reserve vertical space through target-aware scrolling and resize recovery; use concise short-screen practice guidance and smaller actionable quiz/detail targets. Preserve the full explanation for assistive technology and normal-height screens. Validate actual hit targets and normal clicks, not merely rendered text.
+
+- [ ] F-016 [status:in_progress] [P1] [confidence:1.0] Back from Learning Check to the completed first action reset its gate while only Next Action remained available. Keep per-run completed gates, reject stale/double-click advancement and clear them only for a fresh run. Replay also remounts LearningPrompts so prior selected answers do not block the fresh practice. Evidence: actual Back interaction at step 8 to 7 left Next disabled with no Complete Action control; new regression tests cover gate history, fresh-run reset and stale advancement.
+
 - [ ] F-014 [status:in_progress] [P2] [confidence:1.0] Actual public mobile inspection enabled Next without revealing below-screen device details. Once inspection succeeds, move the tutorial spotlight to the existing details panel; retain collapsed-panel fallback. Evidence: live 390x844 run on first successful release 0bb98cb.
 - [ ] F-015 [status:in_progress] [P1] [confidence:1.0] Actual public mobile Learning Check tooltip highlighted only the question and covered the answer buttons, blocking normal clicks and advancement. Highlight the complete learning card before answering, then the feedback afterward. Add localized, non-color-only answer status and polite announcement using existing translations. Evidence: live step 8 screenshot and normal answer click leaving Next disabled on 0bb98cb; rerun actual mobile and desktop interactions after fix.
 

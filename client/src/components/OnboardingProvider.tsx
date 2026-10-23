@@ -1,14 +1,16 @@
 import { createContext, useContext, useState, useCallback, useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { SpotlightOverlay } from "./SpotlightOverlay";
+import {
+  advanceGuidedProgress,
+  getGuidedTarget,
+  isGuidedStepReady,
+  type GuidedStep,
+} from "@/lib/onboardingProgress";
 
-export interface OnboardingStep {
-  id: string;
+export interface OnboardingStep extends GuidedStep {
   chapter: number;
-  targetSelector?: string;
-  completedTargetSelector?: string;
   isModal?: boolean;
-  gatingAction?: string;
   gatingCheck?: () => boolean;
 }
 
@@ -28,6 +30,8 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     targetSelector: "[data-testid='network-canvas'] svg",
     completedTargetSelector:
       "[data-testid='device-details-panel'], [data-testid='panel-device-collapsed']",
+    completedCompactTargetSelector:
+      "[data-testid='device-details-panel'] [role='tabpanel'], [data-testid='panel-device-collapsed']",
     gatingAction: "onboarding.gating.clickDevice",
   },
   { id: "action_panel", chapter: 6, targetSelector: "[data-testid='actions-start-here']" },
@@ -41,6 +45,7 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     id: "quiz_answer",
     chapter: 7,
     targetSelector: "[data-testid='learning-prompts']",
+    compactTargetSelector: "[data-testid='learning-question']",
     completedTargetSelector:
       "[data-testid='learning-prompt-feedback'], [data-testid='panel-learning-complete']",
     gatingAction: "onboarding.gating.answerPrompt",
@@ -115,7 +120,7 @@ export function OnboardingProvider({ children, autoStart = true }: OnboardingPro
   });
 
   const [isActive, setIsActive] = useState(false);
-  const [isGatingSatisfied, setIsGatingSatisfied] = useState(true);
+  const [completedGates, setCompletedGates] = useState<Set<string>>(() => new Set());
 
   useEffect(() => {
     try {
@@ -137,27 +142,23 @@ export function OnboardingProvider({ children, autoStart = true }: OnboardingPro
 
   const currentStep = isActive ? ONBOARDING_STEPS[state.currentStep] || null : null;
 
-  useEffect(() => {
-    if (currentStep?.gatingAction) {
-      setIsGatingSatisfied(false);
-    } else {
-      setIsGatingSatisfied(true);
-    }
-  }, [currentStep?.gatingAction]);
+  const isGatingSatisfied = isGuidedStepReady(currentStep, completedGates);
 
   const startOnboarding = useCallback(() => {
+    setCompletedGates(new Set());
     setState({ completed: false, currentStep: 0, startedAt: Date.now() });
     setIsActive(true);
   }, []);
 
   const nextStep = useCallback(() => {
-    if (state.currentStep >= ONBOARDING_STEPS.length - 1) {
-      setState((prev) => ({ ...prev, completed: true }));
+    if (!isGatingSatisfied) return;
+    setState((prev) =>
+      advanceGuidedProgress(prev, state.currentStep, ONBOARDING_STEPS, completedGates),
+    );
+    if (state.currentStep === ONBOARDING_STEPS.length - 1) {
       setIsActive(false);
-    } else {
-      setState((prev) => ({ ...prev, currentStep: prev.currentStep + 1 }));
     }
-  }, [state.currentStep]);
+  }, [state.currentStep, completedGates, isGatingSatisfied]);
 
   const prevStep = useCallback(() => {
     if (state.currentStep > 0) {
@@ -176,13 +177,17 @@ export function OnboardingProvider({ children, autoStart = true }: OnboardingPro
   }, []);
 
   const restartOnboarding = useCallback(() => {
+    setCompletedGates(new Set());
     setState({ completed: false, currentStep: 0, startedAt: Date.now() });
     setIsActive(true);
   }, []);
 
   const satisfyGating = useCallback(() => {
-    setIsGatingSatisfied(true);
-  }, []);
+    if (!currentStep?.gatingAction) return;
+    setCompletedGates((prev) =>
+      prev.has(currentStep.id) ? prev : new Set(prev).add(currentStep.id),
+    );
+  }, [currentStep]);
 
   const contextValue = useMemo<OnboardingContextValue>(
     () => ({
@@ -224,11 +229,8 @@ export function OnboardingProvider({ children, autoStart = true }: OnboardingPro
       {children}
       {isActive && currentStep && (
         <SpotlightOverlay
-          targetSelector={
-            isGatingSatisfied
-              ? (currentStep.completedTargetSelector ?? currentStep.targetSelector)
-              : currentStep.targetSelector
-          }
+          targetSelector={getGuidedTarget(currentStep, completedGates)}
+          compactTargetSelector={getGuidedTarget(currentStep, completedGates, true)}
           isModal={currentStep.isModal}
           title={t(`onboarding.steps.${currentStep.id}.title`)}
           content={t(`onboarding.steps.${currentStep.id}.content`)}

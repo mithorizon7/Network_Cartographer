@@ -31,6 +31,7 @@ function getOverlapArea(
 
 interface SpotlightOverlayProps {
   targetSelector?: string;
+  compactTargetSelector?: string;
   targetRef?: React.RefObject<HTMLElement>;
   title: string;
   content: string;
@@ -51,6 +52,7 @@ interface SpotlightOverlayProps {
 
 export function SpotlightOverlay({
   targetSelector,
+  compactTargetSelector,
   targetRef,
   title,
   content,
@@ -82,11 +84,13 @@ export function SpotlightOverlay({
     if (targetRef?.current) {
       return targetRef.current;
     }
-    if (targetSelector) {
-      return document.querySelector(targetSelector);
+    const selector =
+      window.innerHeight <= 600 ? (compactTargetSelector ?? targetSelector) : targetSelector;
+    if (selector) {
+      return document.querySelector(selector);
     }
     return null;
-  }, [targetRef, targetSelector]);
+  }, [targetRef, targetSelector, compactTargetSelector]);
   const revealTarget = useCallback(() => {
     if (isModal || typeof window === "undefined") return;
 
@@ -131,17 +135,26 @@ export function SpotlightOverlay({
 
     const rect = element.getBoundingClientRect();
     const buffer = 24;
+    const tooltipHeight = tooltipRef.current?.offsetHeight ?? 224;
+    const roomAbove = rect.top - buffer;
+    const roomBelow = window.innerHeight - rect.bottom - buffer;
+    const needsTooltipRoom = Math.max(roomAbove, roomBelow) < tooltipHeight + 16;
     const isOffscreen =
       rect.top < buffer ||
       rect.bottom > window.innerHeight - buffer ||
       rect.left < buffer ||
       rect.right > window.innerWidth - buffer;
 
-    if (isOffscreen) {
-      element.scrollIntoView({
+    if (isOffscreen || needsTooltipRoom) {
+      const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
+      const topAlignedScroll = clampPosition(window.scrollY + rect.top - buffer, 0, maxScroll);
+      const bottomAfterScroll = window.scrollY + rect.bottom - topAlignedScroll;
+      const canPlaceBelow = bottomAfterScroll + buffer + tooltipHeight + 16 <= window.innerHeight;
+      window.scrollTo({
+        top: canPlaceBelow
+          ? topAlignedScroll
+          : clampPosition(window.scrollY + rect.bottom - window.innerHeight + buffer, 0, maxScroll),
         behavior,
-        block: "center",
-        inline: "nearest",
       });
     }
   }, [isModal, resolveTarget]);
@@ -158,10 +171,12 @@ export function SpotlightOverlay({
     });
 
     timeoutId = window.setTimeout(revealTarget, 250);
+    window.addEventListener("resize", revealTarget);
 
     return () => {
       window.cancelAnimationFrame(frameId);
       window.clearTimeout(timeoutId);
+      window.removeEventListener("resize", revealTarget);
     };
   }, [isModal, revealTarget, stepNumber]);
 
@@ -392,7 +407,9 @@ export function SpotlightOverlay({
 
           <p
             id="spotlight-content"
-            className="mb-3 text-sm leading-relaxed text-muted-foreground sm:mb-4"
+            className={`mb-3 text-sm leading-relaxed text-muted-foreground sm:mb-4 ${
+              gatingAction ? "[@media(max-height:600px)]:sr-only" : ""
+            }`}
           >
             {content}
           </p>
