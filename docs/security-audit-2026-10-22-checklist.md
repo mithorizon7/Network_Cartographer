@@ -2,7 +2,7 @@
 
 ## Metadata
 
-Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence and follow-up: security-audit-2026-10-22.md.
+Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detailed evidence and follow-up: security-audit-2026-10-22.md.
 
 ## Scope
 
@@ -34,6 +34,10 @@ Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence 
 
 ## Findings Log
 
+- [ ] F-013 [status:in_progress] [P1] [confidence:1.0] Provider Node module shadowed the working Nix candidate and inherited an OpenSSL CA override. On October 23 the catalog now supplies patched Node 22.23.4 and 24.22.1. Select the supported Node 22 module to match .nvmrc/CI, explicitly select patched bundled CAs, retain strict engines/scripts/TLS, and remove the unused custom Nix workaround. Actual provider environment and publish validation remain required. The previously observed generated module addition is authorized for correction by the owner's October 23 request.
+
+- [ ] F-012 [status:in_progress] [P1] [confidence:1.0] Second actual publish used correct a37ad344 snapshot but still invoked npm install on Node 22.22.0. Platform installer flags do not control the observed stage; exact internal cause unexposed. Add checksum-pinned project Nix Node provisioning before installer, remove competing old Node module, and enforce lifecycle scripts disabled in .npmrc. Evidence: second complete publish log, build 0c6323ec-45cc-4b24-b7a1-d47fbf0502e9; actual Nix/runtime and publish verification required.
+
 - [ ] F-011 [status:in_progress] [P1] [confidence:1.0] First actual publish rejected by Replit automatic package installation on ambient Node 22.22.0 before reviewed bootstrap ran. Runtime guard correctly failed closed; old public deployment remains live. Explicitly disable platform package installation/import guessing so reviewed bootstrap performs installation on verified Node without relaxing engine/audit safeguards. Evidence: publish failure 2026-10-22 15:03 EDT and Replit build log; official packager.features.enabledForHosting documentation.
 
 - [x] F-010 [status:verified] [P2] [confidence:1.0] Production build environment can omit required dev build tools when NODE_ENV=production, and formatter scans downloaded runtime/platform caches. Build explicitly includes dev dependencies and audits them; production mode applies to compilation. Formatter excludes generated directories only. Evidence: npm ci include/omit options and Replit formatting timeout; CI production-mode bootstrap required.
@@ -60,9 +64,13 @@ Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence 
 
 ## Validation Log
 
+- [x] V-016 [status:verified] 2026-10-23 fresh local release pass on Node 22.23.4/npm 10.9.9: typecheck, lint, formatting, 689-key EN/LV/RU validation, scenario smoke test, two security tests, production build and bundled-server test all pass; full npm audit reports zero findings. Bundled/default roots both count 116 and contain no emSign ECC G3. Replit configuration changes require native validation and CI after final edit.
+
+- [ ] V-015 [status:in_progress] Validate replit.nix evaluation/build and actual installer Node version on provider before accepting system-runtime fix. Local Mac lacks Nix; Linux CI still validates unchanged bootstrap and full app. Confirm archive checksum and CA baseline, preserve platform security scan and critical-finding gate.
+
 - [ ] V-014 [status:in_progress] Verify actual publication skips the outdated ambient installer, runs the verified build and launches patched Node. A workspace build and Linux CI alone do not establish this provider pipeline behavior.
 
-- [ ] V-013 [status:in_progress] Validate Linux deployment build with parent NODE_ENV=production and explicit dev-tool installation, and verify generated runtime/cache directories are ignored by formatting. Preserve all application-source validation.
+- [x] V-013 [status:verified] PR #12 CI run 39835515546 passed the Linux deployment build with parent NODE_ENV=production and explicit dev-tool installation; generated runtime/cache directories are ignored by formatting. Full application-source validation retained. Later PR #14 CI run 39839583110 also passed.
 
 - [x] V-012 [status:verified] Dark and light preferences each survived full browser reload on the fixed build; modal Shift+Tab/Tab containment and Escape focus restoration verified. Local typecheck, lint, format, build and production-artifact test pass. System-preference/blocked-storage fallback source-reviewed. Follow-up commit requires CI before publish.
 
@@ -86,5 +94,7 @@ Created/updated: 2026-10-22. Workspace: Network_Cartographer. Detailed evidence 
 - [x] R-004 [status:verified] Formatting-only changes resolve the prior onboarding files' style failures; final format check passes.
 
 ## Change Log
+
+- 2026-10-23: Owner authorized finishing the known provider-runtime correction. Rechecked clean local branch and open PR #14, reran the full application suite and current npm audit. Provider reports its Node 24 module is now patched; replace the shadowed Nix workaround with the supported module and explicit bundled-CA policy, pending native validation and actual publication.
 
 - 2026-10-22: Prior audit reviewed, compromise precheck completed before project execution, current baseline researched, local branch created, targeted fixes implemented and verified in isolated environment. Production sign-off intentionally remains blocked.
