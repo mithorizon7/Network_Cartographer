@@ -1,10 +1,10 @@
-# Security Audit and Local Remediation: 2026-10-22
+# Security Audit and Release Verification: October 22-23, 2026
 
-Audit date: October 22, 2026, America/New_York. Primary-source/advisory checks started approximately 12:50 EDT (16:50 UTC); final package checks completed after 13:25 EDT. Branch: `codex/security-audit-2026-10-22`, based on `af548ed`. This report describes local remediation, not production certification.
+Initial audit: October 22, 2026, America/New_York; authorized release and interaction verification continued October 23. Initial branch: `codex/security-audit-2026-10-22`, based on `af548ed`. This report distinguishes verified application remediation and delivery from unavailable infrastructure and historical incident evidence. It is not a compromise-free or whole-provider security certification.
 
 ## Authorized Release Follow-up
 
-The owner subsequently authorized finishing the fixes, committing/merging and deploying. This section supersedes the initial audit snapshot below.
+The owner subsequently authorized finishing the fixes, committing/merging and deploying. These intermediate follow-up notes are retained as an audit trail; the Final Application Release Record below supersedes their pending statements and the initial audit snapshot.
 
 - Removed the unpatched `braces` dependency entirely, rather than suppressing its advisory: Tailwind 4.3.3/Vite plugin, CSS animation replacement, tailwind-merge 3.7, TypeScript ESLint 8.72 and lint-staged 17.6. Clean installed and lockfile npm audits report **zero known findings**, including development dependencies. Both audits are required CI gates again. Upstream braces remains unpatched, but is no longer in this project.
 - Replaced the original drifted `node_modules` using `npm ci --ignore-scripts` on verified Node 22.23.4. The temporary duplicate dependency tree and audit download cache were removed after local disk exhaustion; source, reports and security evidence were preserved. The interrupted checks must pass again before release.
@@ -20,6 +20,48 @@ The owner subsequently authorized finishing the fixes, committing/merging and de
 - PR #7 passed every CI step, including the exact Linux runtime bootstrap and built-artifact test: [CI run 39833192810](https://github.com/mithorizon7/Network_Cartographer/actions/runs/39833192810). Merged as `df4d327`; main now requires a PR and strict GitHub Actions build check, blocks force pushes/deletion and enforces the rule for administrators. Independent review count is explicitly zero for solo maintenance, not represented as external review.
 - Final reload checks found and fixed an additional theme preference initialization race. Dark and light now both survive reload. Keyboard focus containment and Escape restoration were verified in the actual browser.
 - Rechecking the local nvm installation found Node 22.23.4 already available; its executable matches the official checksum-verified audit binary byte for byte. This run did not change global runtime defaults. The project pin selects this patched version; the original inherited shell PATH is not evidence of the current nvm default.
+
+## Final Application Release Record
+
+### Release Identity
+
+- Public app: [Network Cartographer](https://networkcartographer.replit.app).
+- Runtime/installer correction: [PR #14](https://github.com/mithorizon7/Network_Cartographer/pull/14), merged as `0bb98cbf64c3b72bf198ea438b59dddb13c28a8b`.
+- Actual mobile interaction corrections: [PR #15](https://github.com/mithorizon7/Network_Cartographer/pull/15), merged as `ce9379e0b162d24fbbf3ff85ea8dfbaaa1a158e3`. Exact candidate `e703e4d` passed [CI 40011851546](https://github.com/mithorizon7/Network_Cartographer/actions/runs/40011851546) and [CI 40011841465](https://github.com/mithorizon7/Network_Cartographer/actions/runs/40011841465), native production build/audits, and ordinary-click Russian mission runs at 320x568 and 390x844. Its merged tree is identical to that candidate (`1487cefde379ce878f966f858eea1b6648620db5`).
+- Final deployed release: [PR #16](https://github.com/mithorizon7/Network_Cartographer/pull/16), merged as `0783036a6f3abe929b3d738146e732e1dbddbce1`. Only localized help labels/title and the audit finding record changed. Its candidate `a52f1af` passed [CI 40014083430](https://github.com/mithorizon7/Network_Cartographer/actions/runs/40014083430) and [CI 40014009466](https://github.com/mithorizon7/Network_Cartographer/actions/runs/40014009466), including all 690 keys in EN/LV/RU. Documentation-only closeout commits may follow this deployed application commit; they do not change the runtime or application artifact.
+
+### Verified Delivery And Interaction
+
+The first actual publish attempts failed closed on the provider's old Node 22.22.0 automatic installer, before the reviewed build command. Disabling hosting installation alone did not control that stage. The custom Nix candidate built but was shadowed by automatic Node-module provisioning. On October 23, the supported provider Node 22 module supplied patched 22.23.4; selecting it and the patched bundled certificate store resolved the observed installer/environment issue without weakening any guard.
+
+The actual `ce9379e` publishing attempt is build `aa3c0632-016b-4761-9007-9b692aec8aa5`, with that source commit explicitly recorded. Automatic npm installation succeeded with zero findings, the build printed Node v22.23.4, the platform security scan completed at 19:39:31 UTC, and deployment succeeded at 19:40:52 UTC on October 23. Current-serving production startup logs at 19:40:45/19:40:51 UTC explicitly reported Node v22.23.4. Installer logs identify npm 10.9.9 but do not separately print that stage's Node version; this is not represented as an independent process-version measurement. Critical-vulnerability blocking was checked in the actual Publishing UI, not inferred from source configuration.
+
+The final label-only release is build `90f9edf9-4322-4ddd-a266-00574e270d93`, whose log explicitly records source `0783036a6f3abe929b3d738146e732e1dbddbce1`. Its security scan completed at 19:51:08 UTC and publication succeeded at 19:52:22 UTC on October 23. Current-serving startup at 19:52:16.671 UTC explicitly reports Node v22.23.4. Final public verification at 19:53:02 UTC repeated all 13 HTTP/security checks and matched these exact reviewed asset bytes:
+
+| Asset                | SHA256                                                             |
+| -------------------- | ------------------------------------------------------------------ |
+| `index-o4831F56.js`  | `46cbdfea05dd83b6f2dc472751dd4538950b6628651f6ecb99f203b052cae4fd` |
+| `index-Cp-8ETPK.css` | `ceda0b83267dc9c36ea33feaecb83db498389138bc6856fbb0a1d7077e0e0178` |
+
+The final public help control has the expected accessible name in English, Latvian and Russian. The localized help dialog opens and Escape closes it, returning to the app; the preview was restored to English/light mode, temporary viewport overrides were reset, and no browser console errors were recorded. A final desktop screenshot is retained at `test-results/release-2026-10-23-desktop.png`; the earlier mobile completion screenshot verifies the unchanged mission workflow.
+
+Public verification at 19:41:21 UTC matched the exact JS/CSS SHA256 values to the reviewed local and native builds and passed 13 bounded HTTP checks: app and assets, scenario list/detail, invalid ID 400, missing API/scenario/asset 404, mixed-case API no-store, read-only POST 405/Allow, and blocked development endpoints. CSP, anti-framing, MIME protections, HSTS and API no-store were checked on the applicable paths. No public load test or exploit demonstration was performed.
+
+The public English mission completed at an explicitly measured 390x844 viewport, including inspecting Work Laptop, safely rejecting the wrong-target action, selecting the required target, completing the action, answering incorrectly and receiving explanatory feedback, retaining completed gates through Back/Next, and reaching 9/9. All three answer-button centers were verified unobstructed before ordinary interaction. Public desktop checks at 1280x800 passed keyboard Return selection of the router, table/comparison views and close recovery, persistent help/replay access, and both dark/light preferences surviving full reload. These are real Chromium browser interactions at mobile viewport sizes, not physical iOS/Android or Safari/Firefox tests.
+
+The final mobile repairs follow the learner's actual action: device selection reveals risks/details; answer guidance includes the choices and then follows feedback; action guidance includes the required-target helper as well as completion. Short-screen guidance stays compact while full descriptions remain available to assistive technology. Simulated event banners do not cover the guided task. Localized sidebar content, controls and long action labels wrap instead of widening Radix's intrinsic-width wrapper. Gate state is derived per run and rejects stale rapid Next callbacks; replay resets both actions and learning answers. The observed Back reset was a transient state race, not a proven permanent deadlock after all prior restoration effects settled.
+
+### Verification Boundaries
+
+Full and production-only npm audits report zero known vulnerabilities on October 23. Typecheck, lint, formatting, translations, scenario smoke, two runtime/API security tests, two onboarding regression tests, production build and bundled-server test passed after the final interaction changes; required CI also passed for the label-only follow-up. No dependency update was hidden behind an advisory suppression.
+
+Workspace inspection directly confirmed Node 22.23.4/npm 10.9.9, strict engines, disabled lifecycle scripts, strict TLS, 116 bundled/effective CA roots, no compromised emSign ECC G3 root, and no extra certificates. Build/start wrappers select the checksum-verified pinned runtime and clear inherited Node trust overrides. Production logs establish the application runtime version, but do not independently expose the production CA inventory, provider kernel, edge TLS/HTTP3 implementation, supporting DNS/appliance inventory, credential rotations, or historical incident logs. Those remain unverified provider/owner follow-ups, not accepted risks or evidence that compromise did not occur.
+
+Existing history and recovery references were preserved. New private full-workspace/Git recovery bundles under the Replit repository's private recovery directory passed checksum verification. Earlier external temporary archives were unavailable in the replacement container and were not claimed reverified. The initial local temporary audit directory was also unavailable on October 23; newly generated validation logs, asset manifests and public-check results are retained in ignored `security-evidence/2026-10-23/`. The public mobile completion screenshot is in ignored `test-results/release-2026-10-23-mobile.png`. These evidence folders are not public repository content.
+
+The existing roughly 891 KB JavaScript chunk (about 270 KB gzip) still emits Vite's nonblocking size warning. It was not suppressed; no measured mobile-network performance budget, independent penetration test, physical-device coverage or novice-user outcome experiment is claimed. Tailwind 4's documented modern-browser minimum remains applicable. The application release does not close the broader infrastructure sign-off gate in the checklist.
+
+Checklist structural validation finishes with zero warnings and zero errors. Running it with `--require-signoff` deliberately reports the two still-unchecked broader gates, `G-001` and `G-004`, because provider/incident evidence `R-001` is unavailable. All confirmed application findings and required application validation items are closed; no risk acceptance or full infrastructure sign-off was manufactured to make that stricter check pass.
 
 ## Initial Audit Snapshot
 
