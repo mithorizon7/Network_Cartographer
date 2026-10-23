@@ -38,7 +38,11 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: "complete_first_action",
     chapter: 6,
-    targetSelector: "[data-testid='button-complete-action']",
+    targetSelector: "[data-testid='scenario-actions']",
+    compactTargetSelector: "[data-testid='action-practice']",
+    completedTargetSelector: "[data-testid='scenario-actions'], [data-testid='scenario-debrief']",
+    completedCompactTargetSelector:
+      "[data-testid='action-practice'], [data-testid='scenario-debrief']",
     gatingAction: "onboarding.gating.completeAction",
   },
   {

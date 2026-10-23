@@ -34,6 +34,8 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 
 ## Findings Log
 
+- [ ] F-018 [status:in_progress] [P1] [confidence:1.0] Native Replit interaction verification of 8a6b20e found that step 7's single-button spotlight covered Select the right target at 375x568 when the learner inspected a different device. Highlight the entire action card, or its actionable content on short screens, including both selection and completion controls. Keep completed-action/debrief fallbacks. Verify the wrong-target recovery path before merge and publication.
+
 - [ ] F-017 [status:in_progress] [P1] [confidence:1.0] At an explicitly measured 320x568 Russian viewport the layer coach mark covered the layer buttons and normal clicks could not unlock Next. Reserve vertical space through target-aware scrolling and resize recovery; use concise short-screen practice guidance and smaller actionable quiz/detail targets. Preserve the full explanation for assistive technology and normal-height screens. Validate actual hit targets and normal clicks, not merely rendered text.
 
 - [ ] F-016 [status:in_progress] [P2] [confidence:1.0] Back navigation briefly reset a completed gate before milestone-restoration effects; a persistent deadlock after those effects settled was not established. Replace the reset/restore race with derived per-run gate history and guard stale/double-click Next callbacks. Replay also remounts LearningPrompts so selected answers do not survive a fresh practice attempt. New regression tests pass; actual 320x568 Back/Next retained completed gates immediately. Final replay/public verification remains required.
@@ -70,6 +72,8 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 - [x] P-003 [status:verified] API/status/static serving/logging/request-timeout hardening plus security regression tests. F-004/F-005. Evidence: server/index.ts, server/routes.ts, server/static.ts and V-005/V-007. Addresses: F-004 and F-005.
 
 ## Validation Log
+
+- [x] V-017 [status:verified] Final local production-browser checks at explicitly read 320x568, Russian: layer action, revealed device risks, full quiz answers with unobstructed hit centers, wrong-answer explanation, Back/Next retaining completed gates, and 9/9 completion. Replay changed a previously disabled answered option back to enabled. Localized detail panel now measures left 33/right 287 within viewport 320; all sidebar text/button bounds checked without horizontal clipping. Separate wrong-device path: inspect Work Laptop, try first action, read safe failure, tap Select the right target, and complete successfully without changing viewport. Final CI/native/public checks remain separate gates.
 
 - [x] V-016 [status:verified] 2026-10-23 fresh local release pass on Node 22.23.4/npm 10.9.9: typecheck, lint, formatting, 689-key EN/LV/RU validation, scenario smoke test, two security tests, production build and bundled-server test all pass; full npm audit reports zero findings. Bundled/default roots both count 116 and contain no emSign ECC G3. Replit configuration changes require native validation and CI after final edit.
 
