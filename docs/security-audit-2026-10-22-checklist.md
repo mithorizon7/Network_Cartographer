@@ -34,7 +34,7 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 
 ## Findings Log
 
-- [ ] F-013 [status:in_progress] [P1] [confidence:1.0] Provider Node module shadowed the working Nix candidate and inherited an OpenSSL CA override. On October 23 the module now reports patched Node 24.22.1. Prefer the supported module, explicitly select patched bundled CAs, retain strict engines/scripts/TLS, and remove the unused custom Nix workaround. Actual provider environment and publish validation remain required. The previously observed generated module addition is authorized for correction by the owner's October 23 request.
+- [ ] F-013 [status:in_progress] [P1] [confidence:1.0] Provider Node module shadowed the working Nix candidate and inherited an OpenSSL CA override. On October 23 the catalog now supplies patched Node 22.23.4 and 24.22.1. Select the supported Node 22 module to match .nvmrc/CI, explicitly select patched bundled CAs, retain strict engines/scripts/TLS, and remove the unused custom Nix workaround. Actual provider environment and publish validation remain required. The previously observed generated module addition is authorized for correction by the owner's October 23 request.
 
 - [ ] F-012 [status:in_progress] [P1] [confidence:1.0] Second actual publish used correct a37ad344 snapshot but still invoked npm install on Node 22.22.0. Platform installer flags do not control the observed stage; exact internal cause unexposed. Add checksum-pinned project Nix Node provisioning before installer, remove competing old Node module, and enforce lifecycle scripts disabled in .npmrc. Evidence: second complete publish log, build 0c6323ec-45cc-4b24-b7a1-d47fbf0502e9; actual Nix/runtime and publish verification required.
 
