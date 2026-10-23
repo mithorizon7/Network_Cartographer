@@ -1018,6 +1018,8 @@ export default function Home() {
                   size="icon"
                   className="rounded-full"
                   data-testid="button-info"
+                  aria-label={t("info.openHelp")}
+                  title={t("info.openHelp")}
                 >
                   <Info className="h-5 w-5" />
                 </Button>

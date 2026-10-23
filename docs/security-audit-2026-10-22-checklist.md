@@ -34,6 +34,8 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 
 ## Findings Log
 
+- [ ] F-019 [status:in_progress] [P2] [confidence:1.0] Final public desktop sweep found the persistent help icon had no accessible name. Add localized Open help and keyboard shortcuts aria-label and hover title in EN/LV/RU. Evidence: public AX unnamed popup control and home.tsx button-info; final public accessible-name check required. Owner: codex.
+
 - [ ] F-018 [status:in_progress] [P1] [confidence:1.0] Native Replit interaction verification of 8a6b20e found that step 7's single-button spotlight covered Select the right target at 375x568 when the learner inspected a different device. Highlight the entire action card, or its actionable content on short screens, including both selection and completion controls. Keep completed-action/debrief fallbacks. Verify the wrong-target recovery path before merge and publication.
 
 - [ ] F-017 [status:in_progress] [P1] [confidence:1.0] At an explicitly measured 320x568 Russian viewport the layer coach mark covered the layer buttons and normal clicks could not unlock Next. Reserve vertical space through target-aware scrolling and resize recovery; use concise short-screen practice guidance and smaller actionable quiz/detail targets. Preserve the full explanation for assistive technology and normal-height screens. Validate actual hit targets and normal clicks, not merely rendered text.

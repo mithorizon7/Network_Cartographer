@@ -303,6 +303,7 @@
     "networkVisualization": "Network visualization showing devices connected to router"
   },
   "info": {
+    "openHelp": "Open help and keyboard shortcuts",
     "about": "This sandbox models a local network: a router, several devices, and the identifiers and addresses used at each layer.",
     "keyboardShortcuts": "Keyboard Shortcuts",
     "switchLayers": "Switch layer views",
