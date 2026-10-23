@@ -146,6 +146,7 @@ export function SpotlightOverlay({
       rect.right > window.innerWidth - buffer;
 
     if (isOffscreen || needsTooltipRoom) {
+      // Leave a vertical slot for the coach mark instead of covering its task.
       const maxScroll = Math.max(0, document.documentElement.scrollHeight - window.innerHeight);
       const topAlignedScroll = clampPosition(window.scrollY + rect.top - buffer, 0, maxScroll);
       const bottomAfterScroll = window.scrollY + rect.bottom - topAlignedScroll;

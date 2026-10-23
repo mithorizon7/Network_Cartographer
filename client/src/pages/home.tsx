@@ -811,7 +811,7 @@ export default function Home() {
             )}
             <Button
               size="sm"
-              className="mt-3"
+              className="mt-3 h-auto min-h-9 max-w-full whitespace-normal"
               onClick={handleMissionGuideAction}
               data-testid="button-mission-next-step"
             >
@@ -842,6 +842,7 @@ export default function Home() {
             onClick={handleReplayGuidedMission}
             disabled={!onboarding}
             data-testid="button-guided-mission"
+            className="h-auto min-h-9 max-w-full whitespace-normal"
           >
             {t("onboarding.missionChecklist.restart")}
           </Button>
@@ -938,6 +939,7 @@ export default function Home() {
               size="sm"
               onClick={handleTogglePacketJourney}
               data-testid="button-start-packet-journey"
+              className="h-auto min-h-9 max-w-full whitespace-normal"
             >
               <Zap className="mr-1.5 h-4 w-4" />
               {t("common.tracePacketJourney")}
@@ -1284,8 +1286,8 @@ export default function Home() {
           </div>
         </div>
 
-        <aside className="side-panel reveal reveal-delay-2 flex w-full flex-col gap-4 lg:h-auto lg:w-96">
-          <ScrollArea className="overflow-visible lg:flex-1 lg:overflow-hidden lg:pr-2">
+        <aside className="side-panel reveal reveal-delay-2 flex min-w-0 w-full flex-col gap-4 lg:h-auto lg:w-96">
+          <ScrollArea className="side-panel-scroll min-w-0 overflow-visible lg:flex-1 lg:overflow-hidden lg:pr-2">
             <div className="space-y-4 pr-0 lg:pr-2">
               {missionChecklistCard}
               {statusStack}
@@ -1330,6 +1332,7 @@ export default function Home() {
           devices={activeScenario.devices}
           scenarioId={activeScenario.id}
           selectedDeviceId={selectedDeviceId}
+          suppressed={onboarding?.isActive}
         />
       )}
 

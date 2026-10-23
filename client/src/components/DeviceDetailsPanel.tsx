@@ -101,15 +101,15 @@ export function DeviceDetailsPanel({
         : "";
 
   return (
-    <Card className="flex h-full flex-col" data-testid="device-details-panel">
+    <Card className="flex h-full min-w-0 flex-col" data-testid="device-details-panel">
       <CardHeader className="flex flex-row items-start justify-between gap-4 space-y-0 border-b pb-4">
-        <div className="flex items-start gap-3">
+        <div className="flex min-w-0 items-start gap-3">
           <div
             className={`rounded-md p-2 ${hasRisks ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"}`}
           >
             <Icon className="h-6 w-6" />
           </div>
-          <div>
+          <div className="min-w-0 [overflow-wrap:anywhere]">
             <h2 className="text-lg font-semibold leading-tight" data-testid="text-device-name">
               {deviceLabelToKey[device.label]
                 ? t(`deviceLabels.${deviceLabelToKey[device.label]}`, {
@@ -135,13 +135,13 @@ export function DeviceDetailsPanel({
       <CardContent className="flex-1 overflow-hidden pt-4">
         <Tabs defaultValue="details" className="flex h-full flex-col">
           <TabsList className="w-full">
-            <TabsTrigger value="details" className="flex-1" data-testid="tab-details">
+            <TabsTrigger value="details" className="min-w-0 flex-1 px-2" data-testid="tab-details">
               {t("devicePanel.tabs.details")}
             </TabsTrigger>
-            <TabsTrigger value="network" className="flex-1" data-testid="tab-network">
+            <TabsTrigger value="network" className="min-w-0 flex-1 px-2" data-testid="tab-network">
               {t("devicePanel.tabs.network")}
             </TabsTrigger>
-            <TabsTrigger value="learn" className="flex-1" data-testid="tab-learn">
+            <TabsTrigger value="learn" className="min-w-0 flex-1 px-2" data-testid="tab-learn">
               {t("devicePanel.tabs.learn")}
             </TabsTrigger>
           </TabsList>
