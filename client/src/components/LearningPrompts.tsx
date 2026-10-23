@@ -229,7 +229,20 @@ export function LearningPrompts({ prompts, onComplete, onPromptAnswered }: Learn
         </div>
 
         {showExplanation && (
-          <div className="rounded-md border border-chart-2/30 bg-chart-2/5 p-3">
+          <div
+            className="rounded-md border border-chart-2/30 bg-chart-2/5 p-3"
+            data-testid="learning-prompt-feedback"
+            role="status"
+          >
+            {selectedAnswer !== null && (
+              <p className="mb-2 text-sm font-semibold">
+                {t(
+                  currentPrompt.answers[selectedAnswer].isCorrect
+                    ? "quiz.correct"
+                    : "quiz.incorrect",
+                )}
+              </p>
+            )}
             <p className="text-sm leading-relaxed text-foreground">{explanationText}</p>
             <div className="mt-3 space-y-2 border-t border-chart-2/20 pt-3">
               <div>

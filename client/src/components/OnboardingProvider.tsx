@@ -6,6 +6,7 @@ export interface OnboardingStep {
   id: string;
   chapter: number;
   targetSelector?: string;
+  completedTargetSelector?: string;
   isModal?: boolean;
   gatingAction?: string;
   gatingCheck?: () => boolean;
@@ -25,6 +26,8 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
     id: "device_inspection",
     chapter: 5,
     targetSelector: "[data-testid='network-canvas'] svg",
+    completedTargetSelector:
+      "[data-testid='device-details-panel'], [data-testid='panel-device-collapsed']",
     gatingAction: "onboarding.gating.clickDevice",
   },
   { id: "action_panel", chapter: 6, targetSelector: "[data-testid='actions-start-here']" },
@@ -37,7 +40,9 @@ const ONBOARDING_STEPS: OnboardingStep[] = [
   {
     id: "quiz_answer",
     chapter: 7,
-    targetSelector: "[data-testid='text-prompt-question']",
+    targetSelector: "[data-testid='learning-prompts']",
+    completedTargetSelector:
+      "[data-testid='learning-prompt-feedback'], [data-testid='panel-learning-complete']",
     gatingAction: "onboarding.gating.answerPrompt",
   },
   { id: "mission_complete", chapter: 7, isModal: true },
@@ -219,7 +224,11 @@ export function OnboardingProvider({ children, autoStart = true }: OnboardingPro
       {children}
       {isActive && currentStep && (
         <SpotlightOverlay
-          targetSelector={currentStep.targetSelector}
+          targetSelector={
+            isGatingSatisfied
+              ? (currentStep.completedTargetSelector ?? currentStep.targetSelector)
+              : currentStep.targetSelector
+          }
           isModal={currentStep.isModal}
           title={t(`onboarding.steps.${currentStep.id}.title`)}
           content={t(`onboarding.steps.${currentStep.id}.content`)}
