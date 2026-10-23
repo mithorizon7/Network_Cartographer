@@ -303,6 +303,7 @@
     "networkVisualization": "Tīkla vizualizācija, kas parāda ierīces, kas savienotas ar maršrutētāju"
   },
   "info": {
+    "openHelp": "Atvērt palīdzību un īsinājumtaustiņus",
     "about": "Šī smilškaste modelē lokālu tīklu: maršrutētāju, vairākas ierīces un identifikatorus un adreses, kas tiek izmantotas katrā slānī.",
     "keyboardShortcuts": "Tastatūras īsceļi",
     "switchLayers": "Pārslēgt slāņu skatus",
