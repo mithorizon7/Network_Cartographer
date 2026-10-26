@@ -12,13 +12,15 @@ Owner: repository and Replit account `mithorizon7`. Reviewed October 26, 2026.
 
 ## Alerts and Routine Checks
 
-In Replit, open Publishing > Adjust settings > Suggested add-ons. Monitoring alerts were enabled October 26; Auto-fix remains off. Uptime-email notifications were selected for the next authorized publication and must be confirmed after publication. Critical-vulnerability publishing protection remains on. No plan upgrade, automatic code repair, automatic republishing, analytics or feedback widget was enabled.
+In Replit, open Publishing > Adjust settings > Suggested add-ons. Monitoring alerts and uptime-email notifications were enabled October 26 and confirmed saved after publication and a full editor reload. Auto-fix remains off. Critical-vulnerability publishing protection remains on. No plan upgrade, automatic code repair, automatic republishing, analytics or feedback widget was enabled.
 
 These controls do not prove email delivery or continuous service availability. Use the existing account's notification preferences to confirm the intended recipient without copying addresses into public logs. Review actual alert delivery when the first genuine alert arrives; do not deliberately break production to generate one. Replit's [monitoring documentation](https://docs.replit.com/features/publishing/monitoring-agent) describes separate alert, repair and republishing controls.
 
 The owner should inspect Monitoring and production logs after each release, after an alert, and before a workshop. Check availability, repeated 5xx, startup failures, latency and resource pressure. An Autoscale termination alone is not evidence of an application crash or security incident; correlate it with failed requests and subsequent startup. The October 25-26 inspection found transient startup healthcheck failures followed by successful serving and one SIGTERM of unknown cause; no root cause is established by those records.
 
 Dependabot already checks npm and GitHub Actions weekly. Review its PRs and advisories promptly, especially security updates. Do not auto-merge major dependency groups or suppress audit failures. Both production and full dependency audits are required CI gates. This closeout does not create a new scheduled agent or paid monitoring service.
+
+Separate GitHub advisory-alert activation could not be verified or changed with the available credentials: its API returned 403, reporting disabled alerts and missing `admin:repo_hook` scope; the browser has no authenticated owner session. Do not silently broaden credential scopes. The owner can inspect repository Settings > Advanced Security and enable Dependabot alerts using their existing authorized session. This optional additional notification channel is not represented as active; weekly update PRs and blocking CI audits are independently established.
 
 ## Release and Verification
 
