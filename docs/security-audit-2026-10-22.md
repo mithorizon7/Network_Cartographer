@@ -1,4 +1,4 @@
-# Security Audit and Release Verification: October 22-23, 2026
+# Security Audit and Release Verification: October 22-26, 2026
 
 Initial audit: October 22, 2026, America/New_York; authorized release and interaction verification continued October 23. Initial branch: `codex/security-audit-2026-10-22`, based on `af548ed`. This report distinguishes verified application remediation and delivery from unavailable infrastructure and historical incident evidence. It is not a compromise-free or whole-provider security certification.
 
@@ -62,6 +62,24 @@ Existing history and recovery references were preserved. New private full-worksp
 The existing roughly 891 KB JavaScript chunk (about 270 KB gzip) still emits Vite's nonblocking size warning. It was not suppressed; no measured mobile-network performance budget, independent penetration test, physical-device coverage or novice-user outcome experiment is claimed. Tailwind 4's documented modern-browser minimum remains applicable. The application release does not close the broader infrastructure sign-off gate in the checklist.
 
 Checklist structural validation finishes with zero warnings and zero errors. Running it with `--require-signoff` deliberately reports the two still-unchecked broader gates, `G-001` and `G-004`, because provider/incident evidence `R-001` is unavailable. All confirmed application findings and required application validation items are closed; no risk acceptance or full infrastructure sign-off was manufactured to make that stricter check pass.
+
+## October 26 Closeout Follow-up
+
+The owner authorized finishing all feasible technical and operational work, expressly excluding a real non-technical learner pilot. October 23 audit counts and asset hashes above are historical, not current assurance for the new candidate.
+
+A fresh audit on October 26 found two high package records rooted in [GHSA-mrhx-c7xc-m3w5 / CVE-2023-54404](https://github.com/advisories/GHSA-mrhx-c7xc-m3w5), affecting Zod below 4.6.6. Root Zod was 3.24.2. The advisory was published October 1 and reviewed/updated October 23; this is newly observed by this project's October 26 audit, not a claim of a later disclosure. No exploitable server route or compromise was established: server validation receives bounded string IDs; scenario imports are client-side with existing 500000-character/byte guards.
+
+The candidate migrates to Zod 4.6.7, replaces the removed error API with `issues`, removes three unused Zod-3 adapter packages and bounds every scenario collection. Five import regressions cover all shipped scenarios, nonmutation, malformed values, top-level and nested bounds, defaults, integrity guards and EN/LV/RU feedback. The new tests are a required CI step. No force update, advisory suppression, exploit demonstration or public load test was used.
+
+The fresh clean-install suite on Node 22.23.4/npm 10.9.9 passed typecheck, lint, formatting, 691-key three-locale validation, scenario smoke, two security tests, two onboarding tests, five import tests, build and bundled-production test. Both full and production npm audits report zero findings. The new Zod package emits two upstream PURE-comment annotation warnings; Rollup strips those comments safely. The frontend remains roughly 919 KB before gzip; the existing nonblocking bundle warning is retained, not suppressed.
+
+Actual candidate browser interactions rejected malformed JSON, an invalid schema and a small collection-overflow fixture with readable feedback, then successfully reimported the visible exported scenario. A 320x568 Russian check found the import dialog exceeded the viewport. The candidate bounds its height/width, adds internal scrolling, stacks narrow upload controls, wraps export controls and announces feedback. Follow-up measured bounds are x16..304, y16..552, with scrollable content; ordinary submission and close controls work. No console errors were captured. Native desktop Safari completed the full nine-step mission, including ordinary layer/device/action interactions and wrong-answer explanation. This is desktop Safari plus Chromium mobile-viewport evidence, not physical-phone or novice-pilot evidence.
+
+Read-only native provider inspection confirmed the owner account, clean prior release, successful serving and Node 22.23.4 startup. October 25-26 logs included transient startup healthcheck failures followed by successful serving and one SIGTERM of unknown cause. Available endpoint telemetry had 13 requests and zero 5xx; this is bounded evidence, not continuous uptime or an established root cause.
+
+Actual Publishing controls were inspected: monitoring alerts were off and are now enabled, Auto-fix remains off, and critical-vulnerability publishing protection remains on. Uptime-email notifications were selected but require the upcoming authorized publication; persistence must be verified afterward. No purchase, plan change, autonomous repair/republishing, new analytics or feedback widget was enabled. [Operations and recovery instructions](operations.md) now describe ownership, alert triage, existing weekly Dependabot reviews, safe rebuild/rollback and the checked-in 13-request public asset-verification command.
+
+Merge, native candidate validation, publication and final public verification remain gates for this candidate and will be recorded after execution. Provider kernel/edge/production-CA/history evidence remains unavailable (`R-001`); the pilot exclusion does not waive or fabricate that evidence. No unrelated workstation defaults, credentials or other projects were changed.
 
 ## Initial Audit Snapshot
 

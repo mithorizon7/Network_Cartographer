@@ -1,7 +1,11 @@
 import { useState, useRef, useCallback, useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import type { TFunction } from "i18next";
-import { scenarioSchema, type Scenario } from "@shared/schema";
+import type { Scenario } from "@shared/schema";
+import {
+  MAX_IMPORT_CHARACTERS,
+  MAX_IMPORT_FILE_BYTES,
+  validateScenario,
+} from "@/lib/scenarioImport";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Label } from "@/components/ui/label";
@@ -23,136 +27,6 @@ import { scenarioIdToKey } from "@/lib/scenarioUtils";
 interface ScenarioExportImportProps {
   scenario: Scenario | null;
   onImport: (scenario: Scenario) => void;
-}
-
-const MAX_IMPORT_CHARACTERS = 500_000;
-const MAX_IMPORT_FILE_BYTES = 500_000;
-
-function findScenarioIntegrityErrorPath(scenario: Scenario): string | null {
-  const networkIds = new Set<string>();
-  for (let i = 0; i < scenario.networks.length; i += 1) {
-    const network = scenario.networks[i];
-    if (networkIds.has(network.id)) {
-      return `networks[${i}].id`;
-    }
-    networkIds.add(network.id);
-  }
-
-  const deviceIds = new Set<string>();
-  for (let i = 0; i < scenario.devices.length; i += 1) {
-    const device = scenario.devices[i];
-    if (deviceIds.has(device.id)) {
-      return `devices[${i}].id`;
-    }
-    deviceIds.add(device.id);
-
-    if (!networkIds.has(device.networkId)) {
-      return `devices[${i}].networkId`;
-    }
-  }
-
-  const promptIds = new Set<string>();
-  for (let i = 0; i < scenario.learningPrompts.length; i += 1) {
-    const prompt = scenario.learningPrompts[i];
-    if (promptIds.has(prompt.id)) {
-      return `learningPrompts[${i}].id`;
-    }
-    promptIds.add(prompt.id);
-
-    const hasCorrectAnswer = prompt.answers.some((answer) => answer.isCorrect);
-    if (!hasCorrectAnswer) {
-      return `learningPrompts[${i}].answers`;
-    }
-  }
-
-  const eventIds = new Set<string>();
-  for (let i = 0; i < scenario.events.length; i += 1) {
-    const event = scenario.events[i];
-    if (eventIds.has(event.id)) {
-      return `events[${i}].id`;
-    }
-    eventIds.add(event.id);
-
-    if (event.deviceId && !deviceIds.has(event.deviceId)) {
-      return `events[${i}].deviceId`;
-    }
-  }
-
-  const flowIds = new Set<string>();
-  for (let i = 0; i < scenario.flows.length; i += 1) {
-    const flow = scenario.flows[i];
-    if (flowIds.has(flow.id)) {
-      return `flows[${i}].id`;
-    }
-    flowIds.add(flow.id);
-
-    if (!deviceIds.has(flow.srcDeviceId)) {
-      return `flows[${i}].srcDeviceId`;
-    }
-  }
-
-  const taskIds = new Set<string>();
-  for (let i = 0; i < scenario.scenarioTasks.length; i += 1) {
-    const task = scenario.scenarioTasks[i];
-    if (taskIds.has(task.id)) {
-      return `scenarioTasks[${i}].id`;
-    }
-    taskIds.add(task.id);
-
-    if (task.target.type === "device" && task.target.id && !deviceIds.has(task.target.id)) {
-      return `scenarioTasks[${i}].target.id`;
-    }
-
-    if (task.target.type === "network" && task.target.id && !networkIds.has(task.target.id)) {
-      return `scenarioTasks[${i}].target.id`;
-    }
-  }
-
-  return null;
-}
-
-function validateScenario(
-  data: unknown,
-  t: TFunction,
-): { valid: boolean; error?: string; scenario?: Scenario } {
-  const result = scenarioSchema.safeParse(data);
-
-  if (!result.success) {
-    const firstError = result.error.errors[0];
-    const path =
-      firstError.path.length > 0
-        ? firstError.path.join(".")
-        : t("scenarioExportImport.validationRoot");
-    return {
-      valid: false,
-      error: t("scenarioExportImport.validationError", { path }),
-    };
-  }
-
-  const scenario = result.data;
-
-  if (scenario.devices.length === 0) {
-    return { valid: false, error: t("scenarioExportImport.requiresDevice") };
-  }
-
-  if (scenario.networks.length === 0) {
-    return { valid: false, error: t("scenarioExportImport.requiresNetwork") };
-  }
-
-  const hasRouter = scenario.devices.some((d) => d.type === "router");
-  if (!hasRouter) {
-    return { valid: false, error: t("scenarioExportImport.requiresRouter") };
-  }
-
-  const integrityErrorPath = findScenarioIntegrityErrorPath(scenario);
-  if (integrityErrorPath) {
-    return {
-      valid: false,
-      error: t("scenarioExportImport.validationError", { path: integrityErrorPath }),
-    };
-  }
-
-  return { valid: true, scenario };
 }
 
 export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImportProps) {
@@ -382,8 +256,8 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
           {t("scenarioExportImport.trigger")}
         </Button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl">
-        <DialogHeader>
+      <DialogContent className="max-h-[calc(100dvh-2rem)] w-[calc(100%-2rem)] max-w-2xl overflow-y-auto overscroll-contain p-4 sm:p-6">
+        <DialogHeader className="pr-6">
           <DialogTitle>{t("scenarioExportImport.title")}</DialogTitle>
           <DialogDescription>{t("scenarioExportImport.description")}</DialogDescription>
         </DialogHeader>
@@ -403,7 +277,7 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
           <TabsContent value="export" className="mt-4 space-y-4">
             {scenario ? (
               <>
-                <div className="flex items-center gap-2">
+                <div className="flex flex-wrap items-center gap-2">
                   <Badge variant="outline">
                     <FileJson className="mr-1 h-3 w-3" />
                     {scenarioTitle}
@@ -423,7 +297,7 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
                   />
                 </div>
 
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                   <Button onClick={handleCopy} variant="outline" data-testid="button-copy-json">
                     {copied ? (
                       <>
@@ -455,7 +329,7 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
 
           <TabsContent value="import" className="mt-4 space-y-4">
             <div className="space-y-3">
-              <div className="flex items-center gap-2">
+              <div className="flex flex-col items-start gap-2 sm:flex-row sm:items-center">
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -497,6 +371,7 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
                 <div
                   className="flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/10 px-3 py-2 text-sm text-destructive"
                   data-testid="import-error"
+                  role="alert"
                 >
                   <AlertCircle className="h-4 w-4 flex-shrink-0" />
                   {importError}
@@ -507,6 +382,7 @@ export function ScenarioExportImport({ scenario, onImport }: ScenarioExportImpor
                 <div
                   className="flex items-center gap-2 rounded-md border border-green-500/50 bg-green-500/10 px-3 py-2 text-sm text-green-600 dark:text-green-400"
                   data-testid="import-success"
+                  role="status"
                 >
                   <Check className="h-4 w-4 flex-shrink-0" />
                   {t("scenarioExportImport.importSuccess")}

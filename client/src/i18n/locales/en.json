@@ -121,7 +121,8 @@
     "validationRoot": "root",
     "requiresDevice": "Scenario must have at least one device",
     "requiresNetwork": "Scenario must have at least one network",
-    "requiresRouter": "Scenario must have a router device"
+    "requiresRouter": "Scenario must have a router device",
+    "tooManyItems": "Too many items in \"{{path}}\" (maximum {{max}})."
   },
   "network": {
     "network": "Network",

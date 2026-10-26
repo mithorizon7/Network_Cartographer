@@ -101,7 +101,7 @@ function main() {
   for (const scenario of allScenarios) {
     const parseResult = scenarioSchema.safeParse(scenario);
     if (!parseResult.success) {
-      const firstError = parseResult.error.errors[0];
+      const firstError = parseResult.error.issues[0];
       const path = firstError?.path.join(".") || "root";
       throw new Error(
         `Scenario ${scenario.id} failed schema validation at "${path}": ${firstError?.message || "unknown error"}.`,

@@ -11,7 +11,6 @@ const allowlist = [
   "cors",
   "date-fns",
   "drizzle-orm",
-  "drizzle-zod",
   "express",
   "express-rate-limit",
   "express-session",
@@ -29,7 +28,6 @@ const allowlist = [
   "ws",
   "xlsx",
   "zod",
-  "zod-validation-error",
 ];
 
 async function buildAll() {
