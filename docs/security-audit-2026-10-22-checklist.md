@@ -2,7 +2,7 @@
 
 ## Metadata
 
-Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detailed evidence and follow-up: security-audit-2026-10-22.md.
+Created: 2026-10-22. Updated: 2026-10-26. Workspace: Network_Cartographer. Detailed evidence and follow-up: security-audit-2026-10-22.md.
 
 ## Scope
 
@@ -11,15 +11,18 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 ## Sign-off Gate
 
 - [ ] G-001 [status:blocked] Application fixes are merged, deployed and publicly verified. Whole-infrastructure/security certification remains blocked solely by inaccessible provider/incident evidence R-001; no broader sign-off is claimed.
-- [x] G-002 [status:verified] All confirmed application findings F-001 through F-019 are resolved and verified. Runtime, dependency, first-run UX and public delivery checks pass. External unknowns in R-001 are not accepted on the owner's behalf.
-- [x] G-003 [status:verified] Final application code passed local release checks, required CI, native Replit validation and public checks after all changes. Label-only follow-up passed required full CI and native build/audit; all 690 translation keys and public help names verified.
+- [ ] G-002 [status:in_progress] Findings F-001 through F-019 retain their recorded verification; October 26 finding F-020 requires fresh remediation and release verification. External unknowns in R-001 are not accepted on the owner's behalf.
+- [ ] G-003 [status:in_progress] Rerun local release checks, required CI, native Replit validation and public checks for the October 26 candidate, including the new import tests and 691 translation keys.
 - [ ] G-004 [status:blocked] Application handoff and documentation are delivered, with release IDs, evidence and owner follow-up instructions. This broader risk-closure gate remains blocked by R-001, not by an unfinished application fix.
 
 ## Rerun Matrix
 
-- [x] G-010 [status:verified] Final rerun matrix passed: Node 22.23.4, full local application suite, both audits, protected PR checks, native production build/browser runs, and final public hash/HTTP/accessibility checks. Documentation-only closeout preserves the deployed application tree.
+- [ ] G-010 [status:in_progress] October 26 rerun matrix: clean install on Node 22.23.4, full local suite, both audits, protected PR checks, native production build, browser import checks and final public hash/HTTP checks. Earlier dated evidence remains historical, not a substitute for the new release.
 
 ## Audit Queue
+
+- [ ] Q-010 [status:in_progress] October 26 authorized closeout: migrate to patched Zod without forced dependency overrides, add boundary/import regressions, run full validation, commit/merge/deploy and verify actual public bytes. Real-learner pilot explicitly excluded by owner; do not claim physical-device or novice-user evidence not collected.
+- [ ] Q-011 [status:in_progress] Verify available operational monitoring/alert controls, establish repository operations/recovery instructions and complete feasible additional browser checks. Preserve security scan and critical-finding gate; do not buy a plan, enable automatic fixes/republishing, change credentials, or contact third parties without specific approval.
 
 - [x] Q-007 [status:verified] Removed braces through supported toolchain upgrades. Verified complete mobile mission, desktop keyboard map selection, table/comparison, dark theme and EN/LV/RU rendering. Narrow-screen controls wrap; untranslated task labels and tutorial phrases corrected.
 - [x] Q-008 [status:verified] Committed b4befcf and merged PR #7 as df4d327 after CI run 39833192810 passed every step, including checksum-verified Linux deployment bootstrap. Owner SSH and scoped owner gh credentials used without changing active account. Main now requires PR and GitHub Actions build (app 15368), up-to-date branch, no force pushes/deletion, admin enforcement and conversation resolution; zero independent reviewer requirement is explicit for solo maintenance.
@@ -33,6 +36,10 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 - [x] Q-006 [status:verified] Targeted fixes installed with scripts disabled into isolated validation copy. Typecheck, lint, scenario smoke tests, 2 HTTP/runtime security tests, i18n and Vite 6.4.5 build pass; source reviewed and delivery report written. Two pre-existing onboarding files received formatting only, preserving implementation.
 
 ## Findings Log
+
+- [ ] F-021 [status:in_progress] [P2] [confidence:1.0] Short-screen Russian import dialog exceeds viewport height at 320x568, and upload/paste instructions squeeze into a narrow column. Bound and internally scroll the dialog, stack narrow-screen controls and announce validation feedback. Evidence: October 26 ordinary browser import checks. Owner: codex.
+
+- [ ] F-020 [status:in_progress] [P1] [confidence:1.0] October 26 npm audit reports two high package records rooted in Zod <4.6.6 (GHSA-mrhx-c7xc-m3w5). Root is 3.24.2; unused adapters retain Zod 3 compatibility. Server only validates bounded string IDs; scenario imports are client-side and capped at 500000 characters/bytes, but collections lack schema caps. No exploitable server path or compromise was established. Migrate supported APIs and bound collections rather than running audit fix --force. Evidence: current lock, npm audit and shared/schema.ts/ScenarioExportImport.tsx. Owner: codex.
 
 - [x] F-019 [status:verified] [P2] [confidence:1.0] Persistent help icon now has localized accessible name and hover title. EN/LV/RU names were checked on the final public release; localized dialog opens and Escape closes it. Evidence: PR #16, public AX/DOM checks after 2026-10-23 19:53 UTC, 690-key validation. Owner: codex.
 
@@ -66,6 +73,8 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 
 ## Fix Log
 
+- [x] P-008 [status:verified] Patched Zod 4.6.7, removed unused adapters, migrated issues API, bounded scenario arrays, added localized cap feedback and five required import regression tests. Responsive import dialog is bounded/scrollable with announced feedback. Addresses: F-020, F-021. Evidence: local full suite and actual candidate browser checks October 26; delivery tracked separately. Owner: codex.
+
 - [x] P-006 [status:verified] Supported provider Node 22.23.4, explicit patched bundled CAs, strict npm safeguards and successful publishing installer. Addresses: F-011, F-012, F-013. Evidence: PR #14, native checks and successful actual publish logs.
 - [x] P-007 [status:verified] Responsive task-sized spotlights, target/feedback handoffs, per-run gate history, stale-click guard, replay reset, localized width/wrapping and named persistent help. Addresses: F-014, F-015, F-016, F-017, F-018, F-019. Evidence: PR #15/#16, regression tests, native mobile and public browser checks.
 
@@ -77,6 +86,8 @@ Created: 2026-10-22. Updated: 2026-10-23. Workspace: Network_Cartographer. Detai
 - [x] P-003 [status:verified] API/status/static serving/logging/request-timeout hardening plus security regression tests. F-004/F-005. Evidence: server/index.ts, server/routes.ts, server/static.ts and V-005/V-007. Addresses: F-004 and F-005.
 
 ## Validation Log
+
+- [x] V-019 [status:verified] October 26 clean install on Node 22.23.4/npm 10.9.9 and final-code rerun pass: both audits zero, typecheck, lint, format, 691-key EN/LV/RU validation, smoke, 2 security, 2 onboarding, 5 import tests, build and production-artifact test. Chromium import malformed/schema/cap rejection and valid round trip pass; repaired Russian 320x568 dialog bounds x16..304/y16..552 with internal scroll and working close. Desktop Safari full ordinary-interaction mission reaches 9/9 with wrong-answer explanation. Evidence: ignored security-evidence/2026-10-26/validation-final.log and test-results/closeout-2026-10-26-safari.png; no physical-phone or novice evidence claimed. Owner: codex.
 
 - [x] V-018 [status:verified] Exact native candidate e703e4d completed full ordinary-click Russian mission/recovery runs independently at 320x568 and 390x844, without resizing. Both native bundle hashes matched local; label-only a52f1af passed required full CI and native build, and final public labels/dialog passed in EN/LV/RU with no browser console errors. Evidence: 2026-10-23 PASS; CI 40011851546/40011841465 and 40014083430/40014009466, native report, public AX and final release record.
 

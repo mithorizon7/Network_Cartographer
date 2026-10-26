@@ -1,5 +1,18 @@
 import { z } from "zod";
 
+export const SCENARIO_LIMITS = {
+  networks: 32,
+  devices: 256,
+  events: 256,
+  learningPrompts: 128,
+  answers: 16,
+  scenarioTasks: 128,
+  flows: 1024,
+  riskFlags: 16,
+  openPorts: 256,
+  protocols: 64,
+} as const;
+
 export const deviceTypeSchema = z.enum([
   "router",
   "server",
@@ -90,11 +103,11 @@ export const deviceSchema = z.object({
   networkId: z.string(),
   ip: z.string(),
   localId: z.string(),
-  riskFlags: z.array(riskFlagSchema),
+  riskFlags: z.array(riskFlagSchema).max(SCENARIO_LIMITS.riskFlags),
   description: z.string().optional(),
   manufacturer: z.string().optional(),
-  openPorts: z.array(z.number()).optional(),
-  protocols: z.array(z.string()).optional(),
+  openPorts: z.array(z.number()).max(SCENARIO_LIMITS.openPorts).optional(),
+  protocols: z.array(z.string()).max(SCENARIO_LIMITS.protocols).optional(),
 });
 export type Device = z.infer<typeof deviceSchema>;
 
@@ -114,7 +127,7 @@ export type LearningPromptAnswer = z.infer<typeof learningPromptAnswerSchema>;
 export const learningPromptSchema = z.object({
   id: z.string(),
   question: z.string(),
-  answers: z.array(learningPromptAnswerSchema),
+  answers: z.array(learningPromptAnswerSchema).max(SCENARIO_LIMITS.answers),
   explanation: z.string(),
   why: z.string().optional(),
   nextStep: z.string().optional(),
@@ -135,12 +148,12 @@ export const scenarioSchema = z.object({
   title: z.string(),
   description: z.string(),
   environment: environmentSchema,
-  networks: z.array(networkSchema),
-  devices: z.array(deviceSchema),
-  events: z.array(eventSchema),
-  learningPrompts: z.array(learningPromptSchema),
-  scenarioTasks: z.array(scenarioTaskSchema).default([]),
-  flows: z.array(flowSchema).default([]),
+  networks: z.array(networkSchema).max(SCENARIO_LIMITS.networks),
+  devices: z.array(deviceSchema).max(SCENARIO_LIMITS.devices),
+  events: z.array(eventSchema).max(SCENARIO_LIMITS.events),
+  learningPrompts: z.array(learningPromptSchema).max(SCENARIO_LIMITS.learningPrompts),
+  scenarioTasks: z.array(scenarioTaskSchema).max(SCENARIO_LIMITS.scenarioTasks).default([]),
+  flows: z.array(flowSchema).max(SCENARIO_LIMITS.flows).default([]),
 });
 export type Scenario = z.infer<typeof scenarioSchema>;
 

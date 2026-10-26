@@ -121,7 +121,8 @@
     "validationRoot": "sakne",
     "requiresDevice": "Scenārijā jābūt vismaz vienai ierīcei",
     "requiresNetwork": "Scenārijā jābūt vismaz vienam tīklam",
-    "requiresRouter": "Scenārijā jābūt maršrutētāja ierīcei"
+    "requiresRouter": "Scenārijā jābūt maršrutētāja ierīcei",
+    "tooManyItems": "Pārāk daudz elementu laukā \"{{path}}\" (ne vairāk kā {{max}})."
   },
   "network": {
     "network": "Tīkls",
@@ -512,11 +513,6 @@
     "smb": "SMB",
     "rtsp": "RTSP",
     "print": "Druka"
-  },
-  "zones": {
-    "main": "Galvenais tīkls",
-    "guest": "Viesu tīkls",
-    "iot": "IoT tīkls"
   },
   "legend": {
     "localId": "Lokālais ID (MAC)",
