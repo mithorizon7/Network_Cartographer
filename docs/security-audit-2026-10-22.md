@@ -77,9 +77,24 @@ Actual candidate browser interactions rejected malformed JSON, an invalid schema
 
 Read-only native provider inspection confirmed the owner account, clean prior release, successful serving and Node 22.23.4 startup. October 25-26 logs included transient startup healthcheck failures followed by successful serving and one SIGTERM of unknown cause. Available endpoint telemetry had 13 requests and zero 5xx; this is bounded evidence, not continuous uptime or an established root cause.
 
-Actual Publishing controls were inspected: monitoring alerts were off and are now enabled, Auto-fix remains off, and critical-vulnerability publishing protection remains on. Uptime-email notifications were selected but require the upcoming authorized publication; persistence must be verified afterward. No purchase, plan change, autonomous repair/republishing, new analytics or feedback widget was enabled. [Operations and recovery instructions](operations.md) now describe ownership, alert triage, existing weekly Dependabot reviews, safe rebuild/rollback and the checked-in 13-request public asset-verification command.
+Actual Publishing controls were inspected: monitoring alerts and uptime-email notifications were off and are now enabled. Both persisted after publication and a full editor reload; Auto-fix remains off and critical-vulnerability publishing protection remains on. Email delivery and continuous uptime are not claimed. No purchase, plan change, autonomous repair/republishing, new analytics or feedback widget was enabled. [Operations and recovery instructions](operations.md) now describe ownership, alert triage, existing weekly Dependabot reviews, safe rebuild/rollback and the checked-in 13-request public asset-verification command.
 
-Merge, native candidate validation, publication and final public verification remain gates for this candidate and will be recorded after execution. Provider kernel/edge/production-CA/history evidence remains unavailable (`R-001`); the pilot exclusion does not waive or fabricate that evidence. No unrelated workstation defaults, credentials or other projects were changed.
+### Completed Delivery
+
+Candidate `5ccfdafd32d4844fad1ed248ca33e5de1baf1fb8` passed required GitHub Actions runs `40359834034` and `40359884981`, including every step of the Linux checksum-verified deployment bootstrap. PR [#18](https://github.com/mithorizon7/Network_Cartographer/pull/18) merged as `bf29049f907cbd183029c2c3d328a4054d23a51f`. Native Replit clean install, both zero-finding audits, the complete suite and production artifact all passed on Node 22.23.4/npm 10.9.9. Clean merged source tree `027351440f892f283cb818e6a45bb4b6d624098d` exactly matched the native validated candidate. Existing history/recovery references were retained; a new private workspace snapshot and Git bundle passed checksum verification.
+
+Build `7fa5cf19-2dec-471c-8234-03f33c9a7ecb` records merged source `bf29049`. Its security scan completed October 26 at 16:38:36 UTC; publication succeeded at 16:40:09 UTC. Current-serving production startup at 16:39:59.170 UTC explicitly reports Node v22.23.4. The later provider publication checkpoint is a clean child with the identical reviewed tree, not application source drift. No second publication was performed for this audit record.
+
+All 13 bounded public checks passed at **2026-10-26T16:40:52.306Z**, including exact reviewed asset bytes:
+
+| Asset                | SHA256                                                             |
+| -------------------- | ------------------------------------------------------------------ |
+| `index-B3dJQWGB.js`  | `f79ffc64f382d44e153d09be4067965fce3c311889fad1de3eaf4d6e1742fda6` |
+| `index-B5a70x1Q.css` | `9b1193a892342a4171363145513ef814225781b26c6c40cdd1407f384ff66dd6` |
+
+The actual public English 390x844 mission reached 9/9, including wrong-device rejection, target-helper recovery, successful action, wrong-answer explanation and completed Back/Next gates. At 320x568 the published import dialog measured x16..304/y16..552, rejected malformed schema and collection overflow with announced feedback, then imported valid JSON successfully. Candidate file-picker import also passed, and Latvian/Russian 320x568 limit feedback and close controls passed. No public browser console errors were recorded. Temporary viewport overrides and the local server were cleared. Private evidence is retained under ignored `security-evidence/2026-10-26/` and `test-results/closeout-2026-10-26-*.png`.
+
+GitHub advisory-alert access returned 403, reporting disabled alerts and a missing owner-token scope; the browser has no authenticated owner session. This extra notification channel was not silently enabled or represented as active. Existing weekly Dependabot update configuration and blocking CI audits remain verified; owner-session follow-up is documented in the runbook. Provider kernel/edge/production-CA/history evidence remains unavailable (`R-001`); the pilot exclusion does not waive or fabricate that evidence. No unrelated workstation defaults, credentials or other projects were changed. The application closeout is complete; broader infrastructure certification is not claimed.
 
 ## Initial Audit Snapshot
 
